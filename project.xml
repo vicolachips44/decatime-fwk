@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="decatime-fwk" package="org.decatime.fwk" version="1.0.0" company="decatime" />
+	<app main="Main" path="bin" file="fwk-test" />
+	
+	<source path="src" />
+	
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" exclude="nme.svg" />
+	<icon path="Assets/nme.svg" />
+	
+</project>
