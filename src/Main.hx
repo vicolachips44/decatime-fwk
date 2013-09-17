@@ -1,13 +1,11 @@
-import flash.display.Sprite;
+import org.decatime.Facade;
+import com.demo.Application;
 
-class Main extends Sprite {
+class Main {
 	
 	public function new () {
-		
-		super ();
-		
-		
-		
+		var app:Application = new Application();
+		Facade.getInstance().run(app);
 	}
-	
 }
+	
