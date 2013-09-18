@@ -4,10 +4,12 @@ import flash.display.Sprite;
 import flash.display.Graphics;
 import flash.geom.Rectangle;
 
+import org.decatime.ui.layout.ILayoutElement;
+
 /**	
 *	<p>Base class for all DisplayObject that are based on a Sprite.
 */
-class BaseSpriteElement extends Sprite implements IVisualElement {
+class BaseSpriteElement extends Sprite implements ILayoutElement implements IDrawingSurface {
 	
 	private var sizeInfo:Rectangle;
 	public var isContainer:Bool;
@@ -62,29 +64,19 @@ class BaseSpriteElement extends Sprite implements IVisualElement {
 		}
 		
 	}
-	
-	/**
-	* IVisualElement implementation. returns the Graphics instance of this
-	* Shape.
-	*
-	* @return Graphics a Graphics instance.
-	*/
-	public function getDrawingSurface(): Graphics {
-		return graphics;
-	}
 
 	/**
-	* IVisualElement implementation. returns the sizeInfo property that was
+	* ILayoutElement implementation. returns the sizeInfo property that was
 	* setted in the refresh method call.
 	*
 	* @return nme.geom.Rectangle containing the dimension.
 	*/
-	public function getInitialSize(): Rectangle {
+	public function getCurrSize(): Rectangle {
 		return sizeInfo;
 	}
 
 	/**
-	* IVisualElement implementaion. return the name that was defined when
+	* ILayoutElement implementaion. return the name that was defined when
 	* calling the constructor of this instance.
 	*
 	* @return String the name.
@@ -94,7 +86,7 @@ class BaseSpriteElement extends Sprite implements IVisualElement {
 	}
 
 	/**
-	* Toggle the visibility of this Shape depending on the <code>value</code> 
+	* ILayoutElement. Toggle the visibility of this Shape depending on the <code>value</code> 
 	* param
 	*
 	* @param value a Boolean value to toggle the visibility
@@ -103,5 +95,15 @@ class BaseSpriteElement extends Sprite implements IVisualElement {
 	*/
 	public function setVisible(value:Bool): Void {
 		this.visible = value;
+	}
+
+	/**
+	* IDrawingSurface implementation. returns the Graphics instance of this
+	* Object.
+	*
+	* @return Graphics a Graphics instance.
+	*/
+	public function getDrawingSurface(): Graphics {
+		return graphics;
 	}
 }	

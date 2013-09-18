@@ -27,12 +27,12 @@ class Facade extends EventManager {
 	*/
 	private function new() {
 		super(this);
-
+		
 		// setting default values for the stage rendering
-		Lib.stage.scaleMode = StageScaleMode.NO_SCALE;
-		Lib.stage.align = StageAlign.TOP_LEFT;
+		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		Lib.current.stage.align = StageAlign.TOP_LEFT;
 
-		Lib.stage.stageFocusRect = false;		
+		Lib.current.stage.stageFocusRect = false;
 	}
 
 	/**
@@ -55,13 +55,13 @@ class Facade extends EventManager {
 
 	public function run(root:BaseSpriteElement, ?bFullScreen:Bool = false): Void {
 		if (bFullScreen) {
-			Lib.stage.displayState = StageDisplayState.FULL_SCREEN;
+			Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN;
 			flash.ui.Mouse.hide();
 		}
 
 		this.root = root;
 		root.addEventListener(Event.ADDED_TO_STAGE, onRootAddedToStage);
-		Lib.stage.addChild(root);
+		Lib.current.stage.addChild(root);
 	}
 
 	private function onRootAddedToStage(e:Event): Void {
@@ -81,7 +81,7 @@ class Facade extends EventManager {
 		onResize(null);
 
 		// we then map the event to the event listener function
-		Lib.stage.addEventListener( Event.RESIZE, onResize);
+		Lib.current.stage.addEventListener( Event.RESIZE, onResize);
 	}
 
 	private function onResize(e:Event): Void {
@@ -94,7 +94,7 @@ class Facade extends EventManager {
 		tmResize.stop();
 		
 		// get the stage geometry to call the refresh method on the root element
-		stageRect = new Rectangle(0, 0, Lib.stage.stageWidth, Lib.stage.stageHeight);
+		stageRect = new Rectangle(0, 0, Lib.current.stage.stageWidth, Lib.current.stage.stageHeight);
 		
 		// we ask the root element to layout it's content
 		root.refresh(stageRect);

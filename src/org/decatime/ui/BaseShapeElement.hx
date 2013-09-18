@@ -5,12 +5,12 @@ import flash.display.Graphics;
 import flash.errors.Error;
 import flash.geom.Rectangle;
 
-import org.decatime.ui.IVisualElement;
+import org.decatime.ui.layout.ILayoutElement;
 
 /**	
 *	<p>Base class for all DisplayObject that are based on a Shape.
 */
-class BaseShapeElement extends Shape implements IVisualElement {
+class BaseShapeElement extends Shape implements ILayoutElement, IDrawingSurface {
 	
 	private var sizeInfo:Rectangle;
 
@@ -24,10 +24,10 @@ class BaseShapeElement extends Shape implements IVisualElement {
 	}
 
 	/**
-	* IVisualElement implementation. will make the position X and Y match
+	* ILayoutElement implementation. will make the position X and Y match
 	* the provided Rectangle instance x and y.
 	*
-	* @see org.decatime.display.ui.IVisualElement
+	* @see org.decatime.display.ui.ILayoutElement
 	*
 	* @throws nme.error.Error if the provided Rectangle argument is null
 	*/
@@ -42,27 +42,17 @@ class BaseShapeElement extends Shape implements IVisualElement {
 	}
 
 	/**
-	* IVisualElement implementation. returns the Graphics instance of this
-	* Shape.
-	*
-	* @return Graphics a Graphics instance.
-	*/
-	public function getDrawingSurface(): Graphics {
-		return graphics;
-	}
-
-	/**
-	* IVisualElement implementation. returns the sizeInfo property that was
+	* ILayoutElement implementation. returns the sizeInfo property that was
 	* setted in the refresh method call.
 	*
 	* @return nme.geom.Rectangle containing the dimension.
 	*/
-	public function getInitialSize(): Rectangle {
+	public function getCurrSize(): Rectangle {
 		return sizeInfo;
 	}
 
 	/**
-	* IVisualElement implementaion. return the name that was defined when
+	* ILayoutElement implementaion. return the name that was defined when
 	* calling the constructor of this instance.
 	*
 	* @return String the name.
@@ -72,6 +62,7 @@ class BaseShapeElement extends Shape implements IVisualElement {
 	}
 
 	/**
+	* ILayoutElement implementation. 
 	* Toggle the visibility of this Shape depending on the <code>value</code> 
 	* param
 	*
@@ -81,5 +72,15 @@ class BaseShapeElement extends Shape implements IVisualElement {
 	*/
 	public function setVisible(value:Bool): Void {
 		this.visible = value;
+	}
+
+	/**
+	* IDrawingSurface implementation. returns the Graphics instance of this
+	* Shape.
+	*
+	* @return Graphics a Graphics instance.
+	*/
+	public function getDrawingSurface(): Graphics {
+		return graphics;
 	}
 }	
