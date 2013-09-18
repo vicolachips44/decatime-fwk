@@ -14,10 +14,6 @@ class Content implements ILayoutElement {
 
 	}
 	
-	public function getId():String {
-
-	}
-	
 	public function setVisible(value:Bool):Void {
 
 	}
