@@ -6,8 +6,7 @@ import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.ui.layout.Content;
 
 
-class Basic extends EventManaver implements ILayoutElement {
-	public var margin:Float;
+class Basic implements ILayoutElement {
 	public var hgap:Float;
 	public var vgap:Float;
 
@@ -16,10 +15,6 @@ class Basic extends EventManaver implements ILayoutElement {
 	private var contents:haxe.ds.IntMap<Content>;
 
 	public function new(parent:ILayoutElement) {
-		super (parent);
-		// by default margin is settted to two pixel
-		this.margin = 2;
-
 		// hgap and vgap are setted to 4 pixels
 		this.hgap = 4;
 		this.vgap = 4;
@@ -29,6 +24,10 @@ class Basic extends EventManaver implements ILayoutElement {
 		this.parent = parent;
 
 		this.contents = new haxe.ds.IntMap<Content>();
+	}
+
+	public function getNbContent(): Int {
+		return Lambda.count(this.contents);
 	}
 
 	// ILayoutElement implementation - BEGIN
@@ -44,10 +43,6 @@ class Basic extends EventManaver implements ILayoutElement {
 	*/
 	public function getCurrSize(): Rectangle {
 		return this.currSize;
-	}
-	
-	public function getId():String {
-		return "BasicLayout";
 	}
 	
 	public function setVisible(value:Bool):Void {

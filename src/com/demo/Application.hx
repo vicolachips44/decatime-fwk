@@ -6,16 +6,20 @@ import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.Facade;
+import org.decatime.ui.layout.VBox;
 
 class Application extends BaseSpriteElement implements IObserver {
 
-	 public function new() {
+	private var layout:VBox;
+
+	public function new() {
 		super('DemoApplication');
 
 		// I am the main container and i do not handle mouse events (for now...)
 		this.buttonMode = false;
 
 		Facade.getInstance().addListener(this);
+		layout = new VBox(this);
 	}
 
 	public override function refresh(r:Rectangle): Void {

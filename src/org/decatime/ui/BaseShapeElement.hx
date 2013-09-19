@@ -52,16 +52,6 @@ class BaseShapeElement extends Shape implements ILayoutElement, IDrawingSurface 
 	}
 
 	/**
-	* ILayoutElement implementaion. return the name that was defined when
-	* calling the constructor of this instance.
-	*
-	* @return String the name.
-	*/
-	public function getId(): String {
-		return name;
-	}
-
-	/**
 	* ILayoutElement implementation. 
 	* Toggle the visibility of this Shape depending on the <code>value</code> 
 	* param

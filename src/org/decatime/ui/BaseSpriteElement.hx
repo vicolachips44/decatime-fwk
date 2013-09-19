@@ -37,7 +37,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 	}
 
 	/**
-	* IVisualElement implementation. will make the position X and Y match
+	* ILayoutElement implementation. will make the position X and Y match
 	* the provided Rectangle instance x and y.
 	*
 	* @see org.decatime.display.ui.IVisualElement
@@ -73,16 +73,6 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 	*/
 	public function getCurrSize(): Rectangle {
 		return sizeInfo;
-	}
-
-	/**
-	* ILayoutElement implementaion. return the name that was defined when
-	* calling the constructor of this instance.
-	*
-	* @return String the name.
-	*/
-	public function getId(): String {
-		return name;
 	}
 
 	/**
