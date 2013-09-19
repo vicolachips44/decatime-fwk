@@ -8,6 +8,8 @@
 	
 	<haxelib name="openfl" />
 	
+	<!-- <haxedef name="dotest"></haxedef> -->
+
 	<assets path="Assets" rename="assets" exclude="nme.svg" />
 	<icon path="Assets/nme.svg" />
 	

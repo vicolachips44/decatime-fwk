@@ -7,6 +7,7 @@ import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.Facade;
 import org.decatime.ui.layout.VBox;
+import org.decatime.ui.layout.Content;
 
 class Application extends BaseSpriteElement implements IObserver {
 
@@ -24,7 +25,7 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		// TODO refresh my layout
+		layout.refresh(r);
 	}
 
 	// IObserver implementation BEGIN
@@ -46,6 +47,6 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	private function initializeComponent() {
 		trace('initialize component was raised');
-		// TODO add some childs to this container
+		
 	}
 }

@@ -62,7 +62,6 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 			x = r.x;
 			y = r.y;
 		}
-		
 	}
 
 	/**

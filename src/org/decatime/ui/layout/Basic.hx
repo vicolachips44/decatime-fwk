@@ -30,6 +30,22 @@ class Basic implements ILayoutElement {
 		return Lambda.count(this.contents);
 	}
 
+	public function setHorizontalGap(value:Float): Void {
+		this.hgap = value;
+	}
+
+	public function getHorizontalGap(): Float {
+		return this.hgap;
+	}
+
+	public function setVerticalGap(value:Float): Void {
+		this.vgap = value;
+	}
+
+	public function getVerticalGap(): Float {
+		return this.vgap;
+	}
+
 	// ILayoutElement implementation - BEGIN
 
 	public function refresh(r:Rectangle): Void {
