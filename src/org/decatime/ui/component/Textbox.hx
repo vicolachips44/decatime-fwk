@@ -120,7 +120,7 @@ class Textbox extends TextField implements ILayoutElement {
 	}
 
 	private function textInputHandler(e:TextEvent): Void {
-		trace ("in textInputHandler method - BEGIN");
+		trace ("in textInputHandler method - BEGIN: if you see this one call me !");
 		if (this.text.length == 0) {
 			this.text = ' ';
 			e.stopImmediatePropagation();
@@ -135,6 +135,7 @@ class Textbox extends TextField implements ILayoutElement {
 			trace ("trapped");
 			this.stage.focus = org.decatime.Facade.getInstance().getRoot();
 			this.stage.focus = this;
+			trace ("my caret has leave the stage please clic on the textbox again... don't try the tab key... it does not work for the moment");
 		}
 	}
 }
