@@ -1,11 +1,14 @@
 package org.decatime.ui.component;
 
+import openfl.Assets;
+
 import flash.display.BitmapData;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormatAlign;
+import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.display.PixelSnapping;
 import flash.geom.Matrix;
@@ -13,60 +16,46 @@ import flash.geom.Matrix;
 import org.decatime.ui.BaseBitmapElement;
 
 class Label extends BaseBitmapElement {
-	private var text:String;
 	private var color:Int;
 	private var align:String;
-	private var fontName:String;
+	private var fontRes:Font;
 	private var fontSize:Int;
-
 	private var tfield:TextField;
 
-
-	private var bmData:BitmapData;
-
 	public function new(text:String, ?color:Int = 0x000000, ?align:String = 'left') {
-		bmData = new BitmapData(0, 0, true, color);
-		super(bmData, PixelSnapping.NEVER);
+		super();
 
-		this.text = text;
 		this.color = color;
 		this.align = align;
+
+		this.fontSize = 12;
 
 		tfield = new TextField();
 		tfield.selectable = false;
 		tfield.autoSize = TextFieldAutoSize.LEFT;
 		tfield.mouseEnabled = false;
 		tfield.text = text;
-
-		this.fontName = "";
-		this.fontSize = 12;
 	}
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		trace ("The label component is about to be refreshed");
 		this.draw();
-		this.x = r.x;
-		this.y = r.y;
-
 	}
 
-	public function setFontName(name:String): Void {
-		this.fontName = name;
+	public function setFontRes(fontRes:String): Void {
+		this.fontRes = Assets.getFont(fontRes);
 	}
 
 	public function setFontSize(size:Int): Void {
 		this.fontSize = size;
-		this.refresh(this.getCurrSize());
 	}
 
 	public function getText(): String {
-		return this.text;
+		return tfield.text;
 	}
 
 	public function setText(value:String): Void {
-		this.text = value;
-		this.refresh(this.getCurrSize());
+		tfield.text = value;
 	}
 
 	public function getColor(): Int {
@@ -75,7 +64,6 @@ class Label extends BaseBitmapElement {
 
 	public function setColor(value:Int): Void {
 		this.color = value;
-		this.refresh(this.getCurrSize());
 	}
 
 	public function getAlign(): String {
@@ -84,25 +72,16 @@ class Label extends BaseBitmapElement {
 
 	public function setAlign(value:String): Void {
 		this.align = value;
-		this.refresh(this.getCurrSize());
 	}
 
-	private function draw(): Void {
-		if (this.fontName != "") {
+	private function draw(): Void {	
+		if (this.fontRes != null) {
 			createEmbeddedFontTextFormat();
 		} else {
 			createSimpleTextFormat();
 		}
-
-		var bmCache:BitmapData = new BitmapData(
-			Std.int(this.sizeInfo.width), 
-			Std.int(this.sizeInfo.height), 
-			true, 
-			0x000000
-		);
-	
 		if (this.align == 'left') {
-			bmCache.draw(
+			this.bitmapData.draw(
 				tfield,
 				new Matrix(1, 0, 0 , 1 , 2, (this.sizeInfo.height / 2) - (tfield.textHeight / 2)),  // add a two pixel margin
 				null, 
@@ -111,7 +90,7 @@ class Label extends BaseBitmapElement {
 				true 
 			);
 		} else if (this.align == 'center') {
-			bmCache.draw(
+			this.bitmapData.draw(
 				tfield,
 				new Matrix(1, 0, 0 , 1 , (this.sizeInfo.width / 2) - (tfield.textWidth / 2), (this.sizeInfo.height / 2) - (tfield.textHeight / 2)), 
 				null, 
@@ -120,7 +99,7 @@ class Label extends BaseBitmapElement {
 				true 
 			);
 		} else if (this.align== 'right') {
-			bmCache.draw(
+			this.bitmapData.draw(
 				tfield,
 				new Matrix(1, 0, 0 , 1 ,
 					this.sizeInfo.width - tfield.textWidth - 2, 
@@ -131,7 +110,6 @@ class Label extends BaseBitmapElement {
 				true 
 			);
 		}
-
 	}
 
 	private function createSimpleTextFormat(): Void {
@@ -139,8 +117,9 @@ class Label extends BaseBitmapElement {
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {
+		trace("creating embedded Fond text format");
 		var format:TextFormat = new TextFormat(
-			this.fontName, 
+			this.fontRes.fontName, 
 			this.fontSize, 
 			this.color,
 			true

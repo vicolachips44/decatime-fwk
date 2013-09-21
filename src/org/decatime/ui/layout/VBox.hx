@@ -21,7 +21,6 @@ class VBox extends Basic {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-
 		var content:Content = null;
 
 		// initialize rectangles
@@ -51,7 +50,7 @@ class VBox extends Basic {
 			var size:Float = content.getSize();
 
 			// the with is the same for all contents since it's a VBox
-			r[i-1].width - avWidth;
+			r[i-1].width = avWidth;
 
 			// if the size is specified in percentage then we 
 			// calculate the size based on the remainingHeight value

@@ -33,7 +33,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		// be set directly (it can in fact but will change the aspect ratio).
 		this.isContainer = true;
 
-		this.elBackColor = 0x000000;
+		this.elBackColor = 0xffffff;
 	}
 
 	/**

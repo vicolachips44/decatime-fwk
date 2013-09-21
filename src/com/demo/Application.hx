@@ -10,6 +10,8 @@ import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
 
+import flash.text.TextFormat;
+
 class Application extends BaseSpriteElement implements IObserver {
 
 	private var layout:VBox;
@@ -47,9 +49,15 @@ class Application extends BaseSpriteElement implements IObserver {
 	// IObserver implementation END
 
 	private function initializeComponent() {
-		trace('initialize component was raised');
-		var lbl:Label = new Label('hello the world');
+		var lbl:Label = new Label('DECATIME FRAMEWORK DEMO - V1');
+		lbl.setFontRes('assets/BepaOblique.ttf');
+		lbl.setAlign('center');
+		lbl.setFontSize(28);
+		lbl.setColor(0x0000ff);
+		lbl.setVerticalGap(2);
+		lbl.setBackColor(0xafafaf);
 		layout.create(32, lbl);
 		this.addChild(lbl);
+
 	}
 }

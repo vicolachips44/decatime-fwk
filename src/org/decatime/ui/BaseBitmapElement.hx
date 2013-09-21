@@ -10,17 +10,22 @@ import org.decatime.ui.layout.ILayoutElement;
 
 class BaseBitmapElement extends Bitmap implements ILayoutElement {
 	private var sizeInfo:Rectangle;
+
 	private var hgap:Float;
 	private var vgap:Float;
+	private var transparent:Bool;
+	private var backColor:Int;
 
 	/**
 	* Default constructor.
 	* @param name The name for this BaseShapeElement instance	
 	*/
-	public function new(bitmapData:BitmapData, ?pixelSnapping:PixelSnapping, smoothing:Bool = false) {
-		super(bitmapData, pixelSnapping, smoothing);
+	public function new() {
+		super();
 		hgap = 0;
 		vgap = 0;
+		transparent = true;
+		backColor = 0x000000;
 	}
 
 	public function setHorizontalGap(value:Float): Void {
@@ -37,6 +42,17 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 
 	public function getVerticalGap(): Float {
 		return this.vgap;
+	}
+
+	public function setTransparentBackground(value:Bool): Void {
+		this.transparent = value;
+	}
+
+	public function setBackColor(value:Int): Void {
+		this.backColor = value;
+
+		// Since the user wants a background we set the transparency value to false.
+		this.transparent = false;
 	}
 
 	/**
@@ -56,8 +72,7 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		x = r.x + this.hgap;
 		y = r.y + this.vgap;
 
-		// With and height depends on what was the source
-		// in the BitmapData element.
+		this.bitmapData = new BitmapData(Std.int(r.width), Std.int(r.height), this.transparent, this.backColor);
 	}
 
 	/**
