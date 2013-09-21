@@ -8,6 +8,7 @@ import org.decatime.event.IObserver;
 import org.decatime.Facade;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.Content;
+import org.decatime.ui.component.Label;
 
 class Application extends BaseSpriteElement implements IObserver {
 
@@ -47,6 +48,8 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	private function initializeComponent() {
 		trace('initialize component was raised');
-		
+		var lbl:Label = new Label('hello the world');
+		layout.create(32, lbl);
+		this.addChild(lbl);
 	}
 }

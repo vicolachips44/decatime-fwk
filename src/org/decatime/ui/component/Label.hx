@@ -8,6 +8,7 @@ import flash.text.TextFieldAutoSize;
 import flash.text.TextFormatAlign;
 import flash.geom.Rectangle;
 import flash.display.PixelSnapping;
+import flash.geom.Matrix;
 
 import org.decatime.ui.BaseBitmapElement;
 
@@ -23,8 +24,8 @@ class Label extends BaseBitmapElement {
 
 	private var bmData:BitmapData;
 
-	public function new(text:String, color:Int = 0x000000, ?align:String = 'left') {
-		bmData = new BitmapData();
+	public function new(text:String, ?color:Int = 0x000000, ?align:String = 'left') {
+		bmData = new BitmapData(0, 0, true, color);
 		super(bmData, PixelSnapping.NEVER);
 
 		this.text = text;
@@ -35,7 +36,7 @@ class Label extends BaseBitmapElement {
 		tfield.selectable = false;
 		tfield.autoSize = TextFieldAutoSize.LEFT;
 		tfield.mouseEnabled = false;
-		tfield.text = label;
+		tfield.text = text;
 
 		this.fontName = "";
 		this.fontSize = 12;
@@ -43,6 +44,7 @@ class Label extends BaseBitmapElement {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
+		trace ("The label component is about to be refreshed");
 		this.draw();
 		this.x = r.x;
 		this.y = r.y;
@@ -140,7 +142,7 @@ class Label extends BaseBitmapElement {
 		var format:TextFormat = new TextFormat(
 			this.fontName, 
 			this.fontSize, 
-			in_color,
+			this.color,
 			true
 		);
 

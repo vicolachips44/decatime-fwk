@@ -4,13 +4,14 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.geom.Rectangle;
+import flash.errors.Error;
 
 import org.decatime.ui.layout.ILayoutElement;
 
 class BaseBitmapElement extends Bitmap implements ILayoutElement {
 	private var sizeInfo:Rectangle;
-	private var hgap:Int;
-	private var vgap:Int;
+	private var hgap:Float;
+	private var vgap:Float;
 
 	/**
 	* Default constructor.
