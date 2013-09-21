@@ -7,6 +7,7 @@ import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.Facade;
 import org.decatime.ui.layout.VBox;
+import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.component.PngButton;
@@ -43,6 +44,7 @@ class Application extends BaseSpriteElement implements IObserver {
 				initializeComponent();
 			case PngButton.EVT_PNGBUTTON_CLICK:
 				this.lblTitle.setText('this is a new text number: ' + testCount++ + '!!');
+				//this.lblTitle.setFontSize(22);
 		}
 	}
 
@@ -59,9 +61,9 @@ class Application extends BaseSpriteElement implements IObserver {
 		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO - V1');
 		this.lblTitle.setFontRes('assets/BepaOblique.ttf');
 		this.lblTitle.setAlign(Label.CENTER);
-		this.lblTitle.setFontSize(28);
+		this.lblTitle.setFontSize(24);
 		this.lblTitle.setColor(0x0000ff);
-		this.lblTitle.setVerticalGap(2);
+		this.lblTitle.setVerticalGap(0);
 		this.lblTitle.setBackColor(0xafafaf);
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);

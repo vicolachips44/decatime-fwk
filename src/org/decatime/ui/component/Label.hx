@@ -56,10 +56,12 @@ class Label extends BaseBitmapElement {
 
 	public function setFontRes(fontRes:String): Void {
 		this.fontRes = Assets.getFont(fontRes);
+		this.updateDisplay();
 	}
 
 	public function setFontSize(size:Int): Void {
 		this.fontSize = size;
+		this.updateDisplay();
 	}
 
 	public function getText(): String {
