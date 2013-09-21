@@ -11,6 +11,7 @@ import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.component.PngButton;
+import org.decatime.ui.component.Textbox;
 
 import flash.text.TextFormat;
 
@@ -72,6 +73,16 @@ class Application extends BaseSpriteElement implements IObserver {
 		btn.addListener(this);
 		layout.create(48, btn);
 		this.addChild(btn);
+
+		var txt:Textbox = new Textbox('txtInputElement', ' ');
+		txt.setFontRes('assets/BepaOblique.ttf');
+		layout.create(20, txt);
+		this.addChild(txt);
+
+		var txt2:Textbox = new Textbox('txt2InputElement', ' ');
+		txt2.setFontRes('assets/BepaOblique.ttf');
+		layout.create(20, txt2);
+		this.addChild(txt2);
 
 	}
 }
