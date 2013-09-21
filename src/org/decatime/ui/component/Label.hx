@@ -12,6 +12,7 @@ import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.display.PixelSnapping;
 import flash.geom.Matrix;
+import flash.errors.Error;
 
 import org.decatime.ui.BaseBitmapElement;
 
@@ -20,7 +21,9 @@ class Label extends BaseBitmapElement {
 	private var align:String;
 	private var fontRes:Font;
 	private var fontSize:Int;
+	private var isBold:Bool;
 	private var tfield:TextField;
+	private var initialized:Bool;
 
 	public function new(text:String, ?color:Int = 0x000000, ?align:String = 'left') {
 		super();
@@ -29,12 +32,16 @@ class Label extends BaseBitmapElement {
 		this.align = align;
 
 		this.fontSize = 12;
+		this.isBold = true;
 
-		tfield = new TextField();
-		tfield.selectable = false;
-		tfield.autoSize = TextFieldAutoSize.LEFT;
-		tfield.mouseEnabled = false;
-		tfield.text = text;
+		this.tfield = new TextField();
+		this.tfield.selectable = false;
+		this.tfield.autoSize = TextFieldAutoSize.LEFT;
+		this.tfield.mouseEnabled = false;
+		this.tfield.text = text;
+
+		this.initialized = false;
+
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -51,7 +58,7 @@ class Label extends BaseBitmapElement {
 	}
 
 	public function getText(): String {
-		return tfield.text;
+		return this.tfield.text;
 	}
 
 	public function setText(value:String): Void {
@@ -74,16 +81,26 @@ class Label extends BaseBitmapElement {
 		this.align = value;
 	}
 
+	public function getIsBold(): Bool {
+		return this.isBold;
+	}
+
+	public function setIsBold(value:Bool): Void {
+		this.isBold = value;
+	}
+
 	private function draw(): Void {	
 		if (this.fontRes != null) {
 			createEmbeddedFontTextFormat();
 		} else {
-			createSimpleTextFormat();
+			throw new Error("this component needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
 		}
 		if (this.align == 'left') {
 			this.bitmapData.draw(
-				tfield,
-				new Matrix(1, 0, 0 , 1 , 2, (this.sizeInfo.height / 2) - (tfield.textHeight / 2)),  // add a two pixel margin
+				this.tfield,
+				new Matrix(1, 0, 0 , 1 , 2,
+					(this.sizeInfo.height / 2) - (this.tfield.textHeight / 2)
+				),
 				null, 
 				null, 
 				null, 
@@ -91,8 +108,11 @@ class Label extends BaseBitmapElement {
 			);
 		} else if (this.align == 'center') {
 			this.bitmapData.draw(
-				tfield,
-				new Matrix(1, 0, 0 , 1 , (this.sizeInfo.width / 2) - (tfield.textWidth / 2), (this.sizeInfo.height / 2) - (tfield.textHeight / 2)), 
+				this.tfield,
+				new Matrix(1, 0, 0 , 1 , 
+					(this.sizeInfo.width / 2) - (this.tfield.textWidth / 2), 
+					(this.sizeInfo.height / 2) - (this.tfield.textHeight / 2)
+				), 
 				null, 
 				null, 
 				null, 
@@ -100,20 +120,17 @@ class Label extends BaseBitmapElement {
 			);
 		} else if (this.align== 'right') {
 			this.bitmapData.draw(
-				tfield,
+				this.tfield,
 				new Matrix(1, 0, 0 , 1 ,
-					this.sizeInfo.width - tfield.textWidth - 2, 
-					(this.sizeInfo.height / 2) - (tfield.textHeight / 2)), 
+					this.sizeInfo.width - this.tfield.textWidth - 2, 
+					(this.sizeInfo.height / 2) - (this.tfield.textHeight / 2)
+				), 
 				null, 
 				null, 
 				null, 
 				true 
 			);
 		}
-	}
-
-	private function createSimpleTextFormat(): Void {
-		// TODO See what we should do here...
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {
@@ -125,8 +142,8 @@ class Label extends BaseBitmapElement {
 			true
 		);
 
-		tfield.embedFonts = true;
-		tfield.defaultTextFormat = format;
-		tfield.setTextFormat(format);
+		this.tfield.embedFonts = true;
+		this.tfield.defaultTextFormat = format;
+		this.tfield.setTextFormat(format);
 	}
 }
