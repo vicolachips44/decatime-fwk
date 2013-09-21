@@ -4,7 +4,6 @@ import flash.geom.Rectangle;
 
 
 class VBox extends Basic {
-
 	public function new(parent:ILayoutElement) {
 		super(parent);
 	}

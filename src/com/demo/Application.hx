@@ -9,12 +9,15 @@ import org.decatime.Facade;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
+import org.decatime.ui.component.PngButton;
 
 import flash.text.TextFormat;
 
 class Application extends BaseSpriteElement implements IObserver {
 
 	private var layout:VBox;
+	private var lblTitle:Label;
+	private var testCount:Int = 0;
 
 	public function new() {
 		super('DemoApplication');
@@ -24,6 +27,7 @@ class Application extends BaseSpriteElement implements IObserver {
 
 		Facade.getInstance().addListener(this);
 		layout = new VBox(this);
+
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -37,27 +41,35 @@ class Application extends BaseSpriteElement implements IObserver {
 		switch (name) {
 			case Facade.EV_INIT:
 				initializeComponent();
+			case PngButton.EVT_PNGBUTTON_CLICK:
+				this.lblTitle.setText('this is a new text number: ' + testCount++ + '!!');
 		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			Facade.EV_INIT
+			Facade.EV_INIT,
+			PngButton.EVT_PNGBUTTON_CLICK
 		];
 	}
 
 	// IObserver implementation END
 
 	private function initializeComponent() {
-		var lbl:Label = new Label('DECATIME FRAMEWORK DEMO - V1');
-		lbl.setFontRes('assets/BepaOblique.ttf');
-		lbl.setAlign('center');
-		lbl.setFontSize(28);
-		lbl.setColor(0x0000ff);
-		lbl.setVerticalGap(2);
-		lbl.setBackColor(0xafafaf);
-		layout.create(32, lbl);
-		this.addChild(lbl);
+		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO - V1');
+		this.lblTitle.setFontRes('assets/BepaOblique.ttf');
+		this.lblTitle.setAlign(Label.CENTER);
+		this.lblTitle.setFontSize(28);
+		this.lblTitle.setColor(0x0000ff);
+		this.lblTitle.setVerticalGap(2);
+		this.lblTitle.setBackColor(0xafafaf);
+		layout.create(32, this.lblTitle);
+		this.addChild(this.lblTitle);
+
+		var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
+		btn.addListener(this);
+		layout.create(48, btn);
+		this.addChild(btn);
 
 	}
 }
