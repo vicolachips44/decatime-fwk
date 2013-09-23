@@ -2,21 +2,23 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
+import flash.errors.Error;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
-import flash.events.TextEvent;
 import flash.events.Event;
+import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Stage;
+import flash.display.DisplayObject;
 
 import org.decatime.ui.layout.ILayoutElement;
 
-class Textbox extends TextField implements ILayoutElement {
+class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	private var sizeInfo:Rectangle;
 	private var fontRes:Font;
 	private var color:Int;
@@ -26,6 +28,8 @@ class Textbox extends TextField implements ILayoutElement {
 	private var asBorder:Bool;
 	private var txtBorderColor:Int;
 	private var myStage:Stage;
+	private var tabIndex:Int;
+	private var borderColorFocus:Int;
 
 	public function new(name:String, ?text:String = ' ', ?color:Int=0x000000) {
 		super();
@@ -42,10 +46,13 @@ class Textbox extends TextField implements ILayoutElement {
 		this.fontSize = 12;
 		this.asBorder = true;
 		this.txtBorderColor = 0x000000;
+		this.borderColorFocus = 0x0000fa;
 
-		this.addEventListener(TextEvent.TEXT_INPUT, textInputHandler);
-		this.addEventListener(Event.CHANGE, onTxtChange);
-		this.myStage.addEventListener(KeyboardEvent.KEY_DOWN, onStageKeyDown);
+		this.tabIndex = -1; // must be setted client side
+
+
+		this.addEventListener(FocusEvent.FOCUS_IN, onTxtFocusIn);
+		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 	}
 
 	public function setMargin(p:Point): Void {
@@ -76,6 +83,24 @@ class Textbox extends TextField implements ILayoutElement {
 		this.updateDisplay();
 	}
 
+	// ITabStop implementation BEGIN
+
+	public function getTabIndex(): Int {
+		return this.tabIndex;
+	}
+
+	public function setTabIndex(value:Int): Void {
+		this.tabIndex = value;
+	}
+
+	public function setFocus(): Void {
+		flash.Lib.current.stage.focus = this;
+	}
+
+	// ITabStop implementation END
+
+	// ILayoutElement implementation BEGIN
+
 	public function refresh(r:Rectangle): Void {
 		this.sizeInfo = r;
 		
@@ -94,8 +119,10 @@ class Textbox extends TextField implements ILayoutElement {
 	}
 
 	public function setVisible(value:Bool): Void {
-		this.visible = value;
+		this.visible = value; // TextField property
 	}
+
+	// ILayoutElement implementation END
 
 	private function draw(): Void {
 		createEmbeddedFontTextFormat();
@@ -124,41 +151,56 @@ class Textbox extends TextField implements ILayoutElement {
 		this.setTextFormat(format);
 	}
 
-	private function textInputHandler(e:TextEvent): Void {
-		trace ("in textInputHandler method - BEGIN: if you see this one call me !");
-		if (this.text.length == 0) {
-			this.text = ' ';
-			e.stopImmediatePropagation();
-			trace ("trapped");
+	private function onStageKeyUp(e:KeyboardEvent): Void {
+		if (e.keyCode == 9) {
+			e.keyCode = 0; // prevent an infinite loop...
+			processTabIndex();
+			
 		}
 	}
 
-	private function onStageKeyDown(e:KeyboardEvent): Void {
-		if (flash.Lib.current.stage.focus == this) {
-			trace (e.keyCode);
-			trace ("text value is " + this.text);
-			trace ("text lenght is " + this.text.length);
-			if (e.keyCode == 8 && this.text.length == 1) {
-				e.stopPropagation();
+	private function processTabIndex(): Void {
+		var nbChilds:Int = this.parent.numChildren;
+		var i:Int = 0;
+		var smallestTbIndex:Int = 100;
+		var nextTabElement:ITabStop = null;
+
+		for (i in 0...nbChilds) {
+			var child:DisplayObject = this.parent.getChildAt(i);
+			
+			if (Std.is(child, ITabStop)) {
+				var tbHandler:ITabStop = cast(child, ITabStop);
+				
+				if (tbHandler.getTabIndex() == -1) {
+					throw new Error('The tab index value must be specified for ITabStop object');
+				}
+
+				if (tbHandler.getTabIndex() == this.getTabIndex() + 1) {
+					tbHandler.setFocus();
+					return;	
+				}
+				if (tbHandler.getTabIndex() < smallestTbIndex) {
+					nextTabElement = tbHandler;
+					smallestTbIndex = tbHandler.getTabIndex();
+				}
 			}
 		}
-		
-		// if (this.text.length < 2) {
-		// 	this.text = '  z';
-		// 	this.setSelection(2, 2);
-		// 	this.text = '  ';
-		// 	e.stopPropagation();
-		// }
+		// we give the focus to the smallest tab index value
+		if (nextTabElement != null) {
+			nextTabElement.setFocus();
+		}
 	}
 
-	private function onTxtChange(e:Event): Void {
-		// trace ("event change fired on text element");
-		// if (this.text.length == 0) {
-		// 	this.text = ' ';
-		// 	trace ("trapped");
-		// 	this.stage.focus = org.decatime.Facade.getInstance().getRoot();
-		// 	this.stage.focus = this;
-		// 	trace ("my caret has leave the stage please clic on the textbox again... don't try the tab key... it does not work for the moment");
-		// }
+	private function onTxtFocusIn(e:FocusEvent): Void {
+		trace ("focus in detected event"); // works on neko and should work with cpp
+		// Sinc we have the focus, we wan't to listen to keydown event
+		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.borderColor = this.borderColorFocus;
+	}
+
+	private function onTxtFocusOut(e:FocusEvent): Void {
+		trace ("focus out detected event");// works on neko and should work with cpp
+		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.borderColor = 0x000000;
 	}
 }

@@ -47,7 +47,8 @@ class Application extends BaseSpriteElement implements IObserver {
 			case PngButton.EVT_PNGBUTTON_CLICK:
 				this.lblTitle.setText('this is a new text number: ' + testCount++ + '!!');
 				flash.Lib.current.stage.focus = this.txtTwo;
-				this.txtTwo.setSelection(0, 1);
+				this.txtTwo.text = ' ';
+				this.txtTwo.setSelection(1, 1);
 		}
 	}
 
@@ -78,11 +79,13 @@ class Application extends BaseSpriteElement implements IObserver {
 
 		var txt:Textbox = new Textbox('txtInputElement');
 		txt.setFontRes('assets/BepaOblique.ttf');
+		txt.setTabIndex(1);
 		layout.create(32, txt);
 		this.addChild(txt);
 
 		txtTwo = new Textbox('txt2InputElement');
 		txtTwo.setFontRes('assets/BepaOblique.ttf');
+		txtTwo.setTabIndex(2);
 		layout.create(32, txtTwo);
 		this.addChild(txtTwo);
 
