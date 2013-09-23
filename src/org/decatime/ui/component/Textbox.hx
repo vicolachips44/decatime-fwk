@@ -8,9 +8,11 @@ import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
 import flash.events.TextEvent;
 import flash.events.Event;
+import flash.events.KeyboardEvent;
 import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+import flash.display.Stage;
 
 import org.decatime.ui.layout.ILayoutElement;
 
@@ -23,8 +25,9 @@ class Textbox extends TextField implements ILayoutElement {
 	private var initialized:Bool;
 	private var asBorder:Bool;
 	private var txtBorderColor:Int;
+	private var myStage:Stage;
 
-	public function new(name:String, text:String, ?color:Int=0x000000) {
+	public function new(name:String, ?text:String = ' ', ?color:Int=0x000000) {
 		super();
 		this.name = name;
 		this.type = TextFieldType.INPUT;
@@ -32,15 +35,17 @@ class Textbox extends TextField implements ILayoutElement {
 		this.selectable = true;
 		this.autoSize = TextFieldAutoSize.NONE;
 		this.margin = new Point(2, 2);
-
+		this.myStage = flash.Lib.current.stage;
 		// if the text length is equal to zero the caret will not be visible in the textbox
 		// for some platforms.
 		this.text = text.length == 0 ? ' ' : text;
 		this.fontSize = 12;
 		this.asBorder = true;
 		this.txtBorderColor = 0x000000;
+
 		this.addEventListener(TextEvent.TEXT_INPUT, textInputHandler);
 		this.addEventListener(Event.CHANGE, onTxtChange);
+		this.myStage.addEventListener(KeyboardEvent.KEY_DOWN, onStageKeyDown);
 	}
 
 	public function setMargin(p:Point): Void {
@@ -128,14 +133,32 @@ class Textbox extends TextField implements ILayoutElement {
 		}
 	}
 
-	private function onTxtChange(e:Event): Void {
-		trace ("event change fired on text element");
-		if (this.text.length == 0) {
-			this.text = ' ';
-			trace ("trapped");
-			this.stage.focus = org.decatime.Facade.getInstance().getRoot();
-			this.stage.focus = this;
-			trace ("my caret has leave the stage please clic on the textbox again... don't try the tab key... it does not work for the moment");
+	private function onStageKeyDown(e:KeyboardEvent): Void {
+		if (flash.Lib.current.stage.focus == this) {
+			trace (e.keyCode);
+			trace ("text value is " + this.text);
+			trace ("text lenght is " + this.text.length);
+			if (e.keyCode == 8 && this.text.length == 1) {
+				e.stopPropagation();
+			}
 		}
+		
+		// if (this.text.length < 2) {
+		// 	this.text = '  z';
+		// 	this.setSelection(2, 2);
+		// 	this.text = '  ';
+		// 	e.stopPropagation();
+		// }
+	}
+
+	private function onTxtChange(e:Event): Void {
+		// trace ("event change fired on text element");
+		// if (this.text.length == 0) {
+		// 	this.text = ' ';
+		// 	trace ("trapped");
+		// 	this.stage.focus = org.decatime.Facade.getInstance().getRoot();
+		// 	this.stage.focus = this;
+		// 	trace ("my caret has leave the stage please clic on the textbox again... don't try the tab key... it does not work for the moment");
+		// }
 	}
 }
