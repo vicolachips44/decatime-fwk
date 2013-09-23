@@ -12,6 +12,7 @@ import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.component.PngButton;
 import org.decatime.ui.component.Textbox;
+import org.decatime.ui.component.TextArea;
 
 import flash.text.TextFormat;
 
@@ -83,9 +84,14 @@ class Application extends BaseSpriteElement implements IObserver {
 		txtTwo = new Textbox('txt2InputElement');
 		txtTwo.setFontRes('assets/BepaOblique.ttf');
 		txtTwo.setTabIndex(2);
-		layout.create(64, txtTwo);
 		txtTwo.multiline = true;
+		layout.create(64, txtTwo);
 		this.addChild(txtTwo);
+
+		var tarea:TextArea = new TextArea();
+		tarea.setFontRes('assets/BepaOblique.ttf');
+		layout.create(1.0, tarea);
+		this.addChild(tarea);
 
 	}
 }

@@ -59,12 +59,6 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 	}
 
-	// this a simple textbox not multiline
-	public override function set_multiline(value:Bool): Bool {
-		trace ("warning : this control does not handle multiline property");
-		return false;
-	}
-
 	public function setMargin(p:Point): Void {
 		this.margin = p;
 		this.updateDisplay();
@@ -95,6 +89,10 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 
 	public function setBorderColorFocus(value:Int): Void {
 		this.borderColorFocus = value;
+	}
+
+	public function setTxtBorderColor(value:Int): Void {
+		this.txtBorderColor = value;
 	}
 
 	// ITabStop implementation BEGIN
@@ -186,7 +184,8 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 				var tbHandler:ITabStop = cast(child, ITabStop);
 				
 				if (tbHandler.getTabIndex() == -1) {
-					throw new Error('The tab index value must be specified for ITabStop object');
+					trace ("warning: the tab index has not been setted on child " + child.name);
+					continue;
 				}
 
 				if (tbHandler.getTabIndex() == this.getTabIndex() + 1) {
@@ -207,7 +206,7 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 
 	private function onTxtFocusIn(e:FocusEvent): Void {
 		// Since we have the focus, we wan't to listen to keydown event
-
+		// TODO: Check this on android...
 		#if !flash
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		#end
@@ -220,6 +219,6 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		#end
 
-		this.borderColor = 0x000000;
+		this.borderColor = this.txtBorderColor;
 	}
 }
