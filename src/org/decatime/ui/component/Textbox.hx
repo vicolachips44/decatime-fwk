@@ -28,7 +28,11 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	private var asBorder:Bool;
 	private var txtBorderColor:Int;
 	private var myStage:Stage;
+
+	#if !flash
 	private var tabIndex:Int;
+	#end
+
 	private var borderColorFocus:Int;
 
 	public function new(name:String, ?text:String = ' ', ?color:Int=0x000000) {
@@ -42,7 +46,7 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.myStage = flash.Lib.current.stage;
 		// if the text length is equal to zero the caret will not be visible in the textbox
 		// for some platforms.
-		this.text = text.length == 0 ? ' ' : text;
+		this.text = '';
 		this.fontSize = 12;
 		this.asBorder = true;
 		this.txtBorderColor = 0x000000;
@@ -194,13 +198,17 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	private function onTxtFocusIn(e:FocusEvent): Void {
 		trace ("focus in detected event"); // works on neko and should work with cpp
 		// Sinc we have the focus, we wan't to listen to keydown event
+		#if !flash
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		#end
 		this.borderColor = this.borderColorFocus;
 	}
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
 		trace ("focus out detected event");// works on neko and should work with cpp
+		#if !flash
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		#end
 		this.borderColor = 0x000000;
 	}
 }
