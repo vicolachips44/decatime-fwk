@@ -59,6 +59,12 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 	}
 
+	// this a simple textbox not multiline
+	public override function set_multiline(value:Bool): Bool {
+		trace ("warning : this control does not handle multiline property");
+		return false;
+	}
+
 	public function setMargin(p:Point): Void {
 		this.margin = p;
 		this.updateDisplay();
@@ -85,6 +91,10 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	public function setColor(value:Int): Void {
 		this.color = value;
 		this.updateDisplay();
+	}
+
+	public function setBorderColorFocus(value:Int): Void {
+		this.borderColorFocus = value;
 	}
 
 	// ITabStop implementation BEGIN
@@ -196,19 +206,20 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	}
 
 	private function onTxtFocusIn(e:FocusEvent): Void {
-		trace ("focus in detected event"); // works on neko and should work with cpp
-		// Sinc we have the focus, we wan't to listen to keydown event
+		// Since we have the focus, we wan't to listen to keydown event
+
 		#if !flash
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		#end
+		
 		this.borderColor = this.borderColorFocus;
 	}
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
-		trace ("focus out detected event");// works on neko and should work with cpp
 		#if !flash
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		#end
+
 		this.borderColor = 0x000000;
 	}
 }
