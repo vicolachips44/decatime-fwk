@@ -89,6 +89,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		this.addChild(txtTwo);
 
 		var tarea:TextArea = new TextArea();
+		tarea.setText("this is a simple text entry value\nwith new line here !!");
 		tarea.setFontRes('assets/BepaOblique.ttf');
 		layout.create(1.0, tarea);
 		this.addChild(tarea);

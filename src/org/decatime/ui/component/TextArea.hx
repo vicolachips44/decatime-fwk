@@ -16,6 +16,7 @@ class TextArea extends BaseSpriteElement {
 	private var fontRes:String;
 	private var color:Int;
 	private var fontSize:Int;
+	private var text:String;
 
 	private var container:VBox;
 	private var vsBar1:VerticalScrollBar;
@@ -32,6 +33,7 @@ class TextArea extends BaseSpriteElement {
 		if (!this.initialized) {
 			initializeComponent();
 		}
+		this.updateProperties();
 		this.container.refresh(r);
 		this.initialized = true;
 	}
@@ -52,6 +54,14 @@ class TextArea extends BaseSpriteElement {
 		}
 	}
 
+	public function setText(value:String): Void {
+		this.text = value;
+		if (this.tfield != null) {
+			this.tfield.text = this.text;
+			this.updateDisplay();
+		}
+	}
+
 	public function getColor(): Int {
 		return this.color;
 	}
@@ -62,7 +72,7 @@ class TextArea extends BaseSpriteElement {
 	}
 
 	private function updateDisplay(): Void {
-		// if the initial drawing was done we can call agin the refresh method.
+		// if the initial drawing was done we can call again the refresh method.
 		if (this.initialized) {
 			this.refresh(this.sizeInfo);
 		}
@@ -99,12 +109,14 @@ class TextArea extends BaseSpriteElement {
 		this.addChild(hsBar1);
 	}
 
-	private function initializeTextField(): Void {
-		this.tfield = new Textbox('txtInputElement');
+	private function updateProperties(): Void {
 		this.tfield.setFontRes(this.fontRes);
 		this.tfield.setFontSize(this.fontSize);
+		this.tfield.text = this.text;
+	}
+
+	private function initializeTextField(): Void {
+		this.tfield = new Textbox('txtInputElement');
 		this.tfield.multiline = true;
-		
-		// TODO expose other properties.
 	}
 }

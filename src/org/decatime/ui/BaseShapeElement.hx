@@ -10,7 +10,7 @@ import org.decatime.ui.layout.ILayoutElement;
 /**	
 *	<p>Base class for all DisplayObject that are based on a Shape.
 */
-class BaseShapeElement extends Shape implements ILayoutElement, IDrawingSurface {
+class BaseShapeElement extends Shape implements ILayoutElement implements IDrawingSurface {
 	
 	private var sizeInfo:Rectangle;
 
