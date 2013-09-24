@@ -7,6 +7,8 @@ import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.component.Textbox;
+import org.decatime.ui.component.VerticalScrollBar;
+import org.decatime.ui.component.HorizontalScrollBar;
 
 class TextArea extends BaseSpriteElement {
 	private var initialized:Bool;
@@ -15,7 +17,10 @@ class TextArea extends BaseSpriteElement {
 	private var color:Int;
 	private var fontSize:Int;
 
-	private var vbox1:VBox;
+	private var container:VBox;
+	private var vsBar1:VerticalScrollBar;
+	private var hsBar1:HorizontalScrollBar;
+
 
 	public function new() {
 		super('decatimeTextArea');
@@ -27,7 +32,7 @@ class TextArea extends BaseSpriteElement {
 		if (!this.initialized) {
 			initializeComponent();
 		}
-		this.vbox1.refresh(r);
+		this.container.refresh(r);
 		this.initialized = true;
 	}
 
@@ -66,20 +71,32 @@ class TextArea extends BaseSpriteElement {
 	private function initializeComponent(): Void {
 		// A TextField 
 		initializeTextField();
+
 		// A Vertical Scroll bar
-		var VscBar1:BaseSpriteElement = new BaseSpriteElement("tempObject");
+		vsBar1 = new VerticalScrollBar('tboxAreaVsBar1');
+
 		// A Horizontal Scroll bar
-		var HScBar1:BaseSpriteElement = new BaseSpriteElement("tempObject2");
+		hsBar1 = new HorizontalScrollBar('tboxAreaHsBar1');
 
 		// Our main container is a VBOX
-		this.vbox1 = new VBox(this);
-		var hbox1:HBox = new HBox(this.vbox1);
+		this.container = new VBox(this);
+		this.container.setHorizontalGap(0);
+		this.container.setVerticalGap(0);
 
-		this.vbox1.create(1.0, hbox1);
+		var hbox1:HBox = new HBox(this.container);
+		hbox1.setHorizontalGap(0);
+		hbox1.setVerticalGap(0);
+		
+		this.container.create(1.0, hbox1);
+
 		hbox1.create(1.0, this.tfield);
-		hbox1.create(24, VscBar1);
-		this.vbox1.create(24, HScBar1);
+		hbox1.create(24, vsBar1);
 
+		this.container.create(24, hsBar1);
+
+		this.addChild(this.tfield);
+		this.addChild(vsBar1);
+		this.addChild(hsBar1);
 	}
 
 	private function initializeTextField(): Void {
@@ -87,7 +104,7 @@ class TextArea extends BaseSpriteElement {
 		this.tfield.setFontRes(this.fontRes);
 		this.tfield.setFontSize(this.fontSize);
 		this.tfield.multiline = true;
-		this.addChild(this.tfield);
+		
 		// TODO expose other properties.
 	}
 }
