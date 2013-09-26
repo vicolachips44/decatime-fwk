@@ -101,11 +101,12 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 
 	private function getThumbArea(): Rectangle {
 		var r:Rectangle = this.thumbContainer.getCurrSize();
-		r.x = 4;
-		r.y = 0;
-		r.width = r.width - 8;
-		r.height = r.height;
-		return r;
+		var cpRect:Rectangle = r.clone();
+		cpRect.x = 4;
+		cpRect.y = 0;
+		cpRect.width = cpRect.width - 8;
+		cpRect.height = cpRect.height;
+		return cpRect;
 	}
 
 	private function calculateThumbSize(r:Rectangle): Rectangle {
