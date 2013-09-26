@@ -2,6 +2,9 @@ package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
 import flash.events.MouseEvent;
+import flash.display.Graphics;
+import flash.display.GradientType;
+import flash.geom.Matrix;
 
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObserver;
@@ -26,12 +29,17 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		evManager = new EventManager(this);
 		this.elBackColor = 0x000000;
 		this.orientation = orientation;
+		this.isContainer = false;
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
 	}
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		// TODO draw the button
+		// TODO draw the button (we draw it once only since the size should not change)
+		if (! this.initialized) {
+			this.drawArrow();
+		}
+		this.initialized = true;
 	}
 
 	// IObservable implementation
@@ -47,8 +55,36 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	}
 	// IObservable implementation END
 
+	// TODO Fix me since its ugly...
+	private function drawArrow(): Void {
+		var box:Matrix = new Matrix();
+		box.createGradientBox(20, 20);
+
+		var g:Graphics = this.graphics;
+		g.clear();
+
+		g.lineStyle(1, 0x808080, 0.5);
+		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
+		if (orientation == ORIENTATION_TOP) {
+			g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
+			g.moveTo(0, this.sizeInfo.width);
+			g.lineTo(this.sizeInfo.width, this.sizeInfo.width);
+			g.lineTo(this.sizeInfo.width/2, 0);
+			g.lineTo(0, this.sizeInfo.width);
+
+		}		
+		if (orientation == ORIENTATION_BOTTOM) {
+			g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
+			g.moveTo(0, 0);
+			g.lineTo(this.sizeInfo.width, 0);
+			g.lineTo(this.sizeInfo.width/2, this.sizeInfo.width);
+			g.lineTo(0, 0);
+		}
+		g.endFill();
+	}
+
 	private function onMouseClick(e:MouseEvent): Void {
 		// Relay the click event on me
-		evManager.notify(EVT_CLICK, null);
+		evManager.notify(EVT_CLICK, this.name);
 	}
 }

@@ -20,16 +20,12 @@ import org.decatime.event.IObservable;
 
 class HorizontalScrollBar extends BaseScrollBar implements IObserver {
 
-	private var container:HBox;
+	// private var container:HBox;
 	private var btnScrollLeft:ArrowButton;
 	private var btnScrollRight:ArrowButton;
-	private var thumb:BaseShapeElement;
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		// TODO Draw component
-		this.container.refresh(r);
-		
 	}
 
 	// IObserver implementation BEGIN

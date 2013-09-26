@@ -105,6 +105,10 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.tabIndex = value;
 	}
 
+	public function setAsBorder(value:Bool): Void {
+		this.asBorder = value;
+	}
+
 	public function setFocus(): Void {
 		flash.Lib.current.stage.focus = this;
 	}
