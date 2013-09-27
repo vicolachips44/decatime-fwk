@@ -28,12 +28,14 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 
 	private var stepCount:Int;
 	private var stepPos:Int;
+	private var stepSize:Int;
 
 	public function new(name:String) {
 		super(name);
 		evManager = new EventManager(this);
-		this.stepPos = 0;
-		this.stepCount = 0;
+		this.stepPos = 1;
+		this.stepCount = 1;
+		this.stepSize = 2;
 	}
 
 	public function setStepCount(value:Int): Void {
@@ -50,6 +52,18 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 
 	public function getStepPos(): Int {
 		return this.stepPos;
+	}
+
+	public function setStepSize(value:Int): Void {
+		this.stepSize = value;
+	}
+
+	public function getStepSize(): Int {
+		return this.stepSize;
+	}
+
+	public function updatePos(): Void {
+		this.drawThumbPos(this.getThumbArea());
 	}
 
 	public override function refresh(r:Rectangle): Void {

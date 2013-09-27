@@ -31,7 +31,6 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		super.refresh(r);
 	}
 
-
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
@@ -57,6 +56,14 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	private override function calculateThumbSize(r:Rectangle): Rectangle {
 		// TODO calculate geometry of thumb base on StepPos and StepCount properties (see BaseScrollBar)
+		trace ("stepCount value is " + this.stepCount);
+		trace ("stepPos value is " + this.stepPos);
+		trace ("stepSize value is " + this.stepSize);
+		
+		r.height = r.height - ((this.stepCount - 1) * this.stepSize);
+		r.y = ((this.stepPos - 1) * this.stepSize);
+
+		trace ("y position value is " + r.y);
 		return r;
 	}
 

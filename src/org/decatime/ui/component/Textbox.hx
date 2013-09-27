@@ -17,8 +17,15 @@ import flash.display.Stage;
 import flash.display.DisplayObject;
 
 import org.decatime.ui.layout.ILayoutElement;
+import org.decatime.event.IObservable;
+import org.decatime.event.IObserver;
+import org.decatime.event.EventManager;
 
-class Textbox extends TextField implements ILayoutElement implements ITabStop {
+
+class Textbox extends TextField implements ILayoutElement implements ITabStop implements IObservable {
+	private static var NAMESPACE:String = "org.decatime.ui.componnet.Textbox :";
+	public static var EVT_KEYUP:String = NAMESPACE + "EVT_KEYUP";
+
 	private var sizeInfo:Rectangle;
 	private var fontRes:Font;
 	private var color:Int;
@@ -28,6 +35,7 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	private var asBorder:Bool;
 	private var txtBorderColor:Int;
 	private var myStage:Stage;
+	private var evManager:EventManager;
 
 	#if !flash
 	private var tabIndex:Int;
@@ -44,6 +52,7 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		this.autoSize = TextFieldAutoSize.NONE;
 		this.margin = new Point(2, 2);
 		this.myStage = flash.Lib.current.stage;
+		evManager = new EventManager(this);
 		// if the text length is equal to zero the caret will not be visible in the textbox
 		// for some platforms.
 		this.text = '';
@@ -94,6 +103,21 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	public function setTxtBorderColor(value:Int): Void {
 		this.txtBorderColor = value;
 	}
+
+	// IObservable implementation
+
+	public function addListener(observer:IObserver): Void {
+		evManager.addListener(observer);
+	}
+	public function removeListener(observer:IObserver): Void {
+		evManager.removeListener(observer);
+	}
+
+	public function notify(name:String, data:Dynamic): Void {
+		evManager.notify(name, data);
+	}
+
+	// IObservable implementation END
 
 	// ITabStop implementation BEGIN
 
@@ -171,8 +195,8 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 		if (e.keyCode == 9) {
 			e.keyCode = 0; // prevent an infinite loop...
 			processTabIndex();
-			
 		}
+		this.notify(EVT_KEYUP, e);
 	}
 
 	private function processTabIndex(): Void {
@@ -211,9 +235,8 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop {
 	private function onTxtFocusIn(e:FocusEvent): Void {
 		// Since we have the focus, we wan't to listen to keydown event
 		// TODO: Check this on android...
-		#if !flash
+		
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
-		#end
 		
 		this.borderColor = this.borderColorFocus;
 	}
