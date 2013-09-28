@@ -1,7 +1,11 @@
 package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
+import flash.geom.Point;
 import flash.display.Graphics;
+import flash.events.MouseEvent;
+import flash.events.Event;
+import flash.display.DisplayObject;
 
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
@@ -29,6 +33,11 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 	private var stepCount:Int;
 	private var stepPos:Int;
 	private var stepSize:Int;
+	private var scrolling:Bool;
+	private var startX:Float;
+	private var startY:Float;
+	private var mouseDownPoint:Point;
+
 
 	public function new(name:String) {
 		super(name);
@@ -36,9 +45,13 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 		this.stepPos = 1;
 		this.stepCount = 1;
 		this.stepSize = 2;
+		this.scrolling = false;
+		this.startX = 0;
+		this.startY = 0;
 	}
 
 	public function setStepCount(value:Int): Void {
+		if (this.scrolling) {return; }
 		this.stepCount = value;
 	}
 
@@ -47,6 +60,7 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 	}
 
 	public function setStepPos(value:Int): Void {
+		if (this.scrolling) { return; }
 		this.stepPos = value;
 	}
 
@@ -62,6 +76,10 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 		return this.stepSize;
 	}
 
+	public function isScrolling(): Bool {
+		return scrolling;
+	}
+
 	public function updatePos(): Void {
 		this.drawThumbPos(this.getThumbArea());
 	}
@@ -70,6 +88,7 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 		super.refresh(r);
 		if (! this.initialized){
 			initializeComponent();
+			this.addEventListener(MouseEvent.MOUSE_DOWN, onScrollbarMouseDown);
 		}
 		this.initialized = true;
 
@@ -104,6 +123,49 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 	}
 	// IObservable implementation END
 
+	private function onScrollbarMouseDown(e:MouseEvent): Void {
+		this.addEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
+		this.addEventListener(MouseEvent.MOUSE_OVER, onScrollbarMouseUp);
+
+		this.mouseDownPoint = new Point(e.localX, e.localY);
+		
+		var objs:Array<DisplayObject> = this.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
+
+		if (objs.length == 2 && Std.is(objs[1], BaseShapeElement)) {
+			var th:BaseShapeElement = cast(objs[1], BaseShapeElement);
+			if (th.height == this.thumbContainer.getCurrSize().height) {
+				// no space to scroll
+				this.scrolling = false;
+			} else {
+				this.startX = e.localX;
+				this.startY = e.localY;
+				this.scrolling = true;
+				this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
+			}
+		} else {
+			this.scrolling = false;
+		}
+	}
+
+	private function endScroll(): Void {
+		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
+		this.removeEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
+		this.removeEventListener(MouseEvent.MOUSE_OVER, onScrollbarMouseUp);
+		this.scrolling = false;
+	}
+
+	private function onMouseThumbMove(e:MouseEvent): Void {
+			this.handleScrollEvent(e);	
+	}
+
+	private function handleScrollEvent(e:MouseEvent): Void {
+		trace ("warning this method should be overrided");
+	}
+
+	private function onScrollbarMouseUp(e:MouseEvent): Void {
+		endScroll();
+	}
+
 	private function drawThumbPos(r:Rectangle): Void {
 		var g:Graphics = this.thumb.graphics;
 		g.clear();
@@ -123,9 +185,8 @@ class BaseScrollBar extends BaseSpriteElement implements IObservable {
 		return cpRect;
 	}
 
-	private function calculateThumbSize(r:Rectangle): Rectangle {
+	private function calculateThumbSize(r:Rectangle): Void {
 		trace ("warning this method should be overrided");
-		return r;
 	}
 
 	private function initializeComponent(): Void {

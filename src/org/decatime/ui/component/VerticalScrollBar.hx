@@ -42,7 +42,6 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 				if (data == 'btnDown') {
 					this.evManager.notify(EVT_SCROLL_DOWN, this);
 				}
-				this.drawThumbPos(this.getThumbArea());
 		}
 	}
 
@@ -54,17 +53,49 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	// IObserver implementation END
 
-	private override function calculateThumbSize(r:Rectangle): Rectangle {
-		// TODO calculate geometry of thumb base on StepPos and StepCount properties (see BaseScrollBar)
-		trace ("stepCount value is " + this.stepCount);
-		trace ("stepPos value is " + this.stepPos);
-		trace ("stepSize value is " + this.stepSize);
-		
+	private override function calculateThumbSize(r:Rectangle): Void {
 		r.height = r.height - ((this.stepCount - 1) * this.stepSize);
 		r.y = ((this.stepPos - 1) * this.stepSize);
+	}
 
-		trace ("y position value is " + r.y);
-		return r;
+	private override function handleScrollEvent(e:MouseEvent): Void {
+		var delta:Float = this.stage.mouseY - this.startY;
+		if (delta < 0) {
+			if (canStepUp(e)) { stepUp(); }
+		} else {
+			if (canStepDown(e)) { stepDown(); }
+		}
+		this.startY = e.localY;
+	}
+
+	private function canStepUp(e:MouseEvent): Bool {
+		if (! (this.stepPos > 1)) { return false; }
+		if (e.localY < this.mouseDownPoint.y - this.stepSize) {
+			this.mouseDownPoint = new Point(e.localX, e.localY);
+			return true;
+		}
+		return false;
+	}
+
+	private function canStepDown(e:MouseEvent): Bool {
+		if (! (this.stepPos < this.stepCount)) { return false; }
+		if (e.localY > this.mouseDownPoint.y + this.stepSize) {
+			this.mouseDownPoint = new Point(e.localX, e.localY);
+			return true;
+		}
+		return false;
+	}
+
+	private function stepUp(): Void {
+		this.stepPos--;
+		this.updatePos();
+		this.notify(EVT_SCROLL_UP, null);
+	}
+	
+	private function stepDown(): Void {
+		this.stepPos++;
+		this.updatePos();
+		this.notify(EVT_SCROLL_DOWN, null);
 	}
 
 	private override function initializeComponent(): Void {

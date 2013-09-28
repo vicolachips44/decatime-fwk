@@ -83,38 +83,20 @@ class TextArea extends BaseSpriteElement implements IObserver {
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
-		// trace ("scroll " + name + " requested on textfield. ScrollV value is " + this.tfield.scrollV);
-		// trace("bottomScrollV property value is >> " + this.tfield.bottomScrollV);
-		// trace("maxScrollV value is >> " + this.tfield.maxScrollV); 
-		// trace("numLines value is >> " + this.tfield.numLines);
-
-		// the current scrollable value (begin from 1 to n line scrollable)
-		// this.vsBar1.setStepCount(this.tfield.maxScrollV);
-
-		// // current step position (top visible line) position
-		// this.vsBar1.setStepPos(this.tfield.scrollV);
-
 		switch (name) {
 			case VerticalScrollBar.EVT_SCROLL_DOWN:
 				if (this.tfield.scrollV < this.tfield.maxScrollV) {
 					this.tfield.scrollV++;
 					updateScrollBar();
-				} else {
-					trace ("we are on the last line!!");
 				}
-				
 			case VerticalScrollBar.EVT_SCROLL_UP:
 				if (this.tfield.scrollV > 1) {
 					this.tfield.scrollV--;
-					updateScrollBar();	
-					
-				} else {
-					trace ("we are on the first line!!");
+					updateScrollBar();
 				}
 			case Textbox.EVT_KEYUP:
 				var kb:KeyboardEvent = cast(data, KeyboardEvent);
 				if (kb.keyCode ==13) {
-					trace("updating the scroll bar value...");
 					updateScrollBar();
 				}
 		}
@@ -146,6 +128,9 @@ class TextArea extends BaseSpriteElement implements IObserver {
 		if (this.vsBar1.getStepCount() == this.tfield.maxScrollV && this.vsBar1.getStepPos() == this.tfield.scrollV) {
 			return;
 		}
+
+		if (this.vsBar1.isScrolling()) { return; }
+
 		trace("updating scroll bar position");
 		this.vsBar1.setStepCount(this.tfield.maxScrollV);
 		this.vsBar1.setStepPos(this.tfield.scrollV);
@@ -161,7 +146,7 @@ class TextArea extends BaseSpriteElement implements IObserver {
 		// A Vertical Scroll bar
 		vsBar1 = new VerticalScrollBar('tboxAreaVsBar1');
 		vsBar1.addListener(this);
-		vsBar1.setStepSize(12);
+		vsBar1.setStepSize(4);
 		// A Horizontal Scroll bar
 		hsBar1 = new HorizontalScrollBar('tboxAreaHsBar1');
 
