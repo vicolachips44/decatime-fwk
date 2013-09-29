@@ -5,28 +5,23 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 
-import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
-import org.decatime.ui.component.Textbox;
+import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.VerticalScrollBar;
 import org.decatime.ui.component.HorizontalScrollBar;
-import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
+import org.decatime.event.IObservable;
 
 
-class TextArea extends BaseSpriteElement implements IObserver {
-	private var initialized:Bool;
-	private var tfield:Textbox;
+class TextArea extends BaseContainer implements IObserver {
+	private var tfield:TextBox;
 	private var fontRes:String;
 	private var color:Int;
 	private var fontSize:Int;
 	private var text:String;
 
-	private var container:VBox;
 	private var vsBar1:VerticalScrollBar;
-	private var hsBar1:HorizontalScrollBar;
-
 
 	public function new() {
 		super('decatimeTextArea');
@@ -35,16 +30,11 @@ class TextArea extends BaseSpriteElement implements IObserver {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		if (!this.initialized) {
-			initializeComponent();
-		}
+		
 		this.updateProperties();
-		this.container.refresh(r);
 		this.graphics.clear();
 		this.graphics.lineStyle(1 ,0x000000 ,1.0);
 		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-		
-		this.initialized = true;
 	}
 
 	public function setFontRes(fontRes:String): Void {
@@ -94,7 +84,7 @@ class TextArea extends BaseSpriteElement implements IObserver {
 					this.tfield.scrollV--;
 					updateScrollBar();
 				}
-			case Textbox.EVT_KEYUP:
+			case TextBox.EVT_KEYUP:
 				var kb:KeyboardEvent = cast(data, KeyboardEvent);
 				if (kb.keyCode ==13) {
 					updateScrollBar();
@@ -105,7 +95,7 @@ class TextArea extends BaseSpriteElement implements IObserver {
 	public function getEventCollection(): Array<String> {
 		return [
 			ArrowButton.EVT_CLICK,
-			Textbox.EVT_KEYUP
+			TextBox.EVT_KEYUP
 		];
 	}
 
@@ -125,30 +115,37 @@ class TextArea extends BaseSpriteElement implements IObserver {
 
 	private function updateScrollBar(): Void {
 		if (this.vsBar1 == null) { return; }
-		if (this.vsBar1.getStepCount() == this.tfield.maxScrollV && this.vsBar1.getStepPos() == this.tfield.scrollV) {
+		if (
+			(this.vsBar1.getStepCount() == this.tfield.maxScrollV && this.vsBar1.getStepPos() == this.tfield.scrollV)
+		) {
 			return;
 		}
 
 		if (this.vsBar1.isScrolling()) { return; }
 
-		trace("updating scroll bar position");
 		this.vsBar1.setStepCount(this.tfield.maxScrollV);
 		this.vsBar1.setStepPos(this.tfield.scrollV);
 		this.vsBar1.updatePos();
 	}
 
-	private function initializeComponent(): Void {
+	private override function initializeComponent(): Void {
+		super.initializeComponent();
 		// A TextField 
-		this.tfield = new Textbox('txtInputElement');
+		this.tfield = new TextBox('txtInputElement');
 		this.tfield.multiline = true;
 		this.tfield.setAsBorder(false);
+		this.tfield.wordWrap = true;
+
+		this.tfield.setFontRes(this.fontRes);
+		this.tfield.setFontSize(this.fontSize);
+		this.tfield.text = this.text;
+
 		this.tfield.addListener(this);
+		
 		// A Vertical Scroll bar
 		vsBar1 = new VerticalScrollBar('tboxAreaVsBar1');
 		vsBar1.addListener(this);
 		vsBar1.setStepSize(4);
-		// A Horizontal Scroll bar
-		hsBar1 = new HorizontalScrollBar('tboxAreaHsBar1');
 
 		// Our main container is a VBOX
 		this.container = new VBox(this);
@@ -164,18 +161,18 @@ class TextArea extends BaseSpriteElement implements IObserver {
 		hbox1.create(1.0, this.tfield);
 		hbox1.create(32, vsBar1);
 
-		this.container.create(32, hsBar1);
-
 		this.addChild(this.tfield);
 		this.addChild(vsBar1);
-		this.addChild(hsBar1);
+	}
 
+	private override function initializeEvent(): Void {
 		this.tfield.addEventListener(Event.SCROLL, onTFieldScroll);
 	}
 
 	private function updateProperties(): Void {
 		this.tfield.setFontRes(this.fontRes);
 		this.tfield.setFontSize(this.fontSize);
-		this.tfield.text = this.text;
+		
+		this.text = this.tfield.text;
 	}
 }

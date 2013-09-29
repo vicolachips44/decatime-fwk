@@ -22,8 +22,8 @@ import org.decatime.event.IObserver;
 import org.decatime.event.EventManager;
 
 
-class Textbox extends TextField implements ILayoutElement implements ITabStop implements IObservable {
-	private static var NAMESPACE:String = "org.decatime.ui.componnet.Textbox :";
+class TextBox extends TextField implements ILayoutElement implements ITabStop implements IObservable {
+	private static var NAMESPACE:String = "org.decatime.ui.componnet.TextBox :";
 	public static var EVT_KEYUP:String = NAMESPACE + "EVT_KEYUP";
 
 	private var sizeInfo:Rectangle;
@@ -53,7 +53,7 @@ class Textbox extends TextField implements ILayoutElement implements ITabStop im
 		this.margin = new Point(2, 2);
 		this.myStage = flash.Lib.current.stage;
 		evManager = new EventManager(this);
-		// if the text length is equal to zero the caret will not be visible in the textbox
+		// if the text length is equal to zero the caret will not be visible in the TextBox
 		// for some platforms.
 		this.text = '';
 		this.fontSize = 12;

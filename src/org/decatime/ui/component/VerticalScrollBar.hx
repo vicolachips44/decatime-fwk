@@ -11,7 +11,6 @@ import flash.display.GradientType;
 import flash.geom.Matrix;
 
 import org.decatime.ui.layout.Content;
-import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
 
 import org.decatime.event.IObserver;
@@ -23,13 +22,8 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	public static var EVT_SCROLL_UP:String = NAMESPACE + "EVT_SCROLL_UP";
 	public static var EVT_SCROLL_DOWN:String = NAMESPACE + "EVT_SCROLL_DOWN";
 
-	// private var container:VBox;
 	private var btnScrollUp:ArrowButton;
 	private var btnScrollDown:ArrowButton;
-
-	public override function refresh(r:Rectangle): Void {
-		super.refresh(r);
-	}
 
 	// IObserver implementation BEGIN
 
@@ -54,6 +48,8 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	// IObserver implementation END
 
 	private override function calculateThumbSize(r:Rectangle): Void {
+		// TODO : Calculate an accurate value for the thumb size...
+		
 		r.height = r.height - ((this.stepCount - 1) * this.stepSize);
 		r.y = ((this.stepPos - 1) * this.stepSize);
 	}
@@ -98,7 +94,18 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		this.notify(EVT_SCROLL_DOWN, null);
 	}
 
+	private override function getThumbArea(): Rectangle {
+		var r:Rectangle = this.thumbContainer.getCurrSize();
+		var cpRect:Rectangle = r.clone();
+		cpRect.x = 4;
+		cpRect.y = 0;
+		cpRect.width = cpRect.width - 8;
+		cpRect.height = cpRect.height;
+		return cpRect;
+	}
+
 	private override function initializeComponent(): Void {
+		super.initializeComponent();
 		// Our main container is a VBOX
 		this.container = new VBox(this);
 		this.container.setHorizontalGap(0);

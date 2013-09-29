@@ -4,9 +4,6 @@ import flash.geom.Rectangle;
 
 
 class BoxBase extends Basic {
-	public function new(parent:ILayoutElement) {
-		super(parent);
-	}
 
 	public function create(size:Float, item:ILayoutElement): Content {
 		var lcontent:Content = new Content(this, size, item);

@@ -27,7 +27,6 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	public function new(name:String, orientation: String) {
 		super(name);
 		evManager = new EventManager(this);
-		this.elBackColor = 0x000000;
 		this.orientation = orientation;
 		this.isContainer = false;
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
@@ -65,19 +64,29 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 
 		g.lineStyle(1, 0x808080, 0.5);
 		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
+		g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
 		if (orientation == ORIENTATION_TOP) {
-			g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
 			g.moveTo(0, this.sizeInfo.width);
 			g.lineTo(this.sizeInfo.width, this.sizeInfo.width);
-			g.lineTo(this.sizeInfo.width/2, 0);
+			g.lineTo(this.sizeInfo.width / 2, 0);
 			g.lineTo(0, this.sizeInfo.width);
-
 		}		
 		if (orientation == ORIENTATION_BOTTOM) {
-			g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
 			g.moveTo(0, 0);
 			g.lineTo(this.sizeInfo.width, 0);
-			g.lineTo(this.sizeInfo.width/2, this.sizeInfo.width);
+			g.lineTo(this.sizeInfo.width / 2, this.sizeInfo.width);
+			g.lineTo(0, 0);
+		}
+		if (orientation == ORIENTATION_LEFT) {
+			g.moveTo(this.sizeInfo.width, 0);
+			g.lineTo(this.sizeInfo.width, this.sizeInfo.height);
+			g.lineTo(0, this.sizeInfo.height / 2);
+			g.lineTo(this.sizeInfo.width, 0);
+		}
+		if (orientation == ORIENTATION_RIGHT) {
+			g.moveTo(0, 0);
+			g.lineTo(0, this.sizeInfo.height);
+			g.lineTo(this.sizeInfo.height, this.sizeInfo.width / 2);
 			g.lineTo(0, 0);
 		}
 		g.endFill();
