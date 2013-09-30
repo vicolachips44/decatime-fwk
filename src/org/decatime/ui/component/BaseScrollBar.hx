@@ -95,11 +95,6 @@ class BaseScrollBar extends BaseContainer {
 		this.graphics.lineStyle(2, 0xa1a1a1, 0.9);
 		this.graphics.drawRect(r.x + 2, r.y + 2, r.width - 4, r.height - 4);
 		
-		if (this.thumbContainer != null) {
-			this.drawThumbPos(this.getThumbArea());		
-		} else {
-			trace ("warning: thumbContainer instance is null");
-		}
 		this.graphics.endFill();
 	}
 
