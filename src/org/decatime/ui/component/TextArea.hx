@@ -9,7 +9,6 @@ import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.VerticalScrollBar;
-import org.decatime.ui.component.HorizontalScrollBar;
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
 
@@ -74,16 +73,19 @@ class TextArea extends BaseContainer implements IObserver {
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
-			case VerticalScrollBar.EVT_SCROLL_DOWN:
-				if (this.tfield.scrollV < this.tfield.maxScrollV) {
-					this.tfield.scrollV++;
-					updateScrollBar();
-				}
-			case VerticalScrollBar.EVT_SCROLL_UP:
-				if (this.tfield.scrollV > 1) {
-					this.tfield.scrollV--;
-					updateScrollBar();
-				}
+			case VerticalScrollBar.EVT_SCROLL_DOWN,
+				VerticalScrollBar.EVT_SCROLL_UP:
+				this.tfield.scrollV = data + 1;
+			// case VerticalScrollBar.EVT_SCROLL_DOWN:
+			// 	if (this.tfield.scrollV < this.tfield.maxScrollV) {
+			// 		this.tfield.scrollV++;
+			// 		updateScrollBar();
+			// 	}
+			// case VerticalScrollBar.EVT_SCROLL_UP:
+			// 	if (this.tfield.scrollV > 1) {
+			// 		this.tfield.scrollV--;
+			// 		updateScrollBar();
+			// 	}
 			case TextBox.EVT_KEYUP:
 				var kb:KeyboardEvent = cast(data, KeyboardEvent);
 				if (kb.keyCode ==13) {
@@ -110,7 +112,7 @@ class TextArea extends BaseContainer implements IObserver {
 
 	private function onTFieldScroll(e:Event): Void {
 		if (this.initialized == false) { return; }
-		updateScrollBar();
+		//updateScrollBar();
 	}
 
 	private function updateScrollBar(): Void {
@@ -122,10 +124,10 @@ class TextArea extends BaseContainer implements IObserver {
 		}
 
 		if (this.vsBar1.isScrolling()) { return; }
-
-		this.vsBar1.setStepCount(this.tfield.maxScrollV);
+		
+		this.vsBar1.setStepCount(this.tfield.numLines);
 		this.vsBar1.setStepPos(this.tfield.scrollV);
-		this.vsBar1.updatePos();
+		this.vsBar1.setStepSize(12);
 	}
 
 	private override function initializeComponent(): Void {

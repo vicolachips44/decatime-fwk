@@ -24,6 +24,9 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 		if (! this.initialized){
 			initializeComponent();
 		}
+		if (this.container == null) {
+			throw new flash.errors.Error("The container object has not been initialized");
+		}
 		this.container.refresh(r);
 		if (! this.initialized) {
 			initializeEvent();
@@ -45,10 +48,10 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	// IObservable implementation END
 
 	private function initializeComponent(): Void {
-		trace ("no implementation for this method at the moment");
+		// trace ("BaseContainer: no implementation for initializeComponent at the moment");
 	}
 
 	private function initializeEvent(): Void {
-		trace ("no implementation for this method at the moment");
+		// trace ("BaseContainer : no implementation for initializeEvent at the moment");
 	}
 }

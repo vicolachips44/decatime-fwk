@@ -30,7 +30,9 @@ class BaseScrollBar extends BaseContainer {
 	private var stepSize:Int;
 	private var scrolling:Bool;
 	private var startX:Float;
+	private var thumbStartX:Float;
 	private var startY:Float;
+	private var thumbStartY:Float;
 	private var mouseDownPoint:Point;
 
 
@@ -98,7 +100,7 @@ class BaseScrollBar extends BaseContainer {
 		} else {
 			trace ("warning: thumbContainer instance is null");
 		}
-		
+		this.graphics.endFill();
 	}
 
 	private function onScrollbarMouseDown(e:MouseEvent): Void {
@@ -116,7 +118,9 @@ class BaseScrollBar extends BaseContainer {
 				this.scrolling = false;
 			} else {
 				this.startX = e.localX;
-				this.startY = e.localY;
+				this.startY = e.stageY - e.localY;
+				this.thumbStartX = thumb.mouseX;
+				this.thumbStartY = thumb.mouseY;
 				this.scrolling = true;
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
 			}
@@ -162,6 +166,16 @@ class BaseScrollBar extends BaseContainer {
 		g.drawRoundRect(r.x, r.y, r.width, r.height,12, 12);
 
 		g.endFill();
+
+		this.graphics.lineStyle(4, 0x808080, 1.0);
+		this.graphics.drawRoundRect(
+			this.thumbContainer.getCurrSize().x + 2, 
+			this.thumbContainer.getCurrSize().y,
+			this.thumbContainer.getCurrSize().width - 4, 
+			this.thumbContainer.getCurrSize().height, 
+			12, 
+			12
+		);
 	}
 
 	private function getThumbArea(): Rectangle {

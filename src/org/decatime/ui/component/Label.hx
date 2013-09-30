@@ -64,6 +64,10 @@ class Label extends BaseBitmapElement {
 		this.updateDisplay();
 	}
 
+	public function getFontSize(): Int {
+		return this.fontSize;
+	}
+
 	public function getText(): String {
 		return this.tfield.text;
 	}

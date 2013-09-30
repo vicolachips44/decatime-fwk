@@ -13,6 +13,8 @@ import org.decatime.ui.component.Label;
 import org.decatime.ui.component.PngButton;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.TextArea;
+import org.decatime.ui.component.ListBox;
+import org.decatime.ui.component.ListItem;
 
 import flash.text.TextFormat;
 
@@ -70,29 +72,48 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
-		var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
-		btn.addListener(this);
-		layout.create(48, btn);
-		this.addChild(btn);
+		// var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
+		// btn.addListener(this);
+		// layout.create(48, btn);
+		// this.addChild(btn);
 
-		var txt:TextBox = new TextBox('txtInputElement');
-		txt.setFontRes('assets/BepaOblique.ttf');
-		txt.setTabIndex(1);
-		layout.create(32, txt);
-		this.addChild(txt);
+		// var txt:TextBox = new TextBox('txtInputElement');
+		// txt.setFontRes('assets/BepaOblique.ttf');
+		// txt.setTabIndex(1);
+		// layout.create(32, txt);
+		// this.addChild(txt);
 
-		txtTwo = new TextBox('txt2InputElement');
-		txtTwo.setFontRes('assets/BepaOblique.ttf');
-		txtTwo.setTabIndex(2);
-		txtTwo.multiline = true;
-		layout.create(64, txtTwo);
-		this.addChild(txtTwo);
+		// txtTwo = new TextBox('txt2InputElement');
+		// txtTwo.setFontRes('assets/BepaOblique.ttf');
+		// txtTwo.setTabIndex(2);
+		// txtTwo.multiline = true;
+		// layout.create(64, txtTwo);
+		// this.addChild(txtTwo);
 
-		var tarea:TextArea = new TextArea();
-		tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		tarea.setFontRes('assets/BepaOblique.ttf');
-		layout.create(1.0, tarea);
-		this.addChild(tarea);
+		// var tarea:TextArea = new TextArea();
+		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
+		// tarea.setFontRes('assets/BepaOblique.ttf');
+		// layout.create(1.0, tarea);
+		// this.addChild(tarea);
 
+		var lbox:ListBox = new ListBox('listbox1');
+		lbox.setListItemHeight(20);
+		layout.create(1.0, lbox);
+		this.addChild(lbox);
+		var i:Int;
+
+		for (i in 0...50) {
+			var item:ListItem = new ListItem('listItem' + i);
+			item.label.setFontRes('assets/BepaOblique.ttf');
+			item.label.setFontSize(14);
+			item.label.setText('item ' + i);
+			lbox.addItem(item);
+		}
+
+		var lblBottom:Label = new Label('Decatime testin purpose', 'left');
+		lblBottom.setFontRes('assets/BepaOblique.ttf');
+		lblBottom.setFontSize(32);
+		layout.create(32, lblBottom);
+		this.addChild(lblBottom);
 	}
 }

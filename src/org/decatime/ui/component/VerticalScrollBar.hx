@@ -24,17 +24,25 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	private var btnScrollUp:ArrowButton;
 	private var btnScrollDown:ArrowButton;
+	private var topPos:Float;
+	private var bottomPos:Float;
+	private var visibleHeight:Float;
+	private var nbVisible:Int;
+	private var hPct:Float;
+	private var thumbMinHeight:Float = 16;
 
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case ArrowButton.EVT_CLICK:
-				if (data == 'btnUp') {
-					this.evManager.notify(EVT_SCROLL_UP, this);
+				if (data == 'btnUp' && this.stepPos < this.stepCount) {
+					this.stepPos--;
+					this.evManager.notify(EVT_SCROLL_DOWN, this.stepPos);
 				}
-				if (data == 'btnDown') {
-					this.evManager.notify(EVT_SCROLL_DOWN, this);
+				if (data == 'btnDown' && this.stepPos > 1) {
+					this.stepPos++;
+					this.evManager.notify(EVT_SCROLL_UP, this.stepPos);
 				}
 		}
 	}
@@ -45,53 +53,76 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		];
 	}
 
+	public function setVisibleHeight(value:Float): Void {
+		this.visibleHeight = value;
+	}
+
 	// IObserver implementation END
 
 	private override function calculateThumbSize(r:Rectangle): Void {
-		// TODO : Calculate an accurate value for the thumb size...
-		
-		r.height = r.height - ((this.stepCount - 1) * this.stepSize);
-		r.y = ((this.stepPos - 1) * this.stepSize);
+		var totalHeight:Float = this.stepCount * this.stepSize;
+		trace("total height value is " + totalHeight);
+		if (this.visibleHeight != null) {
+			trace ("visible height value is " + this.visibleHeight);
+		} else {
+			trace ("can't draw with out visible height value");
+			return;
+		}
+
+		hPct = r.height / (totalHeight - this.visibleHeight);
+
+		// if needed total height is less then the rectangle height
+		// we don't change the size.
+		if (hPct > 1) {  hPct = 1; }
+
+		// target height
+		var newHeight:Float = r.height * hPct;
+
+		// the y position
+		r.y = (this.stepPos * newHeight) - newHeight;
+
+		if (newHeight < this.thumbMinHeight) {
+			newHeight = this.thumbMinHeight;
+		}
+		r.height = newHeight;
+
+		// the topPosition in pixel
+		topPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getVerticalGap();
+		bottomPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getCurrSize().height - newHeight;
+		nbVisible = Std.int(this.visibleHeight / this.stepSize);
 	}
 
 	private override function handleScrollEvent(e:MouseEvent): Void {
-		var delta:Float = this.stage.mouseY - this.startY;
-		if (delta < 0) {
-			if (canStepUp(e)) { stepUp(); }
-		} else {
-			if (canStepDown(e)) { stepDown(); }
+		var newY:Float = e.stageY - this.startY - this.thumbStartY;
+
+		// if the position is within the allowed range
+		if (newY >= topPos && newY <= bottomPos) {
+			// apply the new Y position
+			this.thumb.y = newY;
+
+			// compute the new position value (steppos)
+			var newpos:Int = this.getStepPosFromThumbPos();
+
+			if (newpos < this.stepPos) {
+				// it's less than the previous one
+				this.notify(EVT_SCROLL_UP, newpos);
+			} else {
+				// it's greater than the previous one
+				this.notify(EVT_SCROLL_DOWN, newpos);
+			}
+			// the stepPos becomes the newpos
+			this.stepPos = newpos;
 		}
-		this.startY = e.localY;
 	}
 
-	private function canStepUp(e:MouseEvent): Bool {
-		if (! (this.stepPos > 1)) { return false; }
-		if (e.localY < this.mouseDownPoint.y - this.stepSize) {
-			this.mouseDownPoint = new Point(e.localX, e.localY);
-			return true;
-		}
-		return false;
-	}
+	private function getStepPosFromThumbPos(): Int {
+		var pos:Float = this.thumb.y - this.thumbContainer.getCurrSize().y;
+		
+		var coarse:Float = pos / (bottomPos - topPos);
 
-	private function canStepDown(e:MouseEvent): Bool {
-		if (! (this.stepPos < this.stepCount)) { return false; }
-		if (e.localY > this.mouseDownPoint.y + this.stepSize) {
-			this.mouseDownPoint = new Point(e.localX, e.localY);
-			return true;
-		}
-		return false;
-	}
+		var result:Float = ((this.stepCount + 1) * coarse) - (nbVisible * coarse);
 
-	private function stepUp(): Void {
-		this.stepPos--;
-		this.updatePos();
-		this.notify(EVT_SCROLL_UP, null);
-	}
-	
-	private function stepDown(): Void {
-		this.stepPos++;
-		this.updatePos();
-		this.notify(EVT_SCROLL_DOWN, null);
+		return Std.int(result);
 	}
 
 	private override function getThumbArea(): Rectangle {

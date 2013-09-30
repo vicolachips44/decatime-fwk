@@ -23,6 +23,10 @@ class Basic implements ILayoutElement {
 		//
 		this.parent = parent;
 
+		reset();
+	}
+
+	public function reset(): Void {
 		this.contents = new haxe.ds.IntMap<Content>();
 	}
 
