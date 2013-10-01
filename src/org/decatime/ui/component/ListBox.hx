@@ -2,6 +2,7 @@ package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
 import flash.display.DisplayObject;
+import flash.events.MouseEvent;
 
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
@@ -39,6 +40,16 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.listItems.push(item);
 	}
 
+	public function getSelectedItem(): ListItem {
+		var item:ListItem;
+		for (item in this.listItems) {
+			if (item.getSelected()) {
+				return item;
+			}
+		}
+		return null;
+	}
+
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 		
@@ -48,6 +59,7 @@ class ListBox extends BaseContainer  implements IObserver {
 
 		updateList();
 		updateScrollBar();
+		this.listContainer.refresh(this.listContainer.getCurrSize());
 	}
 
 	// IObserver implementation BEGIN
@@ -57,8 +69,8 @@ class ListBox extends BaseContainer  implements IObserver {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
 				this.firstVisibleIndex = data;
-				trace ("data value is " + data);
 				this.updateList();
+				this.listContainer.refresh(this.listContainer.getCurrSize());
 		}
 	}
 
@@ -96,6 +108,17 @@ class ListBox extends BaseContainer  implements IObserver {
 
 	}
 
+	private function onItemClickEvt(e:MouseEvent): Void {
+		var item:ListItem;
+		for (item in this.listItems) {
+			if (! Std.is(e.currentTarget, item)) {
+				item.setSelected(false);
+			}
+		}
+		item = cast (e.currentTarget, ListItem);
+		item.setSelected(true);
+	}
+
 	private function updateScrollBar(): Void {
 		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }
@@ -104,7 +127,6 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.vsBar1.setStepPos(this.firstVisibleIndex);
 		this.vsBar1.setStepSize(this.listItemHeight);
 		this.vsBar1.setVisibleHeight(this.listContainer.getCurrSize().height);
-		trace ("updating scrollbar position from Listbox instance");
 		this.vsBar1.updatePos();
 	}
 
@@ -113,7 +135,13 @@ class ListBox extends BaseContainer  implements IObserver {
 		var i:Int = 0;
 		var j:Int = this.firstVisibleIndex;
 
-		while (this.numChildren > 0) { this.removeChildAt(0); }
+		while (this.numChildren > 0) {
+			this.getChildAt(0).removeEventListener(MouseEvent.CLICK, onItemClickEvt);
+			this.getChildAt(0).visible = false;
+			this.removeChildAt(0); 
+		}
+
+		vsBar1.visible = true;
 		this.addChild(vsBar1);
 
 		this.listContainer.reset();
@@ -121,15 +149,17 @@ class ListBox extends BaseContainer  implements IObserver {
 
 		for (i in j...this.listItems.length) {
 			item = this.listItems[i];
+
 			if ((this.visibleCount + 1) * this.listItemHeight > this.listContainer.getCurrSize().height) {
 				break;
 			}
-			
+			item.addEventListener(MouseEvent.CLICK, onItemClickEvt);
+
 			this.listContainer.create(listItemHeight, item);
 			this.addChild(item);
-
+			item.visible = true;
 			this.visibleCount++;
 		}
-		this.listContainer.refresh(this.listContainer.getCurrSize());
+		
 	}
 }

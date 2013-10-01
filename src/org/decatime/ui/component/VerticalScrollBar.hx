@@ -96,7 +96,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	private override function handleScrollEvent(e:MouseEvent): Void {
 		var newY:Float = e.stageY - this.startY - this.thumbStartY;
-
+		
 		// if the position is within the allowed range
 		if (newY >= topPos && newY <= bottomPos) {
 			// apply the new Y position

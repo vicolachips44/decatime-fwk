@@ -16,20 +16,41 @@ class ListItem extends BaseContainer {
 	public static var EVT_CLICK:String = NAMESPACE + "EVT_CLICK";
 
 	public var label(default, null): Label;
+	private var selected: Bool;
 
 	public function new(name:String) {
 		super(name);
 
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
 		this.label = new Label('', 0x000000 , 'left');
+		selected = false;
 	}
 
 	public function get_label(): Label {
 		return label;
 	}
 
+	public function getSelected(): Bool {
+		return selected;
+	}
+
+	public function setSelected(value:Bool): Void {
+		selected = value;
+		draw();
+	}
+
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
+		draw();
+	}
+
+	private function draw(): Void {
+		if (! this.visible) { return; }
+		if (this.selected) {
+			this.label.setBackColor(0xaaaaaa);
+		} else {
+			this.label.setBackColor(0xffffff);
+		}
 	}
 
 	private override function initializeComponent(): Void {

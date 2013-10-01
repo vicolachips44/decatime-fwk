@@ -100,7 +100,7 @@ class BaseScrollBar extends BaseContainer {
 
 	private function onScrollbarMouseDown(e:MouseEvent): Void {
 		this.addEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
-		this.addEventListener(MouseEvent.MOUSE_OVER, onScrollbarMouseUp);
+		this.addEventListener(MouseEvent.MOUSE_OUT, onScrollbarMouseUp);
 
 		this.mouseDownPoint = new Point(e.localX, e.localY);
 
@@ -118,6 +118,7 @@ class BaseScrollBar extends BaseContainer {
 				this.thumbStartY = thumb.mouseY;
 				this.scrolling = true;
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
+				
 			}
 		} else {
 			this.scrolling = false;

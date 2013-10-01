@@ -78,19 +78,10 @@ class TextArea extends BaseContainer implements IObserver {
 				VerticalScrollBar.EVT_SCROLL_UP:
 				trace ("data value is " + Std.int(data / this.fontSize));
 				this.tfield.scrollV = Std.int(data / this.fontSize);
-			// case VerticalScrollBar.EVT_SCROLL_DOWN:
-			// 	if (this.tfield.scrollV < this.tfield.maxScrollV) {
-			// 		this.tfield.scrollV++;
-			// 		updateScrollBar();
-			// 	}
-			// case VerticalScrollBar.EVT_SCROLL_UP:
-			// 	if (this.tfield.scrollV > 1) {
-			// 		this.tfield.scrollV--;
-			// 		updateScrollBar();
-			// 	}
+			
 			case TextBox.EVT_KEYUP:
 				var kb:KeyboardEvent = cast(data, KeyboardEvent);
-				if (kb.keyCode ==13) {
+				if (kb.keyCode == 13) {
 					updateScrollBar();
 				}
 		}
@@ -114,7 +105,7 @@ class TextArea extends BaseContainer implements IObserver {
 
 	private function onTFieldScroll(e:Event): Void {
 		if (this.initialized == false) { return; }
-		//updateScrollBar();
+		updateScrollBar();
 	}
 
 	private function updateScrollBar(): Void {
@@ -127,7 +118,7 @@ class TextArea extends BaseContainer implements IObserver {
 		trace ("textHeight value is " + this.tfield.textHeight);
 
 		this.vsBar1.setStepCount(Std.int(this.tfield.textHeight + this.container.getCurrSize().height));
-		this.vsBar1.setStepPos(1);
+		this.vsBar1.setStepPos(this.tfield.scrollV);
 		this.vsBar1.setStepSize(1);
 		this.vsBar1.setVisibleHeight(this.container.getCurrSize().height);
 		this.vsBar1.updatePos();
