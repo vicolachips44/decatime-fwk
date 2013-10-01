@@ -102,7 +102,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		this.addChild(lbox);
 		var i:Int;
 
-		for (i in 0...200) {
+		for (i in 0...100) {
 			var item:ListItem = new ListItem('listItem' + i);
 			item.label.setFontRes('assets/BepaOblique.ttf');
 			item.label.setFontSize(14);

@@ -28,7 +28,7 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.isContainer = true;
 		this.listItems = new Array<ListItem>();
 		this.listItemHeight = 12;
-		firstVisibleIndex = 1;
+		firstVisibleIndex = 0;
 	}
 
 	public function setListItemHeight(value:Int): Void {

@@ -40,11 +40,12 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 				if (data == 'btnUp' && this.stepPos > 0) {
 					this.stepPos--;
 					this.evManager.notify(EVT_SCROLL_DOWN, this.stepPos);
-					
+					this.thumb.y = this.getThumbPosFromStepPos();
 				}
-				if (data == 'btnDown' && this.stepPos < this.stepCount) {
+				if (data == 'btnDown' && this.stepPos < (this.stepCount - nbVisible)) {
 					this.stepPos++;
 					this.evManager.notify(EVT_SCROLL_UP, this.stepPos);
+					this.thumb.y = this.getThumbPosFromStepPos();
 				}
 		}
 	}
@@ -61,22 +62,22 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	// IObserver implementation END
 
+	public override function updatePos(): Void {
+		super.updatePos();
+		this.thumb.y = this.getThumbPosFromStepPos();
+	}
+
 	private override function calculateThumbSize(r:Rectangle): Void {
 		var totalHeight:Float = this.stepCount * this.stepSize;
 
 		hPct = r.height / (totalHeight - this.visibleHeight);
 
-		trace ("hPct value is " + hPct);
 		// if needed total height is less then the rectangle height
 		// we don't change the size.
 		if (Math.abs(hPct) > 1) {  hPct = 1; }
 
 		// target height
 		thumbHeight = r.height * hPct;
-
-		trace ("stepPos value is " + this.stepPos);
-		// the y position
-		r.y = (this.stepPos * thumbHeight) - thumbHeight;
 
 		if (thumbHeight < this.thumbMinHeight) {
 			thumbHeight = this.thumbMinHeight;
@@ -119,6 +120,12 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 		var result:Float = ((this.stepCount + 1) * coarse) - (nbVisible * coarse);
 
+		return Std.int(result);
+	}
+
+	private function getThumbPosFromStepPos(): Int {
+		var coarse:Float = this.stepPos / (this.stepCount - nbVisible);
+		var result:Float = (coarse * (bottomPos - topPos) + this.thumbContainer.getCurrSize().y);
 		return Std.int(result);
 	}
 
