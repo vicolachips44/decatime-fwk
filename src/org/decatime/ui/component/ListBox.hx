@@ -3,6 +3,9 @@ package org.decatime.ui.component;
 import flash.geom.Rectangle;
 import flash.display.DisplayObject;
 import flash.events.MouseEvent;
+import flash.events.FocusEvent;
+import flash.display.Stage;
+import flash.events.KeyboardEvent;
 
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
@@ -21,6 +24,7 @@ class ListBox extends BaseContainer  implements IObserver {
 	private var listItemHeight: Int;
 	private var firstVisibleIndex:Int;
 	private var visibleCount:Int;
+	private var myStage:Stage;
 	private var listContainer:VBox;
 	private var vsBar1:VerticalScrollBar;
 
@@ -30,6 +34,7 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.listItems = new Array<ListItem>();
 		this.listItemHeight = 12;
 		firstVisibleIndex = 0;
+		this.myStage = flash.Lib.current.stage;
 	}
 
 	public function setListItemHeight(value:Int): Void {
@@ -102,10 +107,88 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.container.create(32, vsBar1);
 
 		this.addChild(vsBar1);
+		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
+		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
 	}
 
 	private override function initializeEvent(): Void {
 
+	}
+
+	private function onFocusInEvt(e:FocusEvent): Void {
+		trace ("focus in event on listbox");
+		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
+	}
+
+	private function onFocusOutEvt(e:FocusEvent): Void {
+		trace ("focus out event on listbox");
+		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
+	}
+
+	private function onMouseWheelEvt(e:MouseEvent): Void {
+		if (e.delta > 0) {
+			this.selectNextItem();
+		} else {
+			this.selectPreviousItem();
+		}
+	}
+
+	private function onStageKeyUp(e:KeyboardEvent): Void {
+		if (e.keyCode == 40) { // down arrow
+			this.selectNextItem();
+		}
+		if (e.keyCode == 38) { // up arrow
+			this.selectPreviousItem();
+		}
+	}
+
+	private function selectNextItem(): Void {
+		var isNext:Bool = false;
+		var item:ListItem;
+
+		for (item in this.listItems) {
+			if (isNext) {
+				item.setSelected(true);
+				if (item.visible == false) {
+					this.firstVisibleIndex = this.firstVisibleIndex + this.visibleCount;
+					if (this.firstVisibleIndex > this.listItems.length) { this.firstVisibleIndex = this.listItems.length; }
+					updateList();
+					updateScrollBar();
+					this.listContainer.refresh(this.listContainer.getCurrSize());
+				}
+				isNext = false;
+				break;
+			}
+			if (item.getSelected()) {
+				item.setSelected(false);
+				isNext = true;
+			}
+		}
+	}
+
+	private function selectPreviousItem(): Void {
+		var isPrev:Bool = false;
+		var item:ListItem;
+		for (i in 0...this.listItems.length) {
+			item = this.listItems[i];
+			if (item.visible == false) { continue; }
+
+			if (item.getSelected() && i > 0) {
+				item.setSelected(false);
+				item = this.listItems[i - 1];
+				item.setSelected(true);
+				if (item.visible == false) {
+					this.firstVisibleIndex = this.firstVisibleIndex - this.visibleCount;
+					if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
+					updateList();
+					updateScrollBar();
+					this.listContainer.refresh(this.listContainer.getCurrSize());
+				}
+				break;
+			}
+		}
 	}
 
 	private function onItemClickEvt(e:MouseEvent): Void {
@@ -134,7 +217,6 @@ class ListBox extends BaseContainer  implements IObserver {
 		var item:ListItem = null;
 		var i:Int = 0;
 		var j:Int = this.firstVisibleIndex;
-
 		while (this.numChildren > 0) {
 			this.getChildAt(0).removeEventListener(MouseEvent.CLICK, onItemClickEvt);
 			this.getChildAt(0).visible = false;

@@ -51,6 +51,10 @@ class ListItem extends BaseContainer {
 		} else {
 			this.label.setBackColor(0xffffff);
 		}
+		if (this.parent != null && ! Std.is(this.stage.focus, this.parent)) {
+			this.stage.focus = this.parent;	
+		}
+		
 	}
 
 	private override function initializeComponent(): Void {

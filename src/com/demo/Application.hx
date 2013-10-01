@@ -98,22 +98,23 @@ class Application extends BaseSpriteElement implements IObserver {
 
 		var lbox:ListBox = new ListBox('listbox1');
 		lbox.setListItemHeight(20);
-		layout.create(1.0, lbox);
+		layout.create(0.5, lbox);
 		this.addChild(lbox);
 		var i:Int;
 
-		for (i in 0...200) {
+		for (i in 0...1000) {
 			var item:ListItem = new ListItem('listItem' + i);
+			item.visible = false;
 			item.label.setFontRes('assets/BepaOblique.ttf');
 			item.label.setFontSize(14);
 			item.label.setText('item ' + i);
 			lbox.addItem(item);
 		}
 
-		var lblBottom:Label = new Label('Decatime testin purpose', 'left');
-		lblBottom.setFontRes('assets/BepaOblique.ttf');
-		lblBottom.setFontSize(32);
-		layout.create(32, lblBottom);
-		this.addChild(lblBottom);
+		var tarea:TextArea = new TextArea();
+		tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
+		tarea.setFontRes('assets/BepaOblique.ttf');
+		layout.create(0.5, tarea);
+		this.addChild(tarea);
 	}
 }

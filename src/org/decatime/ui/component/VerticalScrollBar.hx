@@ -69,13 +69,9 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 	private override function calculateThumbSize(r:Rectangle): Void {
 		var totalHeight:Float = this.stepCount * this.stepSize;
-		trace ("totalHeight value is " + totalHeight);
-		trace ("visibleHeight value is " + this.visibleHeight);
-		trace ("r.height value is " + r.height);
 		
 		hPct = r.height / (totalHeight - this.visibleHeight);
 
-		trace ("hPct value is " + hPct);
 		// if needed total height is less then the rectangle height
 		// we don't change the size.
 		if (Math.abs(hPct) > 1) {  hPct = 1; }
