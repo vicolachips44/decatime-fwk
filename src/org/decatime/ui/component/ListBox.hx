@@ -47,6 +47,7 @@ class ListBox extends BaseContainer  implements IObserver {
 		this.graphics.drawRect(r.x, r.y, r.width, r.height);
 
 		updateList();
+		updateScrollBar();
 	}
 
 	// IObserver implementation BEGIN
@@ -55,18 +56,9 @@ class ListBox extends BaseContainer  implements IObserver {
 		switch (name) {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
-				this.firstVisibleIndex = data + 1;
+				this.firstVisibleIndex = data;
 				trace ("data value is " + data);
 				this.updateList();
-				// if (this.firstVisibleIndex + this.visibleCount < this.listItems.length) {
-				// 	this.firstVisibleIndex++;
-					// 
-				// }	
-			// case VerticalScrollBar.EVT_SCROLL_UP:
-			// 	if (this.firstVisibleIndex > 1) {
-			// 		this.firstVisibleIndex--;
-			// 		this.updateList();
-			// 	}
 		}
 	}
 
@@ -119,7 +111,7 @@ class ListBox extends BaseContainer  implements IObserver {
 	private function updateList(): Void {
 		var item:ListItem = null;
 		var i:Int = 0;
-		var j:Int = this.firstVisibleIndex - 1;
+		var j:Int = this.firstVisibleIndex;
 
 		while (this.numChildren > 0) { this.removeChildAt(0); }
 		this.addChild(vsBar1);
@@ -139,6 +131,5 @@ class ListBox extends BaseContainer  implements IObserver {
 			this.visibleCount++;
 		}
 		this.listContainer.refresh(this.listContainer.getCurrSize());
-		this.updateScrollBar();
 	}
 }

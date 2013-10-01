@@ -29,6 +29,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	private var visibleHeight:Float;
 	private var nbVisible:Int;
 	private var hPct:Float;
+	private var thumbHeight:Float;
 	private var thumbMinHeight:Float = 16;
 
 	// IObserver implementation BEGIN
@@ -36,11 +37,12 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case ArrowButton.EVT_CLICK:
-				if (data == 'btnUp' && this.stepPos < this.stepCount) {
+				if (data == 'btnUp' && this.stepPos > 0) {
 					this.stepPos--;
 					this.evManager.notify(EVT_SCROLL_DOWN, this.stepPos);
+					
 				}
-				if (data == 'btnDown' && this.stepPos > 1) {
+				if (data == 'btnDown' && this.stepPos < this.stepCount) {
 					this.stepPos++;
 					this.evManager.notify(EVT_SCROLL_UP, this.stepPos);
 				}
@@ -64,24 +66,26 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 		hPct = r.height / (totalHeight - this.visibleHeight);
 
+		trace ("hPct value is " + hPct);
 		// if needed total height is less then the rectangle height
 		// we don't change the size.
-		if (hPct > 1) {  hPct = 1; }
+		if (Math.abs(hPct) > 1) {  hPct = 1; }
 
 		// target height
-		var newHeight:Float = r.height * hPct;
+		thumbHeight = r.height * hPct;
 
+		trace ("stepPos value is " + this.stepPos);
 		// the y position
-		r.y = (this.stepPos * newHeight) - newHeight;
+		r.y = (this.stepPos * thumbHeight) - thumbHeight;
 
-		if (newHeight < this.thumbMinHeight) {
-			newHeight = this.thumbMinHeight;
+		if (thumbHeight < this.thumbMinHeight) {
+			thumbHeight = this.thumbMinHeight;
 		}
-		r.height = newHeight;
+		r.height = thumbHeight;
 
 		// the topPosition in pixel
 		topPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getVerticalGap();
-		bottomPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getCurrSize().height - newHeight;
+		bottomPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getCurrSize().height - thumbHeight;
 		nbVisible = Std.int(this.visibleHeight / this.stepSize);
 	}
 
