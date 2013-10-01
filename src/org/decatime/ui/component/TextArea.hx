@@ -34,6 +34,7 @@ class TextArea extends BaseContainer implements IObserver {
 		this.graphics.clear();
 		this.graphics.lineStyle(1 ,0x000000 ,1.0);
 		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+		updateScrollBar();
 	}
 
 	public function setFontRes(fontRes:String): Void {
@@ -75,7 +76,8 @@ class TextArea extends BaseContainer implements IObserver {
 		switch (name) {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
-				this.tfield.scrollV = data + 1;
+				trace ("data value is " + Std.int(data / this.fontSize));
+				this.tfield.scrollV = Std.int(data / this.fontSize);
 			// case VerticalScrollBar.EVT_SCROLL_DOWN:
 			// 	if (this.tfield.scrollV < this.tfield.maxScrollV) {
 			// 		this.tfield.scrollV++;
@@ -116,18 +118,19 @@ class TextArea extends BaseContainer implements IObserver {
 	}
 
 	private function updateScrollBar(): Void {
-		if (this.vsBar1 == null) { return; }
-		if (
-			(this.vsBar1.getStepCount() == this.tfield.maxScrollV && this.vsBar1.getStepPos() == this.tfield.scrollV)
-		) {
-			return;
-		}
-
+		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }
-		
-		this.vsBar1.setStepCount(this.tfield.numLines);
-		this.vsBar1.setStepPos(this.tfield.scrollV);
-		this.vsBar1.setStepSize(12);
+
+		trace ("numlines value is " + this.tfield.numLines);
+		trace ("bottomScrollV value is " + this.tfield.bottomScrollV);
+		trace ("maxScrollV value is " + this.tfield.maxScrollV);
+		trace ("textHeight value is " + this.tfield.textHeight);
+
+		this.vsBar1.setStepCount(Std.int(this.tfield.textHeight + this.container.getCurrSize().height));
+		this.vsBar1.setStepPos(1);
+		this.vsBar1.setStepSize(1);
+		this.vsBar1.setVisibleHeight(this.container.getCurrSize().height);
+		this.vsBar1.updatePos();
 	}
 
 	private override function initializeComponent(): Void {
