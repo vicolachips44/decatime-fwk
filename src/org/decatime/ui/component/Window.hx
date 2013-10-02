@@ -154,12 +154,12 @@ class Window extends BaseContainer {
 	}
 
 	private function initializeHeader(): Void {
-		// TODO initialize the header HBox
 		lblTitle = new Label('Header label');
 		lblTitle.setFontRes('assets/BepaOblique.ttf');
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
 		lblTitle.setBackColor(0xaaaaaa);
+		
 		var c:Content = this.header.create(1.0, lblTitle);
 		c.setVerticalGap(1);
 		c.setHorizontalGap(1);
