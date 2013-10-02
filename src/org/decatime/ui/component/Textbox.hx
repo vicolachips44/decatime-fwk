@@ -37,7 +37,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 	private var myStage:Stage;
 	private var evManager:EventManager;
 
-	#if !flash
+	#if !(flash || html5)
 	private var tabIndex:Int;
 	#end
 

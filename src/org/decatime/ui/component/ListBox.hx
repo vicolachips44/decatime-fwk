@@ -24,17 +24,15 @@ class ListBox extends BaseContainer  implements IObserver {
 	private var listItemHeight: Int;
 	private var firstVisibleIndex:Int;
 	private var visibleCount:Int;
-	private var myStage:Stage;
+	
 	private var listContainer:VBox;
 	private var vsBar1:VerticalScrollBar;
 
 	public function new(name:String) {
 		super(name);
-		this.isContainer = true;
 		this.listItems = new Array<ListItem>();
 		this.listItemHeight = 12;
 		firstVisibleIndex = 0;
-		this.myStage = flash.Lib.current.stage;
 	}
 
 	public function setListItemHeight(value:Int): Void {

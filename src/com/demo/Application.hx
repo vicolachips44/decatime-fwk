@@ -1,6 +1,7 @@
 package com.demo;
 
 import flash.geom.Rectangle;
+import flash.geom.Point;
 
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObservable;
@@ -72,6 +73,9 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
+		var wxList:WxListboxDemo = new WxListboxDemo('ListBoxDemo', new Point(320, 200));
+		layout.create(1.0, wxList);
+		this.addChild(wxList);
 		// var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
 		// btn.addListener(this);
 		// layout.create(48, btn);
@@ -96,25 +100,25 @@ class Application extends BaseSpriteElement implements IObserver {
 		// layout.create(1.0, tarea);
 		// this.addChild(tarea);
 
-		var lbox:ListBox = new ListBox('listbox1');
-		lbox.setListItemHeight(20);
-		layout.create(0.5, lbox);
-		this.addChild(lbox);
-		var i:Int;
+		// var lbox:ListBox = new ListBox('listbox1');
+		// lbox.setListItemHeight(20);
+		// layout.create(0.5, lbox);
+		// this.addChild(lbox);
+		// var i:Int;
 
-		for (i in 0...1000) {
-			var item:ListItem = new ListItem('listItem' + i);
-			item.visible = false;
-			item.label.setFontRes('assets/BepaOblique.ttf');
-			item.label.setFontSize(14);
-			item.label.setText('item ' + i);
-			lbox.addItem(item);
-		}
+		// for (i in 0...1000) {
+		// 	var item:ListItem = new ListItem('listItem' + i);
+		// 	item.visible = false;
+		// 	item.label.setFontRes('assets/BepaOblique.ttf');
+		// 	item.label.setFontSize(14);
+		// 	item.label.setText('item ' + i);
+		// 	lbox.addItem(item);
+		// }
 
-		var tarea:TextArea = new TextArea();
-		tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		tarea.setFontRes('assets/BepaOblique.ttf');
-		layout.create(0.5, tarea);
-		this.addChild(tarea);
+		// var tarea:TextArea = new TextArea();
+		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
+		// tarea.setFontRes('assets/BepaOblique.ttf');
+		// layout.create(0.5, tarea);
+		// this.addChild(tarea);
 	}
 }

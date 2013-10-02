@@ -1,6 +1,7 @@
 package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
+import flash.display.Stage;
 
 import org.decatime.ui.layout.BoxBase;
 import org.decatime.ui.BaseSpriteElement;
@@ -13,10 +14,12 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	private var container:BoxBase;
 	private var initialized:Bool;
 	private var evManager:EventManager;
+	private var myStage:Stage;
 
 	public function new(name:String) {
 		super(name);
 		evManager = new EventManager(this);
+		this.myStage = flash.Lib.current.stage;
 	}
 
 	public override function refresh(r:Rectangle): Void {
