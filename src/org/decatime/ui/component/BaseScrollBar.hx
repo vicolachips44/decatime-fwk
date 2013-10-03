@@ -102,17 +102,11 @@ class BaseScrollBar extends BaseContainer {
 		this.addEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
 		this.addEventListener(MouseEvent.MOUSE_OUT, onScrollbarMouseUp);
 
-		this.mouseDownPoint = new Point(e.localX, e.localY);
+		this.mouseDownPoint = new Point(this.mouseX, this.mouseY);
 
-		// TODO : does not work on flash after a move on a window
-		// needs to be done by x, y bounds
-		var objs:Array<DisplayObject> = this.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
-
-		if (objs.length == 2 && Std.is(objs[1], BaseShapeElement)) {
-			var th:BaseShapeElement = cast(objs[1], BaseShapeElement);
-			if (th.height == this.thumbContainer.getCurrSize().height) {
+		if (thumb.getRect(this).containsPoint(this.mouseDownPoint)) {
+			if (thumb.height == this.thumbContainer.getCurrSize().height) {
 				// no space to scroll
-				trace ("no space to scroll");
 				this.scrolling = false;
 			} else {
 				this.startX = e.localX;
@@ -121,10 +115,8 @@ class BaseScrollBar extends BaseContainer {
 				this.thumbStartY = thumb.mouseY;
 				this.scrolling = true;
 				this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
-				
 			}
 		} else {
-			trace ("no hit test result. objects under mouse is " + objs.length);
 			this.scrolling = false;
 		}
 	}

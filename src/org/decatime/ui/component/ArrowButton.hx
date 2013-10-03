@@ -33,10 +33,7 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		// TODO draw the button (we draw it once only since the size should not change)
-		if (! this.initialized) {
-			this.drawArrow();
-		}
+		this.drawArrow();
 		this.initialized = true;
 	}
 
@@ -57,7 +54,7 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	private function drawArrow(): Void {
 		var box:Matrix = new Matrix();
 		box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height);
-
+		trace ("drawing the arrow...");
 		var g:Graphics = this.graphics;
 		g.clear();
 
