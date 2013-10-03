@@ -18,6 +18,7 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 
 	public function new(name:String) {
 		super(name);
+		this.buttonMode = false;
 		evManager = new EventManager(this);
 		this.myStage = flash.Lib.current.stage;
 	}

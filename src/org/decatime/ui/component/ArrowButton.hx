@@ -28,7 +28,6 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		super(name);
 		evManager = new EventManager(this);
 		this.orientation = orientation;
-		this.isContainer = false;
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
 	}
 
@@ -57,25 +56,34 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	// TODO Fix me since its ugly...
 	private function drawArrow(): Void {
 		var box:Matrix = new Matrix();
-		box.createGradientBox(20, 20);
+		box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height);
 
 		var g:Graphics = this.graphics;
 		g.clear();
 
-		g.lineStyle(1, 0x808080, 0.5);
-		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
-		g.beginGradientFill(GradientType.LINEAR, [0x444444, 0xffffff], [1, 1], [1, 255], box);
+		g.lineStyle(1, 0x000000, 1, true, 
+			flash.display.LineScaleMode.VERTICAL,
+			flash.display.CapsStyle.NONE, 
+			flash.display.JointStyle.ROUND);
+		// g.lineStyle(
+		//  ?thickness : Null<Float> , ?color : Int , ?alpha : Float , 
+		// ?pixelHinting : Bool , 
+		// ?scaleMode : flash.display.LineScaleMode , 
+		// ?caps : flash.display.CapsStyle , ?joints : flash.display.JointStyle , ?miterLimit : Float )
+		// g.beginFill(0x000000, 0.5);
+		// g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
+		g.beginGradientFill(GradientType.LINEAR, [0x444444, 0x808080], [1, 1], [1, 255], box);
 		if (orientation == ORIENTATION_TOP) {
-			g.moveTo(0, this.sizeInfo.width);
-			g.lineTo(this.sizeInfo.width, this.sizeInfo.width);
-			g.lineTo(this.sizeInfo.width / 2, 0);
-			g.lineTo(0, this.sizeInfo.width);
+			g.moveTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
+			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y + this.sizeInfo.height);
+			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y);
+			g.lineTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
 		}		
 		if (orientation == ORIENTATION_BOTTOM) {
-			g.moveTo(0, 0);
-			g.lineTo(this.sizeInfo.width, 0);
-			g.lineTo(this.sizeInfo.width / 2, this.sizeInfo.width);
-			g.lineTo(0, 0);
+			g.moveTo(this.sizeInfo.x, this.sizeInfo.y);
+			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y);
+			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y + this.sizeInfo.width);
+			g.lineTo(this.sizeInfo.x, this.sizeInfo.y);
 		}
 		if (orientation == ORIENTATION_LEFT) {
 			g.moveTo(this.sizeInfo.width, 0);

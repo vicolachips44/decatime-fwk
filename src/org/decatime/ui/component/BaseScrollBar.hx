@@ -85,7 +85,7 @@ class BaseScrollBar extends BaseContainer {
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 
-		// Background of the scrollbar
+		//Background of the scrollbar
 		graphics.clear();
 		graphics.beginFill(0x000000, 0.3);
 		graphics.drawRect(r.x, r.y, r.width, r.height);
@@ -104,12 +104,15 @@ class BaseScrollBar extends BaseContainer {
 
 		this.mouseDownPoint = new Point(e.localX, e.localY);
 
+		// TODO : does not work on flash after a move on a window
+		// needs to be done by x, y bounds
 		var objs:Array<DisplayObject> = this.getObjectsUnderPoint(new Point(e.stageX, e.stageY));
 
 		if (objs.length == 2 && Std.is(objs[1], BaseShapeElement)) {
 			var th:BaseShapeElement = cast(objs[1], BaseShapeElement);
 			if (th.height == this.thumbContainer.getCurrSize().height) {
 				// no space to scroll
+				trace ("no space to scroll");
 				this.scrolling = false;
 			} else {
 				this.startX = e.localX;
@@ -121,6 +124,7 @@ class BaseScrollBar extends BaseContainer {
 				
 			}
 		} else {
+			trace ("no hit test result. objects under mouse is " + objs.length);
 			this.scrolling = false;
 		}
 	}

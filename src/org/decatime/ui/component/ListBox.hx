@@ -102,7 +102,7 @@ class ListBox extends BaseContainer  implements IObserver {
 		
 		this.container.create(1.0, listContainer);
 
-		this.container.create(32, vsBar1);
+		this.container.create(24, vsBar1);
 
 		this.addChild(vsBar1);
 		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);

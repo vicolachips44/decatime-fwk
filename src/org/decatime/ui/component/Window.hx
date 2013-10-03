@@ -11,6 +11,7 @@ import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 
 import org.decatime.ui.component.Label;
+import org.decatime.ui.BaseSpriteElement;
 
 class Window extends BaseContainer {
 
@@ -23,6 +24,7 @@ class Window extends BaseContainer {
 	private var footer:HBox;
 	private var size:Rectangle;
 	private var lblTitle:Label;
+	private var headerContainer:BaseSpriteElement;
 
 	public function new(name:String, size:Point) {
 		super(name);
@@ -73,16 +75,15 @@ class Window extends BaseContainer {
 
 		initializeHeader();
 		initializeFooter();
+		buildClientArea();
 	}
 
 	private override function initializeEvent(): Void {
-		this.addEventListener(MouseEvent.MOUSE_DOWN, onHeaderMouseDownEvt);
-		this.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
+		this.headerContainer.addEventListener(MouseEvent.MOUSE_DOWN, onHeaderMouseDownEvt);
+		this.headerContainer.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
 	}
 
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
-		if (!this.hitTestObject(this.lblTitle)) { return; }
-
 		startX = e.localX;
 		startY = e.localY;
 		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
@@ -154,19 +155,26 @@ class Window extends BaseContainer {
 	}
 
 	private function initializeHeader(): Void {
+		this.headerContainer = new BaseSpriteElement('headerContainer');
+
 		lblTitle = new Label('Header label');
 		lblTitle.setFontRes('assets/BepaOblique.ttf');
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
 		lblTitle.setBackColor(0xaaaaaa);
 		
-		var c:Content = this.header.create(1.0, lblTitle);
+		var c:Content = this.header.create(1.0, this.lblTitle);
 		c.setVerticalGap(1);
 		c.setHorizontalGap(1);
-		this.addChild(lblTitle);
+		this.headerContainer.addChild(lblTitle);
+		this.addChild(this.headerContainer);
 	}
 
 	private function initializeFooter(): Void {
 		// TODO initialize the footer HBox 
+	}
+
+	private function buildClientArea(): Void {
+
 	}
 }

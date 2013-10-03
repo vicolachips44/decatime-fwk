@@ -150,8 +150,8 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		this.btnScrollUp.addListener(this);
 		var c1:Content = this.container.create(this.sizeInfo.width, this.btnScrollUp);
 		
-		c1.setVerticalGap(8);
-		c1.setHorizontalGap(8);
+		c1.setVerticalGap(4);
+		c1.setHorizontalGap(4);
 
 		this.addChild(this.btnScrollUp);
 
@@ -162,8 +162,8 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		this.btnScrollDown = new ArrowButton('btnDown', ArrowButton.ORIENTATION_BOTTOM);
 		this.btnScrollDown.addListener(this);
 		var c1:Content = this.container.create(this.sizeInfo.width, this.btnScrollDown);
-		c1.setVerticalGap(8);
-		c1.setHorizontalGap(8);
+		c1.setVerticalGap(4);
+		c1.setHorizontalGap(4);
 
 		this.addChild(this.btnScrollDown);
 	}
