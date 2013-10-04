@@ -55,7 +55,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		// will not work has expected.
 		if (isContainer) {
 			graphics.clear();
-			graphics.beginFill(elBackColor, 1);
+			graphics.beginFill(elBackColor, 0.0);
 			graphics.drawRect(r.x, r.y, r.width, r.height);
 		} else {
 			// i am just a visual component. my size is dynamic

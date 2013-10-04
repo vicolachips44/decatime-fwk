@@ -48,11 +48,19 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		this.transparent = value;
 	}
 
+	public function getTransparentBackground(): Bool {
+		return this.transparent;
+	}
+
 	public function setBackColor(value:Int): Void {
 		this.backColor = value;
 
 		// Since the user wants a background we set the transparency value to false.
 		this.transparent = false;
+	}
+
+	public function getBackColor(): Int {
+		return this.backColor;
 	}
 
 	/**

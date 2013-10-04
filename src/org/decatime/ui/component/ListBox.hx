@@ -126,11 +126,13 @@ class ListBox extends BaseContainer  implements IObserver {
 	}
 
 	private function onMouseWheelEvt(e:MouseEvent): Void {
+		if (e.delta == 0) { return; }
 		if (e.delta > 0) {
 			this.selectNextItem();
 		} else {
 			this.selectPreviousItem();
 		}
+		e.stopImmediatePropagation();
 	}
 
 	private function onStageKeyUp(e:KeyboardEvent): Void {
@@ -143,32 +145,37 @@ class ListBox extends BaseContainer  implements IObserver {
 	}
 
 	private function selectNextItem(): Void {
-		var isNext:Bool = false;
 		var item:ListItem;
+		var i:Int = 0;
+		
+		for (i in 0...this.listItems.length) {
+			item = this.listItems[i];
+			if (item.visible == false) { continue; }
 
-		for (item in this.listItems) {
-			if (isNext) {
+			if (item.getSelected() && i < this.listItems.length - 1) {
+				item.setSelected(false);
+				item = this.listItems[i + 1];
 				item.setSelected(true);
 				if (item.visible == false) {
 					this.firstVisibleIndex = this.firstVisibleIndex + this.visibleCount;
-					if (this.firstVisibleIndex > this.listItems.length) { this.firstVisibleIndex = this.listItems.length; }
+					
+					if (this.firstVisibleIndex > this.listItems.length - this.visibleCount) { 
+						this.firstVisibleIndex = this.listItems.length - this.visibleCount; 
+					}
+
 					updateList();
 					updateScrollBar();
 					this.listContainer.refresh(this.listContainer.getCurrSize());
 				}
-				isNext = false;
 				break;
-			}
-			if (item.getSelected()) {
-				item.setSelected(false);
-				isNext = true;
 			}
 		}
 	}
 
 	private function selectPreviousItem(): Void {
-		var isPrev:Bool = false;
 		var item:ListItem;
+		var i:Int;
+
 		for (i in 0...this.listItems.length) {
 			item = this.listItems[i];
 			if (item.visible == false) { continue; }
