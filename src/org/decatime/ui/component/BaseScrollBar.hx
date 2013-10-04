@@ -155,18 +155,16 @@ class BaseScrollBar extends BaseContainer {
 
 		this.calculateThumbSize(r);
 
-		g.drawRoundRect(r.x, r.y, r.width, r.height,12, 12);
+		g.drawRect(r.x, r.y, r.width, r.height);
 
 		g.endFill();
 
-		this.graphics.lineStyle(4, 0x808080, 1.0);
-		this.graphics.drawRoundRect(
-			this.thumbContainer.getCurrSize().x + 2, 
+		this.graphics.lineStyle(3, 0x808080, 1.0);
+		this.graphics.drawRect(
+			this.thumbContainer.getCurrSize().x + 3, 
 			this.thumbContainer.getCurrSize().y,
 			this.thumbContainer.getCurrSize().width - 4, 
-			this.thumbContainer.getCurrSize().height, 
-			12, 
-			12
+			this.thumbContainer.getCurrSize().height
 		);
 	}
 

@@ -4,6 +4,7 @@ import flash.geom.Rectangle;
 import flash.events.MouseEvent;
 import flash.display.Graphics;
 import flash.display.GradientType;
+import flash.filters.BlurFilter;
 import flash.geom.Matrix;
 
 import org.decatime.ui.BaseSpriteElement;
@@ -23,12 +24,15 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	private var initialized:Bool;
 	private var orientation:String;
 	private var evManager:EventManager;
+	private var blurFx:BlurFilter;
 
 	public function new(name:String, orientation: String) {
 		super(name);
 		evManager = new EventManager(this);
 		this.orientation = orientation;
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
+		this.blurFx = new BlurFilter(2, 2, 2);
+		this.filters = [blurFx];
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -53,30 +57,27 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	// TODO Fix me since its ugly...
 	private function drawArrow(): Void {
 		var box:Matrix = new Matrix();
-		box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height);
-		trace ("drawing the arrow...");
 		var g:Graphics = this.graphics;
 		g.clear();
 
-		g.lineStyle(1, 0x000000, 1, true, 
+		g.lineStyle(0.4, 0xffffff, 1, true, 
 			flash.display.LineScaleMode.VERTICAL,
 			flash.display.CapsStyle.NONE, 
 			flash.display.JointStyle.ROUND);
-		// g.lineStyle(
-		//  ?thickness : Null<Float> , ?color : Int , ?alpha : Float , 
-		// ?pixelHinting : Bool , 
-		// ?scaleMode : flash.display.LineScaleMode , 
-		// ?caps : flash.display.CapsStyle , ?joints : flash.display.JointStyle , ?miterLimit : Float )
-		// g.beginFill(0x000000, 0.5);
-		// g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
-		g.beginGradientFill(GradientType.LINEAR, [0x444444, 0x808080], [1, 1], [1, 255], box);
-		if (orientation == ORIENTATION_TOP) {
+
+		
+		
+		if (orientation == ORIENTATION_TOP) {	
+			box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 90, this.sizeInfo.x, this.sizeInfo.y);
+			g.beginGradientFill(GradientType.LINEAR, [0xffffff, 0x0000da], [1, 1], [1, 255], box);
 			g.moveTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
 			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y + this.sizeInfo.height);
 			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y);
 			g.lineTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
 		}		
 		if (orientation == ORIENTATION_BOTTOM) {
+			box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 180, this.sizeInfo.x, this.sizeInfo.y);
+			g.beginGradientFill(GradientType.LINEAR, [0xffffff, 0x0000da], [1, 1], [1, 255], box);
 			g.moveTo(this.sizeInfo.x, this.sizeInfo.y);
 			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y);
 			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y + this.sizeInfo.width);

@@ -24,7 +24,6 @@ class WxListboxDemo extends Window {
 
 		for (i in 0...100) {
 			var item:ListItem = new ListItem('listItem' + i);
-			item.visible = false;
 			item.label.setFontRes('assets/BepaOblique.ttf');
 			item.label.setFontSize(14);
 			item.label.setText('item ' + i);
