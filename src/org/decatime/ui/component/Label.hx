@@ -50,6 +50,15 @@ class Label extends BaseBitmapElement {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
+
+		if (! this.initialized) {
+			if (this.fontRes != null) {
+				createEmbeddedFontTextFormat();
+			} else {
+				throw new Error("this component needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
+			}
+		}
+
 		this.draw();
 		this.initialized = true;
 	}
@@ -132,11 +141,6 @@ class Label extends BaseBitmapElement {
 	}
 
 	private function draw(): Void {
-		if (this.fontRes != null) {
-			createEmbeddedFontTextFormat();
-		} else {
-			throw new Error("this component needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
-		}
 		if (this.align == Label.LEFT) {
 			this.bitmapData.draw(
 				this.tfield,
