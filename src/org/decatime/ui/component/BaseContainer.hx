@@ -32,6 +32,7 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 			throw new flash.errors.Error("The container object has not been initialized");
 		}
 		this.container.refresh(r);
+		
 		if (! this.initialized) {
 			initializeEvent();
 		}

@@ -5,7 +5,7 @@ import openfl.Assets;
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.component.TextBox;
-import org.decatime.ui.component.ListBox;
+import org.decatime.ui.component.List;
 import org.decatime.ui.component.ListItem;
 import org.decatime.ui.component.RadioButtonGroup;
 import org.decatime.ui.component.RadioButton;
@@ -49,19 +49,14 @@ class WxListboxDemo extends Window {
 		this.clientArea.create(32, chk1);
 		this.addChild(chk1);
 
-		var lbox:ListBox = new ListBox('listbox1');
-		lbox.setListItemHeight(20);
+		var lbox:List = new List('list1', 'assets/BepaOblique.ttf');
 		this.clientArea.create(1.0, lbox);
 		this.addChild(lbox);
 
 		var i:Int;
 
 		for (i in 0...10000) {
-			var item:ListItem = new ListItem('listItem' + i);
-			item.label.setFontRes('assets/BepaOblique.ttf');
-			item.label.setFontSize(14);
-			item.label.setText('item ' + i);
-			lbox.addItem(item);
+			lbox.add('list item ' + i);
 		}
 	}
 }
