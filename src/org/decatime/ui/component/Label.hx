@@ -57,9 +57,9 @@ class Label extends BaseBitmapElement {
 			} else {
 				throw new Error("this component needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
 			}
+			this.draw();
 		}
 
-		this.draw();
 		this.initialized = true;
 	}
 

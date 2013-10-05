@@ -56,7 +56,7 @@ class WxListboxDemo extends Window {
 
 		var i:Int;
 
-		for (i in 0...100) {
+		for (i in 0...10000) {
 			var item:ListItem = new ListItem('listItem' + i);
 			item.label.setFontRes('assets/BepaOblique.ttf');
 			item.label.setFontSize(14);

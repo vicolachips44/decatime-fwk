@@ -80,9 +80,7 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		x = r.x + this.hgap;
 		y = r.y + this.vgap;
 		
-		if (this.bitmapData != null) {
-			this.bitmapData.dispose();
-		} else {
+		if (this.bitmapData == null) {
 			this.bitmapData = new BitmapData(Std.int(r.width), Std.int(r.height), this.transparent, this.backColor);
 		}
 	}
