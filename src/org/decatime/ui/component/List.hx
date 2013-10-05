@@ -148,7 +148,7 @@ class List extends BaseContainer implements IObserver {
 		
 		g.clear();
 		g.beginFill(0xffffff, 1);
-		g.lineStyle(2, 0x000000);
+		// g.lineStyle(2, 0x000000);
 		g.drawRect(0, 0, r.width, r.height);
 		g.endFill;
 

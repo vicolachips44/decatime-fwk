@@ -43,7 +43,7 @@ class Label extends BaseBitmapElement {
 		this.tfield.autoSize = TextFieldAutoSize.LEFT;
 		this.tfield.mouseEnabled = false;
 		this.tfield.text = text;
-
+		this.tfield.antiAliasType = flash.text.AntiAliasType.ADVANCED;
 		this.initialized = false;
 
 	}
@@ -184,7 +184,7 @@ class Label extends BaseBitmapElement {
 			this.fontRes.fontName, 
 			this.fontSize, 
 			this.color,
-			true
+			false
 		);
 
 		this.tfield.embedFonts = true;

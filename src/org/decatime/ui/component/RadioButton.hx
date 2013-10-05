@@ -11,6 +11,7 @@ class RadioButton extends CheckBox {
 
 	public function new(name:String) {
 		super(name);
+		this.removeEventListener(MouseEvent.CLICK, onMouseClick);
 	}
 
 	private override function draw(): Void {
@@ -33,14 +34,5 @@ class RadioButton extends CheckBox {
 			g.drawCircle(this.chk.getCurrSize().width / 2, this.chk.getCurrSize().height / 2, 3);
 			g.endFill();
 		}
-	}
-
-	private override function onMouseClick(e:MouseEvent): Void {
-		// the user has already clicked on the radio
-		// if (this.selected) { return; }
-
-		// this.selected = true;
-		// draw();
-		// evManager.notify(BaseSelected.EVT_CLICK, this);
 	}
 }

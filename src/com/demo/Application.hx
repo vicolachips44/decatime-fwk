@@ -64,7 +64,7 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	private function initializeComponent() {
 		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO - V1');
-		this.lblTitle.setFontRes('assets/BepaOblique.ttf');
+		this.lblTitle.setFontRes('assets/1979rg.ttf');
 		this.lblTitle.setAlign(Label.CENTER);
 		this.lblTitle.setFontSize(24);
 		this.lblTitle.setColor(0x0000ff);
