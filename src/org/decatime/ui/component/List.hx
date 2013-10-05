@@ -22,6 +22,7 @@ import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormatAlign;
 import flash.text.Font;
+import flash.text.AntiAliasType;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.component.VerticalScrollBar;
@@ -53,7 +54,7 @@ class List extends BaseContainer implements IObserver {
 		this.buttonMode = true;
 		this.renderer = new BaseBitmapElement();
 		this.listItems = new Array<String>();
-		this.itemsHeight = 22;
+		this.itemsHeight = 20;
 		this.firstVisibleIndex = 0;
 
 		this.tfield = new TextField();
@@ -62,6 +63,7 @@ class List extends BaseContainer implements IObserver {
 		this.tfield.mouseEnabled = false;
 		this.fontRes = Assets.getFont(fontRes);
 		this.createEmbeddedFontTextFormat();
+		this.tfield.antiAliasType = AntiAliasType.ADVANCED;
 
 		this.shpBackground = new Shape();
 	}
@@ -97,12 +99,12 @@ class List extends BaseContainer implements IObserver {
 
 	private override function initializeComponent(): Void {
 		this.container = new HBox(this);
-		this.container.setVerticalGap(1);
-		this.container.setHorizontalGap(1);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 
 		this.listContainer = new VBox(this.container);
-		this.listContainer.setHorizontalGap(1);
-		this.listContainer.setVerticalGap(1);
+		this.listContainer.setHorizontalGap(0);
+		this.listContainer.setVerticalGap(0);
 
 		// A Vertical Scroll bar
 		vsBar1 = new VerticalScrollBar('VsBar1');
@@ -137,9 +139,10 @@ class List extends BaseContainer implements IObserver {
 		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
 		var currItmIdx:Int = 0;
 		var g:Graphics     = this.shpBackground.graphics;
+		
 		g.clear();
 		g.beginFill(0xffffff, 1);
-		g.lineStyle(1, 0x000000);
+		g.lineStyle(2, 0x000000);
 		g.drawRect(0, 0, r.width, r.height);
 		g.endFill;
 
@@ -180,6 +183,11 @@ class List extends BaseContainer implements IObserver {
 
 			currItmIdx = currItmIdx + this.itemsHeight;
 		}
+		r = this.container.getCurrSize();
+		this.graphics.clear();
+		this.graphics.lineStyle(1, 0x000000);
+		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+		this.graphics.endFill();
 	}
 
 	private function moveNext(): Void {
@@ -266,18 +274,18 @@ class List extends BaseContainer implements IObserver {
 	private function onMouseWheelEvt(e:MouseEvent): Void {
 		if (e.delta == 0) { return; }
 		if (e.delta > 0) {
-			this.moveNext();
-		} else {
 			this.movePrevious();
+		} else {
+			this.moveNext();
 		}
 	}
 
 	private function onStageKeyUp(e:KeyboardEvent): Void {
 		if (e.keyCode == 40) { // down arrow
-			this.moveNext();
+			this.movePrevious();
 		}
 		if (e.keyCode == 38) { // up arrow
-			this.movePrevious();
+			this.moveNext();
 		}
 	}
 }

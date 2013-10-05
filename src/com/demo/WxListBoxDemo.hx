@@ -49,7 +49,7 @@ class WxListboxDemo extends Window {
 		this.clientArea.create(32, chk1);
 		this.addChild(chk1);
 
-		var lbox:List = new List('list1', 'assets/BepaOblique.ttf');
+		var lbox:List = new List('list1', 'assets/VeraMono.ttf');
 		this.clientArea.create(1.0, lbox);
 		this.addChild(lbox);
 

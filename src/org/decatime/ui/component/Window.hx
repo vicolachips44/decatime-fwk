@@ -54,8 +54,8 @@ class Window extends BaseContainer {
 
 	private override function initializeComponent(): Void {
 		this.container = new VBox(this);
-		this.container.setVerticalGap(0);
-		this.container.setHorizontalGap(0);
+		this.container.setVerticalGap(1);
+		this.container.setHorizontalGap(1);
 
 		this.clientArea = new VBox(this);
 		this.clientArea.setVerticalGap(0);
