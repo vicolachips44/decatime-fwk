@@ -145,55 +145,21 @@ class ListBox extends BaseContainer  implements IObserver {
 	}
 
 	private function selectNextItem(): Void {
-		var item:ListItem;
-		var i:Int = 0;
-		
-		for (i in 0...this.listItems.length) {
-			item = this.listItems[i];
-			if (item.visible == false) { continue; }
-
-			if (item.getSelected() && i < this.listItems.length - 1) {
-				item.setSelected(false);
-				item = this.listItems[i + 1];
-				item.setSelected(true);
-				if (item.visible == false) {
-					this.firstVisibleIndex = this.firstVisibleIndex + this.visibleCount;
-					
-					if (this.firstVisibleIndex > this.listItems.length - this.visibleCount) { 
-						this.firstVisibleIndex = this.listItems.length - this.visibleCount; 
-					}
-
-					updateList();
-					updateScrollBar();
-					this.listContainer.refresh(this.listContainer.getCurrSize());
-				}
-				break;
-			}
+		this.firstVisibleIndex++;
+		if (this.firstVisibleIndex > this.listItems.length - this.visibleCount) { 
+			this.firstVisibleIndex = this.listItems.length - this.visibleCount; 
 		}
+		updateList();
+		updateScrollBar();
+		this.listContainer.refresh(this.listContainer.getCurrSize());
 	}
 
 	private function selectPreviousItem(): Void {
-		var item:ListItem;
-		var i:Int;
-
-		for (i in 0...this.listItems.length) {
-			item = this.listItems[i];
-			if (item.visible == false) { continue; }
-
-			if (item.getSelected() && i > 0) {
-				item.setSelected(false);
-				item = this.listItems[i - 1];
-				item.setSelected(true);
-				if (item.visible == false) {
-					this.firstVisibleIndex = this.firstVisibleIndex - this.visibleCount;
-					if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
-					updateList();
-					updateScrollBar();
-					this.listContainer.refresh(this.listContainer.getCurrSize());
-				}
-				break;
-			}
-		}
+		this.firstVisibleIndex--;
+		if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
+		updateList();
+		updateScrollBar();
+		this.listContainer.refresh(this.listContainer.getCurrSize());
 	}
 
 	private function onItemClickEvt(e:MouseEvent): Void {
@@ -205,6 +171,18 @@ class ListBox extends BaseContainer  implements IObserver {
 		}
 		item = cast (e.currentTarget, ListItem);
 		item.setSelected(true);
+
+		
+		this.graphics.clear();
+		var r:Rectangle = this.getCurrSize();
+		this.graphics.lineStyle(1 ,0x000000 ,1.0);
+		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+
+		r = item.getCurrSize().clone();
+		this.graphics.beginFill(0xaaaaaa, 0.5);
+		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+		this.graphics.endFill();
+
 	}
 
 	private function updateScrollBar(): Void {

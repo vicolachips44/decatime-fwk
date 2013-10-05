@@ -31,7 +31,7 @@ class BaseSelected extends BaseContainer {
 
 	public function setSelected(value:Bool): Void {
 		selected = value;
-		draw();
+		//draw();
 	}
 
 	public override function refresh(r:Rectangle): Void {

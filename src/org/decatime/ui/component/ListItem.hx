@@ -8,12 +8,12 @@ class ListItem extends BaseSelected {
 	}
 
 	private override function drawSelected(): Void {
-		this.label.setBackColor(0xcccccc);
+		//this.label.setBackColor(0xcccccc);
 		releaseFocus();
 	}
 
 	private override function drawUnselected(): Void {
-		this.label.setBackColor(0xffffff);
+		//this.label.setBackColor(0xffffff);
 		releaseFocus();
 	}
 
