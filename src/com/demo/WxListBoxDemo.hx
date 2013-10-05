@@ -12,9 +12,14 @@ import org.decatime.ui.component.RadioButton;
 import org.decatime.ui.component.CheckBox;
 import org.decatime.ui.layout.HBox;
 
-class WxListboxDemo extends Window {
+import org.decatime.event.IObservable;
+import org.decatime.event.IObserver;
+
+class WxListboxDemo extends Window implements IObserver {
+	private var txt:TextBox;
+
 	private override function buildClientArea(): Void {
-		var txt:TextBox = new TextBox('txtInputElement');
+		this.txt = new TextBox('txtInputElement');
 		txt.setFontRes('assets/BepaOblique.ttf');
 		txt.setTabIndex(1);
 		this.clientArea.create(32, txt);
@@ -52,11 +57,27 @@ class WxListboxDemo extends Window {
 		var lbox:List = new List('list1', 'assets/VeraMono.ttf');
 		this.clientArea.create(1.0, lbox);
 		this.addChild(lbox);
-
+		lbox.addListener(this);
 		var i:Int;
 
 		for (i in 0...10000) {
 			lbox.add('list item ' + i);
 		}
+	}
+
+	// IObserver implementation BEGIN
+
+	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+		switch (name) {
+			case List.EVT_ITEM_SELECTED:
+				trace ("setting text value to " + data);
+				this.txt.text = data;
+		}
+	}
+
+	public function getEventCollection(): Array<String> {
+		return [
+			List.EVT_ITEM_SELECTED
+		];
 	}
 }

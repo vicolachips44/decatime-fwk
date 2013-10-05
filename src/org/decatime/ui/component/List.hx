@@ -34,6 +34,8 @@ import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
 
 class List extends BaseContainer implements IObserver {
+	private static var NAMESPACE:String = "org.decatime.ui.component.List :";
+	public static var EVT_ITEM_SELECTED:String = NAMESPACE + "EVT_ITEM_SELECTED";
 
 	private var renderer:BaseBitmapElement;
 	private var dataRenderer:BitmapData;
@@ -42,6 +44,8 @@ class List extends BaseContainer implements IObserver {
 	private var tfield:TextField;
 	private var fontRes:Font;
 	private var listItems:Array<String>;
+	private var selectedItem:String;
+	private var selectedItemIndex:Int;
 
 	private var itemsCount:Int;
 	private var itemsHeight:Int;
@@ -54,8 +58,10 @@ class List extends BaseContainer implements IObserver {
 		this.buttonMode = true;
 		this.renderer = new BaseBitmapElement();
 		this.listItems = new Array<String>();
-		this.itemsHeight = 20;
+		this.itemsHeight = 16;
 		this.firstVisibleIndex = 0;
+		this.selectedItemIndex = -1;
+		this.selectedItem = '';
 
 		this.tfield = new TextField();
 		this.tfield.selectable = false;
@@ -133,7 +139,7 @@ class List extends BaseContainer implements IObserver {
 	}
 
 
-	private function draw(?index:Int = -1): Void {		
+	private function draw(): Void {		
 		var r:Rectangle    = this.listContainer.getCurrSize();
 		var startIndex:Int = this.firstVisibleIndex;
 		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
@@ -157,7 +163,7 @@ class List extends BaseContainer implements IObserver {
 			);
 			m.translate(0, currItmIdx);
 
-			if (index == i - startIndex) {
+			if (selectedItemIndex == i) {
 				g.clear();
 				g.beginFill(0xaaaaaa, 0.5);
 				g.drawRect(0, 0, r.width, this.itemsHeight);
@@ -183,6 +189,7 @@ class List extends BaseContainer implements IObserver {
 
 			currItmIdx = currItmIdx + this.itemsHeight;
 		}
+
 		r = this.container.getCurrSize();
 		this.graphics.clear();
 		this.graphics.lineStyle(1, 0x000000);
@@ -221,7 +228,7 @@ class List extends BaseContainer implements IObserver {
 	private function createEmbeddedFontTextFormat(): Void {
 		var format:TextFormat = new TextFormat(
 			this.fontRes.fontName,
-			14, 
+			10, 
 			0x000000,
 			false
 		);
@@ -244,15 +251,25 @@ class List extends BaseContainer implements IObserver {
 			}
 			index++;
 		}
-		trace ("calling draw with index " + index);
-		draw(index);
+		this.selectedItemIndex = this.firstVisibleIndex + index;
+		this.selectedItem = this.listItems[this.selectedItemIndex];
+		this.notify(EVT_ITEM_SELECTED, this.selectedItem);
 	}
 
 	private function onListMouseDown(e:MouseEvent): Void {
-		// todo restrict area to the listContainer rectangle
+		if (e.ctrlKey) {
+			this.selectedItemIndex = -1;
+			draw();
+			return;
+		}
+		var xpos:Int = Std.int(e.localX - this.listContainer.getCurrSize().x);
+		
+		if (xpos >= this.listContainer.getCurrSize().width) { return; }
+
 		this.stage.focus = this;
 		this.addEventListener(MouseEvent.MOUSE_OUT, onListMouseOut);
 		this.selectItem(e);
+		draw();
 	}
 
 	private function onListMouseOut(e:MouseEvent): Void {
@@ -260,13 +277,11 @@ class List extends BaseContainer implements IObserver {
 	}
 
 	private function onFocusInEvt(e:FocusEvent): Void {
-		trace ("focus in event occured");
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}
 
 	private function onFocusOutEvt(e:FocusEvent): Void {
-		trace ("focus out event occured");
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}
