@@ -3,6 +3,7 @@ package org.decatime.ui.component;
 import flash.geom.Rectangle;
 import flash.events.MouseEvent;
 
+import org.decatime.ui.BaseShapeElement;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.layout.HBox;
@@ -13,6 +14,7 @@ class BaseSelected extends BaseContainer {
 
 	public var label(default, null): Label;
 	private var selected: Bool;
+	private var shp:BaseShapeElement;
 
 	public function new(name:String) {
 		super(name);
@@ -39,24 +41,23 @@ class BaseSelected extends BaseContainer {
 		draw();
 	}
 
-	private function draw(): Void {
-		if (! this.visible) { return; }
-
-		if (this.selected) {
-			drawSelected();
-		} else {
-			drawUnselected();
-		}
-	}
-	private function drawSelected(): Void {}
-	private function drawUnselected(): Void {}
+	private function draw(): Void {}
 
 	private override function initializeComponent(): Void {
 		this.container = new HBox(this);
 		this.container.setHorizontalGap(0);
 		this.container.setVerticalGap(0);
+
+		this.shp = new BaseShapeElement('chkItem');
+		this.container.create(20, shp);
+
 		this.container.create(1.0, this.label);
+
 		this.addChild(this.label);
+		this.addChild(this.shp);
+
+		var blur:flash.filters.BlurFilter = new flash.filters.BlurFilter(2, 2, 1);
+		this.shp.filters = [blur];
 	}
 
 	private function onMouseClick(e:MouseEvent): Void {
