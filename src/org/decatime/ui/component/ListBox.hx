@@ -1,68 +1,89 @@
 package org.decatime.ui.component;
 
-import flash.geom.Rectangle;
-import flash.display.DisplayObject;
-import flash.events.MouseEvent;
+import openfl.Assets;
+
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.PixelSnapping;
+import flash.display.BlendMode;
+import flash.display.Shape;
+import flash.display.Graphics;
+
 import flash.events.FocusEvent;
-import flash.display.Stage;
+import flash.events.MouseEvent;
 import flash.events.KeyboardEvent;
 
-import org.decatime.ui.layout.VBox;
-import org.decatime.ui.layout.HBox;
-import org.decatime.ui.component.VerticalScrollBar;
-import org.decatime.ui.layout.Content;
-import org.decatime.ui.component.ListItem;
+import flash.geom.Rectangle;
+import flash.geom.Matrix;
+
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFieldType;
+import flash.text.TextFieldAutoSize;
+import flash.text.TextFormatAlign;
+import flash.text.Font;
+import flash.text.AntiAliasType;
+
 import org.decatime.ui.component.BaseContainer;
-import org.decatime.event.IObservable;
+import org.decatime.ui.component.VerticalScrollBar;
+import org.decatime.ui.BaseBitmapElement;
+import org.decatime.ui.layout.HBox;
+import org.decatime.ui.layout.VBox;
+
 import org.decatime.event.IObserver;
+import org.decatime.event.IObservable;
 
-class ListBox extends BaseContainer  implements IObserver {
-	private static var NAMESPACE:String = "org.decatime.ui.componnet.ListBox :";
-	public static var EVT_ITEM_CLICK:String = NAMESPACE + "EVT_ITEM_CLICK";
+class ListBox extends BaseContainer implements IObserver {
+	private static var NAMESPACE:String = "org.decatime.ui.component.List :";
+	public static var EVT_ITEM_SELECTED:String = NAMESPACE + "EVT_ITEM_SELECTED";
 
-	private var listItems:Array<ListItem>;
-	private var listItemHeight: Int;
-	private var firstVisibleIndex:Int;
-	private var visibleCount:Int;
-	
-	private var listContainer:VBox;
+	private var renderer:BaseBitmapElement;
+	private var dataRenderer:BitmapData;
+	private var listContainer: VBox;
 	private var vsBar1:VerticalScrollBar;
+	private var tfield:TextField;
+	private var fontRes:Font;
+	private var listItems:Array<IPrintable>;
+	private var selectedItem:IPrintable;
+	private var selectedItemIndex:Int;
 
-	public function new(name:String) {
+	private var itemsCount:Int;
+	private var itemsHeight:Int;
+	private var firstVisibleIndex:Int;
+	private var visibleItemsCount:Int;
+	private var shpBackground:Shape;
+
+	public function new(name:String, fontRes:String) {
 		super(name);
-		this.listItems = new Array<ListItem>();
-		this.listItemHeight = 12;
-		firstVisibleIndex = 0;
+		this.buttonMode = true;
+		this.renderer = new BaseBitmapElement();
+		this.renderer.setResizable(false);
+		this.listItems = new Array<IPrintable>();
+		this.itemsHeight = 16;
+		this.firstVisibleIndex = 0;
+		this.selectedItemIndex = -1;
+		this.selectedItem = null;
+
+		this.tfield = new TextField();
+		this.tfield.selectable = false;
+		this.tfield.autoSize = TextFieldAutoSize.LEFT;
+		this.tfield.mouseEnabled = false;
+		this.fontRes = Assets.getFont(fontRes);
+		this.createEmbeddedFontTextFormat();
+		this.tfield.antiAliasType = AntiAliasType.ADVANCED;
+
+		this.shpBackground = new Shape();
 	}
 
-	public function setListItemHeight(value:Int): Void {
-		this.listItemHeight = value;
-	}
-
-	public function addItem(item:ListItem): Void {
-		this.listItems.push(item);
-	}
-
-	public function getSelectedItem(): ListItem {
-		var item:ListItem;
-		for (item in this.listItems) {
-			if (item.getSelected()) {
-				return item;
-			}
-		}
-		return null;
+	public function add(value:IPrintable): Void {
+		this.listItems.push(value);
+		this.itemsCount = this.listItems.length;
 	}
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		
-		this.graphics.clear();
-		this.graphics.lineStyle(1 ,0x000000 ,1.0);
-		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-
-		updateList();
+		draw();
 		updateScrollBar();
-		this.listContainer.refresh(this.listContainer.getCurrSize());
 	}
 
 	// IObserver implementation BEGIN
@@ -72,8 +93,7 @@ class ListBox extends BaseContainer  implements IObserver {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
 				this.firstVisibleIndex = data;
-				this.updateList();
-				this.listContainer.refresh(this.listContainer.getCurrSize());
+				draw();
 		}
 	}
 
@@ -84,43 +104,185 @@ class ListBox extends BaseContainer  implements IObserver {
 		];
 	}
 
-	// IObserver implementation END
-
 	private override function initializeComponent(): Void {
 		this.container = new HBox(this);
-		this.container.setVerticalGap(1);
-		this.container.setHorizontalGap(1);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 
-		listContainer = new VBox(this.container);
-		listContainer.setHorizontalGap(0);
-		listContainer.setVerticalGap(0);
+		this.listContainer = new VBox(this.container);
+		this.listContainer.setHorizontalGap(0);
+		this.listContainer.setVerticalGap(0);
 
 		// A Vertical Scroll bar
 		vsBar1 = new VerticalScrollBar('VsBar1');
 		vsBar1.addListener(this);
-		vsBar1.setStepSize(4);
-		
+		vsBar1.setStepSize(1);
+
 		this.container.create(1.0, listContainer);
 
 		this.container.create(24, vsBar1);
+		this.listContainer.create(1.0, this.renderer);
 
 		this.addChild(vsBar1);
-		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
-		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
+		this.addChild(this.renderer);
 	}
 
 	private override function initializeEvent(): Void {
+		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
+		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
+		this.addEventListener(MouseEvent.MOUSE_DOWN, onListMouseDown);
 
+		var r:Rectangle = this.listContainer.getCurrSize();
+		this.dataRenderer = new BitmapData(Std.int(r.width), Std.int(r.height), true);
+		this.renderer.bitmapData = this.dataRenderer;
+
+		this.visibleItemsCount = Std.int(r.height / this.itemsHeight);
+	}
+
+
+	private function draw(): Void {		
+		var r:Rectangle    = this.listContainer.getCurrSize();
+		var startIndex:Int = this.firstVisibleIndex;
+		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
+		var currItmIdx:Int = 0;
+		var g:Graphics     = this.shpBackground.graphics;
+		
+		g.clear();
+		g.beginFill(0xffffff, 1);
+		// g.lineStyle(2, 0x000000);
+		g.drawRect(0, 0, r.width, r.height);
+		g.endFill;
+
+		this.dataRenderer.draw(this.shpBackground, null, null, BlendMode.ERASE);
+
+		for (i in startIndex...endIndex) {
+			this.tfield.text = this.listItems[i].toString();
+
+			var m:Matrix = new Matrix(
+				1, 0, 0 , 1 , 2,
+				(this.itemsHeight / 2) - (this.tfield.textHeight / 2)
+			);
+			m.translate(0, currItmIdx);
+
+			if (selectedItemIndex == i) {
+				g.clear();
+				g.beginFill(0xaaaaaa, 0.5);
+				g.drawRect(0, 0, r.width, this.itemsHeight);
+				g.endFill();
+				this.dataRenderer.draw(
+					this.shpBackground,
+					m,
+					null,
+					BlendMode.OVERLAY,
+					null,
+					false
+				);
+			}
+
+			this.dataRenderer.draw(
+				this.tfield,
+				m,
+				null,  
+				BlendMode.ADD,
+				null,
+				true
+			);
+
+			currItmIdx = currItmIdx + this.itemsHeight;
+		}
+
+		r = this.container.getCurrSize();
+		this.graphics.clear();
+		this.graphics.lineStyle(1, 0x000000);
+		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+		this.graphics.endFill();
+	}
+
+	private function moveNext(): Void {
+		this.firstVisibleIndex++;
+		if (this.firstVisibleIndex > this.itemsCount) { 
+			this.firstVisibleIndex = this.itemsCount - this.visibleItemsCount;
+		}
+		this.draw();
+		this.updateScrollBar();
+	}
+
+	private function movePrevious(): Void {
+		this.firstVisibleIndex--;
+		if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
+
+		this.draw();
+		this.updateScrollBar();
+	}
+
+	private function updateScrollBar(): Void {
+		// the thumb is being dragged
+		if (this.vsBar1.isScrolling()) { return; }
+
+		this.vsBar1.setStepCount(this.itemsCount);
+		this.vsBar1.setStepPos(this.firstVisibleIndex);
+		this.vsBar1.setStepSize(this.itemsHeight);
+		this.vsBar1.setVisibleHeight(this.listContainer.getCurrSize().height);
+		this.vsBar1.updatePos();
+	}
+
+	private function createEmbeddedFontTextFormat(): Void {
+		var format:TextFormat = new TextFormat(
+			this.fontRes.fontName,
+			10, 
+			0x000000,
+			false
+		);
+	
+		this.tfield.embedFonts = true;
+		this.tfield.defaultTextFormat = format;
+		this.tfield.setTextFormat(format);
+	}
+
+	private function selectItem(e:MouseEvent): Void {
+		var ypos:Int = Std.int(e.localY - this.listContainer.getCurrSize().y);
+		var totalHeight:Int = visibleItemsCount * itemsHeight;
+		var i:Int = 0;
+		var index:Int = 0;
+
+		while (i < totalHeight) {
+			i += itemsHeight;
+			if (ypos < i) {
+				break;
+			}
+			index++;
+		}
+		this.selectedItemIndex = this.firstVisibleIndex + index;
+		this.selectedItem = this.listItems[this.selectedItemIndex];
+		this.notify(EVT_ITEM_SELECTED, this.selectedItem);
+	}
+
+	private function onListMouseDown(e:MouseEvent): Void {
+		if (e.ctrlKey) {
+			this.selectedItemIndex = -1;
+			draw();
+			return;
+		}
+		var xpos:Int = Std.int(e.localX - this.listContainer.getCurrSize().x);
+		
+		if (xpos >= this.listContainer.getCurrSize().width) { return; }
+
+		this.stage.focus = this;
+		this.addEventListener(MouseEvent.MOUSE_OUT, onListMouseOut);
+		this.selectItem(e);
+		draw();
+	}
+
+	private function onListMouseOut(e:MouseEvent): Void {
+		this.stage.focus = null;
 	}
 
 	private function onFocusInEvt(e:FocusEvent): Void {
-		trace ("focus in event on listbox");
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}
 
 	private function onFocusOutEvt(e:FocusEvent): Void {
-		trace ("focus out event on listbox");
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}
@@ -128,103 +290,18 @@ class ListBox extends BaseContainer  implements IObserver {
 	private function onMouseWheelEvt(e:MouseEvent): Void {
 		if (e.delta == 0) { return; }
 		if (e.delta > 0) {
-			this.selectNextItem();
+			this.movePrevious();
 		} else {
-			this.selectPreviousItem();
+			this.moveNext();
 		}
-		e.stopImmediatePropagation();
 	}
 
 	private function onStageKeyUp(e:KeyboardEvent): Void {
 		if (e.keyCode == 40) { // down arrow
-			this.selectNextItem();
+			this.movePrevious();
 		}
 		if (e.keyCode == 38) { // up arrow
-			this.selectPreviousItem();
+			this.moveNext();
 		}
-	}
-
-	private function selectNextItem(): Void {
-		this.firstVisibleIndex++;
-		if (this.firstVisibleIndex > this.listItems.length - this.visibleCount) { 
-			this.firstVisibleIndex = this.listItems.length - this.visibleCount; 
-		}
-		updateList();
-		updateScrollBar();
-		this.listContainer.refresh(this.listContainer.getCurrSize());
-	}
-
-	private function selectPreviousItem(): Void {
-		this.firstVisibleIndex--;
-		if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
-		updateList();
-		updateScrollBar();
-		this.listContainer.refresh(this.listContainer.getCurrSize());
-	}
-
-	private function onItemClickEvt(e:MouseEvent): Void {
-		var item:ListItem;
-		for (item in this.listItems) {
-			if (! Std.is(e.currentTarget, item)) {
-				item.setSelected(false);
-			}
-		}
-		item = cast (e.currentTarget, ListItem);
-		item.setSelected(true);
-
-		
-		this.graphics.clear();
-		var r:Rectangle = this.getCurrSize();
-		this.graphics.lineStyle(1 ,0x000000 ,1.0);
-		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-
-		r = item.getCurrSize().clone();
-		this.graphics.beginFill(0xaaaaaa, 0.5);
-		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-		this.graphics.endFill();
-
-	}
-
-	private function updateScrollBar(): Void {
-		// the thumb is being dragged
-		if (this.vsBar1.isScrolling()) { return; }
-
-		this.vsBar1.setStepCount(this.listItems.length);
-		this.vsBar1.setStepPos(this.firstVisibleIndex);
-		this.vsBar1.setStepSize(this.listItemHeight);
-		this.vsBar1.setVisibleHeight(this.listContainer.getCurrSize().height);
-		this.vsBar1.updatePos();
-	}
-
-	private function updateList(): Void {
-		var item:ListItem = null;
-		var i:Int = 0;
-		var j:Int = this.firstVisibleIndex;
-		while (this.numChildren > 0) {
-			this.getChildAt(0).removeEventListener(MouseEvent.CLICK, onItemClickEvt);
-			this.getChildAt(0).visible = false;
-			this.removeChildAt(0); 
-		}
-
-		vsBar1.visible = true;
-		this.addChild(vsBar1);
-
-		this.listContainer.reset();
-		this.visibleCount = 0;
-
-		for (i in j...this.listItems.length) {
-			item = this.listItems[i];
-
-			if ((this.visibleCount + 1) * this.listItemHeight > this.listContainer.getCurrSize().height) {
-				break;
-			}
-			item.addEventListener(MouseEvent.CLICK, onItemClickEvt);
-
-			this.listContainer.create(listItemHeight, item);
-			this.addChild(item);
-			item.visible = true;
-			this.visibleCount++;
-		}
-		
 	}
 }

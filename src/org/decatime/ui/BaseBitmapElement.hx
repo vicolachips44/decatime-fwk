@@ -15,6 +15,7 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 	private var vgap:Float;
 	private var transparent:Bool;
 	private var backColor:Int;
+	private var resizable:Bool;
 
 	/**
 	* Default constructor.
@@ -26,6 +27,11 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		vgap = 0;
 		transparent = true;
 		backColor = 0x000000;
+		resizable = true;
+	}
+
+	public function setResizable(value:Bool): Void {
+		this.resizable = value;
 	}
 
 	public function setHorizontalGap(value:Float): Void {
@@ -80,7 +86,12 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		x = r.x + this.hgap;
 		y = r.y + this.vgap;
 		
-		if (this.bitmapData == null) {
+		if (this.resizable) {
+			if (this.bitmapData != null) {
+				this.bitmapData.dispose();
+			}
+			this.bitmapData = new BitmapData(Std.int(r.width), Std.int(r.height), this.transparent, this.backColor);
+		} else if (this.bitmapData == null) {
 			this.bitmapData = new BitmapData(Std.int(r.width), Std.int(r.height), this.transparent, this.backColor);
 		}
 	}

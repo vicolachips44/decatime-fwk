@@ -5,7 +5,7 @@ import openfl.Assets;
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.component.TextBox;
-import org.decatime.ui.component.List;
+import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.ListItem;
 import org.decatime.ui.component.RadioButtonGroup;
 import org.decatime.ui.component.RadioButton;
@@ -14,6 +14,8 @@ import org.decatime.ui.layout.HBox;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
+
+import com.demo.MyListboxObj;
 
 class WxListboxDemo extends Window implements IObserver {
 	private var txt:TextBox;
@@ -54,14 +56,15 @@ class WxListboxDemo extends Window implements IObserver {
 		this.clientArea.create(32, chk1);
 		this.addChild(chk1);
 
-		var lbox:List = new List('list1', 'assets/Vera.ttf');
+		var lbox:ListBox = new ListBox('list1', 'assets/Vera.ttf');
 		this.clientArea.create(1.0, lbox);
 		this.addChild(lbox);
 		lbox.addListener(this);
 		var i:Int;
 
 		for (i in 0...10000) {
-			lbox.add('list item ' + i);
+			// lbox.add('list item ' + i);
+			lbox.add(new MyListboxObj(i));
 		}
 	}
 
@@ -69,14 +72,14 @@ class WxListboxDemo extends Window implements IObserver {
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
-			case List.EVT_ITEM_SELECTED:
+			case ListBox.EVT_ITEM_SELECTED:
 				this.txt.text = data;
 		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			List.EVT_ITEM_SELECTED
+			ListBox.EVT_ITEM_SELECTED
 		];
 	}
 }
