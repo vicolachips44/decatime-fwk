@@ -5,6 +5,7 @@ import flash.geom.Point;
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Column;
+import org.decatime.ui.component.table.Cell;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
@@ -45,7 +46,9 @@ class WxTableViewDemo extends Window implements IObserver {
 
 		var i:Int = 0;
 		for (i in 0...myTable.rowCount) {
-			// TODO add some cells
+			myTable.getColumn(0).addCell(new Cell('Essai_0_' + i));
+			myTable.getColumn(1).addCell(new Cell('Essai_1_' + i));
+			myTable.getColumn(2).addCell(new Cell('Essai_2_' + i));
 		}
 	}
 }
