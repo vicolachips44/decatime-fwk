@@ -10,11 +10,16 @@ import flash.text.TextFieldAutoSize;
 import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
+import flash.events.TimerEvent;
 import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Stage;
 import flash.display.DisplayObject;
+import flash.geom.Rectangle;
+import flash.display.Sprite;
+import flash.display.Graphics;
+import flash.utils.Timer;
 
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.event.IObservable;
@@ -39,6 +44,9 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	#if !(flash || html5)
 	private var tabIndex:Int;
+	private var tmCursorBlink:Timer;
+	private var cursorOverlay:Sprite;
+	private var cursorVisible:Bool;
 	#end
 
 	private var borderColorFocus:Int;
@@ -66,6 +74,11 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 		this.addEventListener(FocusEvent.FOCUS_IN, onTxtFocusIn);
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
+
+		#if !(flash || html5)
+		tmCursorBlink = new Timer(300);
+		tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
+		#end
 	}
 
 	public function setMargin(p:Point): Void {
@@ -196,6 +209,13 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			e.keyCode = 0; // prevent an infinite loop...
 			processTabIndex();
 		}
+		#if !(flash || html5)
+		if (this.text.length > 0) {
+			stopCursorBlinking();
+		} else {
+			startCursorBlinking();
+		}
+		#end
 		this.notify(EVT_KEYUP, e);
 	}
 
@@ -239,11 +259,51 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		
 		this.borderColor = this.borderColorFocus;
+		if (this.text.length == 0) {
+			#if !(flash || html5)
+			this.startCursorBlinking();
+			#end
+		}
 	}
+
+	#if !(flash || html5)
+	private function startCursorBlinking(): Void {
+		var r:Rectangle = this.getRect(this).clone();
+		if (this.cursorOverlay != null) {
+			this.parent.removeChild(this.cursorOverlay);
+		}
+		this.cursorOverlay = new Sprite();
+		this.cursorOverlay.graphics.beginFill(0xffffff);
+		this.cursorOverlay.graphics.drawRect(1, 1, r.width - 2, r.height - 2);
+		this.cursorOverlay.x = this.x;
+		this.cursorOverlay.y = this.y;
+		this.parent.addChild(this.cursorOverlay);
+		tmCursorBlink.start();
+	}
+
+	private function onTmCursorCycle(e:TimerEvent): Void {
+		cursorVisible = ! cursorVisible;
+		var g:Graphics = this.cursorOverlay.graphics;
+		g.clear();
+		if (cursorVisible) {
+			g.lineStyle(0.5, 0x000000);
+			g.moveTo(2, 2);
+			g.lineTo(2, 16);
+		}	
+	}
+
+	private function stopCursorBlinking(): Void {
+		this.tmCursorBlink.stop();
+		this.parent.removeChild(this.cursorOverlay);
+		this.cursorOverlay = null;
+		this.cursorVisible = false;
+	}
+	#end
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
 		#if !flash
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		stopCursorBlinking();
 		#end
 
 		this.borderColor = this.txtBorderColor;
