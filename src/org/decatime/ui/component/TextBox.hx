@@ -211,11 +211,14 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		}
 		#if !(flash || html5)
 		if (this.text.length > 0) {
-			stopCursorBlinking();
+			if (this.cursorOverlay != null) {
+				stopCursorBlinking();
+			}
 		} else {
 			startCursorBlinking();
 		}
 		#end
+
 		this.notify(EVT_KEYUP, e);
 	}
 
@@ -273,8 +276,6 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			this.parent.removeChild(this.cursorOverlay);
 		}
 		this.cursorOverlay = new Sprite();
-		this.cursorOverlay.graphics.beginFill(0xffffff);
-		this.cursorOverlay.graphics.drawRect(1, 1, r.width - 2, r.height - 2);
 		this.cursorOverlay.x = this.x;
 		this.cursorOverlay.y = this.y;
 		this.parent.addChild(this.cursorOverlay);
@@ -287,7 +288,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		g.clear();
 		if (cursorVisible) {
 			g.lineStyle(0.5, 0x000000);
-			g.moveTo(2, 2);
+			g.moveTo(3, 2);
 			g.lineTo(2, 16);
 		}	
 	}
@@ -297,6 +298,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.parent.removeChild(this.cursorOverlay);
 		this.cursorOverlay = null;
 		this.cursorVisible = false;
+		trace ("cursor overlay has been removed");
 	}
 	#end
 

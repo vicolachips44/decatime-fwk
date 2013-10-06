@@ -72,7 +72,8 @@ class WxListBoxDemo extends Window implements IObserver {
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case ListBox.EVT_ITEM_SELECTED:
-				this.txt.text = data;
+				trace ("event selected catch " + data);
+				this.txt.text = Std.string(data);
 		}
 	}
 
