@@ -17,7 +17,7 @@ import org.decatime.event.IObserver;
 
 import com.demo.MyListboxObj;
 
-class WxListboxDemo extends Window implements IObserver {
+class WxListBoxDemo extends Window implements IObserver {
 	private var txt:TextBox;
 
 	private override function buildClientArea(): Void {
