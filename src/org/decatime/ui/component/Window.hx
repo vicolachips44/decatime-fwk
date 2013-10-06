@@ -24,11 +24,22 @@ class Window extends BaseContainer {
 	private var footer:HBox;
 	private var size:Rectangle;
 	private var lblTitle:Label;
+	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
 
-	public function new(name:String, size:Point) {
+	public function new(name:String, size:Point, fontResPath:String) {
 		super(name);
 		this.size = new Rectangle(0, 0, size.x, size.y);
+		this.title = 'Untitled window';
+		this.fontResPath = fontResPath;
+	}
+
+	public function setTitle(value:String): Void {
+		this.title = value;
+	}
+
+	public function getTitle(): String {
+		return this.title;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -129,8 +140,6 @@ class Window extends BaseContainer {
 			this.footer.getCurrSize().height
 		);
 		this.graphics.endFill();
-
-
 	}
 
 	private function checkBounds(): Bool {
@@ -157,8 +166,8 @@ class Window extends BaseContainer {
 	private function initializeHeader(): Void {
 		this.headerContainer = new BaseSpriteElement('headerContainer');
 
-		lblTitle = new Label('Header label');
-		lblTitle.setFontRes('assets/BepaOblique.ttf');
+		lblTitle = new Label(this.title);
+		lblTitle.setFontRes(this.fontResPath);
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
 		lblTitle.setBackColor(0xaaaaaa);

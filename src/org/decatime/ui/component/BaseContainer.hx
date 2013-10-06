@@ -53,7 +53,7 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	// IObservable implementation END
 
 	private function initializeComponent(): Void {
-		// trace ("BaseContainer: no implementation for initializeComponent at the moment");
+		throw new flash.errors.Error("You must override this method");
 	}
 
 	private function initializeEvent(): Void {
