@@ -21,7 +21,7 @@ class WxTableViewDemo extends Window implements IObserver {
 
 	private override function buildClientArea(): Void {
 		myTable = new TableView('DemoTable');
-		buildTable();
+		// buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);
 	}
@@ -38,17 +38,17 @@ class WxTableViewDemo extends Window implements IObserver {
 	}
 
 	private function buildTable(): Void {
-		myTable.rowCount = 10;
+		// myTable.rowCount = 100;
 
-		myTable.addColumn(new Column('Column 1', 120));
-		myTable.addColumn(new Column('Column 2', 100));
-		myTable.addColumn(new Column('Column 3', 180));
+		// myTable.addColumn(new Column('Column 1', 120));
+		// myTable.addColumn(new Column('Column 2', 100));
+		// myTable.addColumn(new Column('Column 3', 180));
 
-		var i:Int = 0;
-		for (i in 0...myTable.rowCount) {
-			myTable.getColumn(0).addCell(new Cell('Essai_0_' + i));
-			myTable.getColumn(1).addCell(new Cell('Essai_1_' + i));
-			myTable.getColumn(2).addCell(new Cell('Essai_2_' + i));
-		}
+		// var i:Int = 0;
+		// for (i in 0...myTable.rowCount) {
+		// 	myTable.getColumn(0).addCell(new Cell('Essai_0_' + i));
+		// 	myTable.getColumn(1).addCell(new Cell('Essai_1_' + i));
+		// 	myTable.getColumn(2).addCell(new Cell('Essai_2_' + i));
+		// }
 	}
 }

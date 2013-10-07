@@ -10,11 +10,20 @@ class Column extends BaseContainer {
 	private var colWidth: Float;
 	private var colHeader:Cell;
 	private var cells:Array<Cell>;
+	private var parentTable: TableView;
 
 	public function new(columnName:String, cwidth:Float) {
 		super(columnName);
 		this.colWidth = cwidth;
 		this.cells = new Array<Cell>();
+	}
+
+	public function setParentTable(value:TableView): Void {
+		this.parentTable = value;
+	}
+
+	public function getParentTable(): TableView {
+		return this.parentTable;
 	}
 
 	public function getColWidth(): Float {
@@ -44,13 +53,13 @@ class Column extends BaseContainer {
 
 		this.container.create(20, this.colHeader);
 		this.addChild(this.colHeader);
-		
+
 		var i:Int = 0;
-		for (i in 0...cells.length) {
-			var c:Cell = cells[i];
-			this.container.create(24, c);
-			this.addChild(c);
-		}
+		// for (i in 0...cells.length) {
+		// 	var c:Cell = cells[i];
+		// 	this.container.create(this.parentTable.rowHeight, c);
+		// 	this.addChild(c);
+		// }
 	}
 
 }
