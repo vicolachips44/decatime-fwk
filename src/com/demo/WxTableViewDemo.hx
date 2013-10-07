@@ -40,9 +40,9 @@ class WxTableViewDemo extends Window implements IObserver {
 	private function buildTable(): Void {
 		myTable.rowCount = 10;
 
-		myTable.addColumn(new Column('Column 1', 32));
+		myTable.addColumn(new Column('Column 1', 120));
 		myTable.addColumn(new Column('Column 2', 100));
-		myTable.addColumn(new Column('Column 3', 80));
+		myTable.addColumn(new Column('Column 3', 180));
 
 		var i:Int = 0;
 		for (i in 0...myTable.rowCount) {
