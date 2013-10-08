@@ -16,7 +16,6 @@ import org.decatime.ui.component.ScrollPanel;
 class TableView extends BaseContainer implements IObserver {
 	private var scPanel: ScrollPanel;
 	private var headerArea: HBox;
-	public var backgroundPicture(default, default): Bitmap;
 
 	public function new(name:String) {
 		super(name);
@@ -63,6 +62,6 @@ class TableView extends BaseContainer implements IObserver {
 	}
 
 	private override function layoutComponant(): Void {
-		this.scPanel.addChildToScrollArea(backgroundPicture);
+		// todo create the layout table
 	}
 }
