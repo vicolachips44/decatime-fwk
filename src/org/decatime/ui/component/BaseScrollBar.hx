@@ -105,11 +105,12 @@ class BaseScrollBar extends BaseContainer {
 		this.mouseDownPoint = new Point(this.mouseX, this.mouseY);
 
 		if (thumb.getRect(this).containsPoint(this.mouseDownPoint)) {
-			if (thumb.height == this.thumbContainer.getCurrSize().height) {
-				// no space to scroll
+			trace ("mouse down detected on thumb");
+			if (hasNoScrollSpace()) {
 				this.scrolling = false;
+				trace ("there is no space to scroll");
 			} else {
-				this.startX = e.localX;
+				this.startX = e.stageX - e.localX;
 				this.startY = e.stageY - e.localY;
 				this.thumbStartX = thumb.mouseX;
 				this.thumbStartY = thumb.mouseY;
@@ -119,6 +120,10 @@ class BaseScrollBar extends BaseContainer {
 		} else {
 			this.scrolling = false;
 		}
+	}
+
+	private function hasNoScrollSpace(): Bool {
+		return false;
 	}
 
 	private function endScroll(): Void {
@@ -146,26 +151,21 @@ class BaseScrollBar extends BaseContainer {
 		}
 		var g:Graphics = this.thumb.graphics;
 
-		var box:Matrix = new Matrix();
-		box.createGradientBox(r.width, r.height);
-
 		g.clear();
 
-		g.beginGradientFill(GradientType.LINEAR, [0x333333, 0xdddddd], [1, 1], [1, 255], box);
-
+		drawGradiant(g, r);
+		
 		this.calculateThumbSize(r);
 
 		g.drawRect(r.x, r.y, r.width, r.height);
 
 		g.endFill();
+	}
 
-		this.graphics.lineStyle(3, 0x808080, 1.0);
-		this.graphics.drawRect(
-			this.thumbContainer.getCurrSize().x + 3, 
-			this.thumbContainer.getCurrSize().y,
-			this.thumbContainer.getCurrSize().width - 4, 
-			this.thumbContainer.getCurrSize().height
-		);
+	private function drawGradiant(g:Graphics, r:Rectangle): Void {
+		var box:Matrix = new Matrix();
+		box.createGradientBox(r.width, r.height);
+		g.beginGradientFill(GradientType.LINEAR, [0x333333, 0xdddddd], [1, 1], [1, 255], box);
 	}
 
 	private function getThumbArea(): Rectangle {

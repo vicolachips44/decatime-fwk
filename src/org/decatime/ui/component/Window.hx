@@ -12,6 +12,7 @@ import org.decatime.ui.layout.Content;
 
 import org.decatime.ui.component.Label;
 import org.decatime.ui.BaseSpriteElement;
+import org.decatime.ui.layout.ILayoutElement;
 
 class Window extends BaseContainer {
 
@@ -24,11 +25,22 @@ class Window extends BaseContainer {
 	private var footer:HBox;
 	private var size:Rectangle;
 	private var lblTitle:Label;
+	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
 
-	public function new(name:String, size:Point) {
+	public function new(name:String, size:Point, fontResPath:String) {
 		super(name);
 		this.size = new Rectangle(0, 0, size.x, size.y);
+		this.title = 'Untitled window';
+		this.fontResPath = fontResPath;
+	}
+
+	public function setTitle(value:String): Void {
+		this.title = value;
+	}
+
+	public function getTitle(): String {
+		return this.title;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -129,36 +141,48 @@ class Window extends BaseContainer {
 			this.footer.getCurrSize().height
 		);
 		this.graphics.endFill();
-
-
 	}
 
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
-		if (this.sizeInfo.x > this.x) { 
-			this.x = this.sizeInfo.x + 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.x + this.sizeInfo.width < this.x + this.width) {
-			this.x = this.sizeInfo.x + this.sizeInfo.width - this.width  - 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.y > this.y) {
-			this.y = this.sizeInfo.y + 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.y + this.sizeInfo.height < this.y + this.height) {
-			this.y = this.sizeInfo.y + this.sizeInfo.height - this.height - 2;
-			retValue = false;
-		}
+		// TODO : The window should not be moved outside the bounds of the parent container...
+		// var element:ILayoutElement = cast(this.parent, ILayoutElement);
+
+		// var parentRect:Rectangle = element.getCurrSize().clone();
+		
+		// trace ("parent size is " + parentRect.toString());
+		// trace ("this size is " + this.sizeInfo.toString());
+		// var rectPos:Rectangle = new Rectangle(this.x, this.y, this.sizeInfo.width - this.sizeInfo.x, this.sizeInfo.height - this.sizeInfo.y);
+
+		// trace (" my position is " + rectPos.toString());
+		// if (! parentRect.containsRect(rectPos)) {
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.x > this.x) { 
+		// 	this.x = this.sizeInfo.x + 2;
+		// 	retValue = false;
+		// }
+		// trace ("my with value is " + this.width);
+		// if (this.sizeInfo.x + this.sizeInfo.width < this.x + this.sizeInfo.width) {
+		// 	this.x = 0;
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.y > this.y) {
+		// 	this.y = this.sizeInfo.y + 2;
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.y + this.sizeInfo.height < this.y + this.height) {
+		// 	this.y = this.sizeInfo.y + this.sizeInfo.height - this.height - 2;
+		// 	retValue = false;
+		// }
 		return retValue;
 	}
 
 	private function initializeHeader(): Void {
 		this.headerContainer = new BaseSpriteElement('headerContainer');
 
-		lblTitle = new Label('Header label');
-		lblTitle.setFontRes('assets/BepaOblique.ttf');
+		lblTitle = new Label(this.title);
+		lblTitle.setFontRes(this.fontResPath);
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
 		lblTitle.setBackColor(0xaaaaaa);

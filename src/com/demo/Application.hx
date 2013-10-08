@@ -72,9 +72,13 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
-		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480));
-		layout.create(1.0, wxList);
-		this.addChild(wxList);
+		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/BepaOblique.ttf');
+		layout.create(1.0, wxTable);
+		this.addChild(wxTable);
+
+		// var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
+		// layout.create(1.0, wxList);
+		// this.addChild(wxList);
 		// var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
 		// btn.addListener(this);
 		// layout.create(48, btn);

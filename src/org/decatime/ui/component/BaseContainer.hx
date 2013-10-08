@@ -35,7 +35,9 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 		
 		if (! this.initialized) {
 			initializeEvent();
+			layoutComponant();
 		}
+
 		this.initialized = true;
 	}
 
@@ -53,7 +55,11 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	// IObservable implementation END
 
 	private function initializeComponent(): Void {
-		// trace ("BaseContainer: no implementation for initializeComponent at the moment");
+		throw new flash.errors.Error("You must override this method");
+	}
+
+	private function layoutComponant(): Void {
+		trace ("this method is called once after the first refresh method call");
 	}
 
 	private function initializeEvent(): Void {

@@ -14,6 +14,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 	private var sizeInfo:Rectangle;
 	public var isContainer:Bool;
 	private var elBackColor:Int;
+	private var elBackColorVisibility:Float;
 
 	/**
 	* Default constructor.
@@ -33,7 +34,8 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		// be set directly (it can in fact but will change the aspect ratio).
 		this.isContainer = true;
 
-		this.elBackColor = 0xffffff;
+		this.elBackColor = 0x000000;
+		this.elBackColorVisibility = 0.0;
 	}
 
 	/**
@@ -55,7 +57,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		// will not work has expected.
 		if (isContainer) {
 			graphics.clear();
-			graphics.beginFill(elBackColor, 0.0);
+			graphics.beginFill(elBackColor, elBackColorVisibility);
 			graphics.drawRect(r.x, r.y, r.width, r.height);
 		} else {
 			// i am just a visual component. my size is dynamic

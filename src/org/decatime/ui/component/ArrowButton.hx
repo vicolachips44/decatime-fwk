@@ -60,42 +60,52 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		var g:Graphics = this.graphics;
 		g.clear();
 
-		g.lineStyle(0.4, 0xffffff, 1, true, 
+		g.beginFill(0xdfdfdf);
+		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
+		g.endFill();
+
+		var lx: Float = this.sizeInfo.x + 3;
+		var ly: Float = this.sizeInfo.y + 3;
+		var lw: Float = this.sizeInfo.width - 6;
+		var lh: Float = this.sizeInfo.height - 6;
+
+		g.lineStyle(0.4, 0x000000, 1, true, 
 			flash.display.LineScaleMode.VERTICAL,
 			flash.display.CapsStyle.NONE, 
 			flash.display.JointStyle.ROUND);
-
 		
+		box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 45, this.sizeInfo.x, this.sizeInfo.y);
 		
 		if (orientation == ORIENTATION_TOP) {	
-			box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 90, this.sizeInfo.x, this.sizeInfo.y);
-			g.beginGradientFill(GradientType.LINEAR, [0xffffff, 0x0000da], [1, 1], [1, 255], box);
-			g.moveTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
-			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y + this.sizeInfo.height);
-			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y);
-			g.lineTo(this.sizeInfo.x, this.sizeInfo.y + this.sizeInfo.width);
+			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.moveTo(lx, ly + lw);
+			g.lineTo(lx + lw, ly + lh);
+			g.lineTo(lx + (lw / 2), ly);
+			g.lineTo(lx, ly + lw);
 		}		
 		if (orientation == ORIENTATION_BOTTOM) {
-			box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 180, this.sizeInfo.x, this.sizeInfo.y);
-			g.beginGradientFill(GradientType.LINEAR, [0xffffff, 0x0000da], [1, 1], [1, 255], box);
-			g.moveTo(this.sizeInfo.x, this.sizeInfo.y);
-			g.lineTo(this.sizeInfo.x + this.sizeInfo.width, this.sizeInfo.y);
-			g.lineTo(this.sizeInfo.x + (this.sizeInfo.width / 2), this.sizeInfo.y + this.sizeInfo.width);
-			g.lineTo(this.sizeInfo.x, this.sizeInfo.y);
+			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.moveTo(lx, ly);
+			g.lineTo(lx + lw, ly);
+			g.lineTo(lx + (lw / 2), ly + lw);
+			g.lineTo(lx, ly);
 		}
 		if (orientation == ORIENTATION_LEFT) {
-			g.moveTo(this.sizeInfo.width, 0);
-			g.lineTo(this.sizeInfo.width, this.sizeInfo.height);
-			g.lineTo(0, this.sizeInfo.height / 2);
-			g.lineTo(this.sizeInfo.width, 0);
+			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.moveTo(lx + lw, ly);
+			g.lineTo(lx + lw, ly + lh);
+			g.lineTo(lx, ly + (lh / 2));
+			g.lineTo(lx + lw, ly);
 		}
 		if (orientation == ORIENTATION_RIGHT) {
-			g.moveTo(0, 0);
-			g.lineTo(0, this.sizeInfo.height);
-			g.lineTo(this.sizeInfo.height, this.sizeInfo.width / 2);
-			g.lineTo(0, 0);
+			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.moveTo(lx, ly);
+			g.lineTo(lx, ly + lh);
+			g.lineTo(lx + lw, ly + (lh / 2));
+			g.lineTo(lx, ly);
 		}
 		g.endFill();
+		
 	}
 
 	private function onMouseClick(e:MouseEvent): Void {
