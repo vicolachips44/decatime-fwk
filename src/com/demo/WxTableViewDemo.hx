@@ -1,6 +1,9 @@
 package com.demo;
 
+import openfl.Assets;
+
 import flash.geom.Point;
+import flash.display.Bitmap;
 
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.table.TableView;
@@ -21,6 +24,7 @@ class WxTableViewDemo extends Window implements IObserver {
 
 	private override function buildClientArea(): Void {
 		myTable = new TableView('DemoTable');
+		myTable.backgroundPicture = new Bitmap(openfl.Assets.getBitmapData('assets/test_picture.jpg'));
 		// buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);

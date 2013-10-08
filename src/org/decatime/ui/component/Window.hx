@@ -12,6 +12,7 @@ import org.decatime.ui.layout.Content;
 
 import org.decatime.ui.component.Label;
 import org.decatime.ui.BaseSpriteElement;
+import org.decatime.ui.layout.ILayoutElement;
 
 class Window extends BaseContainer {
 
@@ -144,22 +145,36 @@ class Window extends BaseContainer {
 
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
-		if (this.sizeInfo.x > this.x) { 
-			this.x = this.sizeInfo.x + 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.x + this.sizeInfo.width < this.x + this.width) {
-			this.x = this.sizeInfo.x + this.sizeInfo.width - this.width  - 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.y > this.y) {
-			this.y = this.sizeInfo.y + 2;
-			retValue = false;
-		}
-		if (this.sizeInfo.y + this.sizeInfo.height < this.y + this.height) {
-			this.y = this.sizeInfo.y + this.sizeInfo.height - this.height - 2;
-			retValue = false;
-		}
+		// TODO : The window should not be moved outside the bounds of the parent container...
+		// var element:ILayoutElement = cast(this.parent, ILayoutElement);
+
+		// var parentRect:Rectangle = element.getCurrSize().clone();
+		
+		// trace ("parent size is " + parentRect.toString());
+		// trace ("this size is " + this.sizeInfo.toString());
+		// var rectPos:Rectangle = new Rectangle(this.x, this.y, this.sizeInfo.width - this.sizeInfo.x, this.sizeInfo.height - this.sizeInfo.y);
+
+		// trace (" my position is " + rectPos.toString());
+		// if (! parentRect.containsRect(rectPos)) {
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.x > this.x) { 
+		// 	this.x = this.sizeInfo.x + 2;
+		// 	retValue = false;
+		// }
+		// trace ("my with value is " + this.width);
+		// if (this.sizeInfo.x + this.sizeInfo.width < this.x + this.sizeInfo.width) {
+		// 	this.x = 0;
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.y > this.y) {
+		// 	this.y = this.sizeInfo.y + 2;
+		// 	retValue = false;
+		// }
+		// if (this.sizeInfo.y + this.sizeInfo.height < this.y + this.height) {
+		// 	this.y = this.sizeInfo.y + this.sizeInfo.height - this.height - 2;
+		// 	retValue = false;
+		// }
 		return retValue;
 	}
 

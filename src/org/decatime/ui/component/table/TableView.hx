@@ -2,6 +2,7 @@ package org.decatime.ui.component.table;
 
 import flash.geom.Rectangle;
 import flash.display.Graphics;
+import flash.display.Bitmap;
 
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.component.BaseContainer;
@@ -15,6 +16,7 @@ import org.decatime.ui.component.ScrollPanel;
 class TableView extends BaseContainer implements IObserver {
 	private var scPanel: ScrollPanel;
 	private var headerArea: HBox;
+	public var backgroundPicture(default, default): Bitmap;
 
 	public function new(name:String) {
 		super(name);
@@ -49,6 +51,7 @@ class TableView extends BaseContainer implements IObserver {
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
+
 		this.headerArea = new HBox(this.container);
 		this.headerArea.setHorizontalGap(0);
 		this.headerArea.setVerticalGap(0);
@@ -57,5 +60,9 @@ class TableView extends BaseContainer implements IObserver {
 		this.scPanel = new ScrollPanel('scPanel1');
 		this.container.create(1.0, this.scPanel);
 		this.addChild(this.scPanel);
+	}
+
+	private override function layoutComponant(): Void {
+		this.scPanel.addChildToScrollArea(backgroundPicture);
 	}
 }

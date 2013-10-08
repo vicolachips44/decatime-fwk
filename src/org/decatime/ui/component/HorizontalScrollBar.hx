@@ -67,6 +67,16 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 		this.thumb.x = this.getThumbPosFromStepPos();
 	}
 
+	private override function hasNoScrollSpace(): Bool {
+		return thumb.width == this.thumbContainer.getCurrSize().width;
+	}
+
+	private override function drawGradiant(g:Graphics, r:Rectangle): Void {
+		var box:Matrix = new Matrix();
+		box.createGradientBox(r.width, r.height, 190);
+		g.beginGradientFill(GradientType.LINEAR, [0x333333, 0xdddddd], [1, 1], [1, 255], box);
+	}
+
 	private override function calculateThumbSize(r:Rectangle): Void {
 		var totalWidth:Float = this.stepCount * this.stepSize;
 		
@@ -92,7 +102,6 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 
 	private override function handleScrollEvent(e:MouseEvent): Void {
 		var newX:Float = e.stageX - this.startX - this.thumbStartX;
-		
 		// if the position is within the allowed range
 		if (newX >= leftPos && newX <= rightPos) {
 			// apply the new Y position
@@ -100,7 +109,7 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 
 			// compute the new position value (steppos)
 			var newpos:Int = this.getStepPosFromThumbPos();
-
+			trace ("newpos value is " + newpos);
 			if (newpos < this.stepPos) {
 				// it's less than the previous one
 				this.notify(EVT_SCROLL_LEFT, newpos);
@@ -135,7 +144,6 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 		cpRect.x = 0;
 		cpRect.y = 4;
 		cpRect.height = cpRect.height - 8;
-		cpRect.width = cpRect.width;
 		return cpRect;
 	}
 
