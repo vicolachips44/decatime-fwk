@@ -93,6 +93,10 @@ class ListBox extends BaseContainer implements IObserver {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
 				this.firstVisibleIndex = data;
+				if (this.firstVisibleIndex > this.itemsCount - this.visibleItemsCount) { 
+					this.firstVisibleIndex = this.itemsCount - this.visibleItemsCount;
+				}
+				if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
 				draw();
 		}
 	}
