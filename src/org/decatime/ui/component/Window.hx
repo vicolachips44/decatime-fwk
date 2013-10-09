@@ -24,7 +24,7 @@ import org.decatime.Facade;
 
 class Window extends BaseContainer {
 
-	private var root:BaseSpriteElement;
+	private var appRoot:BaseSpriteElement;
 	private var title:String;
 	private var position:Rectangle;
 	private var startX:Float;
@@ -39,7 +39,7 @@ class Window extends BaseContainer {
 	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name);
 		this.position = new Rectangle(0, 0, in_size.x, in_size.y);
-		this.root = Facade.getInstance().getRoot();
+		this.appRoot = Facade.getInstance().getRoot();
 		this.title = 'Untitled window';
 		this.elBackColorVisibility = 1.0;
 		this.fontResPath = fontResPath;
@@ -54,15 +54,15 @@ class Window extends BaseContainer {
 	}
 
 	public function show(): Void {
-		if (! root.contains(this)) {
-			root.addChild(this);
+		if (! appRoot.contains(this)) {
+			appRoot.addChild(this);
 			this.refresh(position);
 			centerPopup();
 		} else {
 			// bring it to front
 			this.visible = true;
 		}
-		root.setChildIndex(this, root.numChildren -1);
+		appRoot.setChildIndex(this, appRoot.numChildren -1);
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -156,7 +156,7 @@ class Window extends BaseContainer {
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
 		startX = e.localX;
 		startY = e.localY;
-		root.setChildIndex(this, root.numChildren -1);
+		appRoot.setChildIndex(this, appRoot.numChildren -1);
 		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
 	}
 
