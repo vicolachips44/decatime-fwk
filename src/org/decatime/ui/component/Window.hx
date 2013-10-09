@@ -3,8 +3,15 @@ package org.decatime.ui.component;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Graphics;
+import flash.display.Shape;
 import flash.events.MouseEvent;
 import flash.events.Event;
+
+import flash.filters.BlurFilter;
+import flash.filters.BitmapFilter;
+import flash.display.GradientType;
+import flash.filters.DropShadowFilter;
+import flash.geom.Matrix;
 
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
@@ -13,9 +20,11 @@ import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.ILayoutElement;
+import org.decatime.Facade;
 
 class Window extends BaseContainer {
 
+	private var root:BaseSpriteElement;
 	private var title:String;
 	private var position:Rectangle;
 	private var startX:Float;
@@ -23,15 +32,16 @@ class Window extends BaseContainer {
 	private var clientArea:VBox;
 	private var header:HBox;
 	private var footer:HBox;
-	private var size:Rectangle;
 	private var lblTitle:Label;
 	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
 
-	public function new(name:String, size:Point, fontResPath:String) {
+	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name);
-		this.size = new Rectangle(0, 0, size.x, size.y);
+		this.position = new Rectangle(0, 0, in_size.x, in_size.y);
+		this.root = Facade.getInstance().getRoot();
 		this.title = 'Untitled window';
+		this.elBackColorVisibility = 1.0;
 		this.fontResPath = fontResPath;
 	}
 
@@ -43,25 +53,34 @@ class Window extends BaseContainer {
 		return this.title;
 	}
 
-	public override function refresh(r:Rectangle): Void {
-		this.sizeInfo = r;
-
-		if (! this.initialized){
-			initializeComponent();
-		}
-
-		this.container.refresh(this.size);
-		
-		if (! this.initialized) {
-			initializeEvent();
-			this.x = this.sizeInfo.x;
-			this.y = this.sizeInfo.y;
+	public function show(): Void {
+		if (! root.contains(this)) {
+			root.addChild(this);
+			this.refresh(position);
+			centerPopup();
 		} else {
-			checkBounds();
+			// bring it to front
+			this.visible = true;
 		}
+		root.setChildIndex(this, root.numChildren -1);
+	}
 
+	public override function refresh(r:Rectangle): Void {
+		super.refresh(r);
 		draw();
-		this.initialized = true;
+		this.graphics.clear();
+		this.graphics.beginFill(0xdfdfdf, 1.0);
+		this.graphics.drawRect(0, 0, r.width, r.height);
+		this.graphics.endFill();
+	}
+
+	private function centerPopup() {
+		// by default the window is center on stage
+		var w:Float = flash.Lib.current.stage.stageWidth;
+		var h:Float = flash.Lib.current.stage.stageHeight;
+
+		this.x = (w / 2) - (position.width / 2);
+		this.y = (h / 2) - (position.height / 2);
 	}
 
 	private override function initializeComponent(): Void {
@@ -95,9 +114,49 @@ class Window extends BaseContainer {
 		this.headerContainer.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
 	}
 
+	private override function layoutComponent(): Void {
+		// header 
+		var r:Rectangle = header.getCurrSize();
+		var box:Matrix = new Matrix();
+		headerContainer.graphics.lineStyle(1, 0x000000, 0.70);
+	    box.createGradientBox(r.width, r.height);
+	    headerContainer.graphics.beginGradientFill(GradientType.LINEAR, [0x444444, 0x999999], [1, 1], [1, 255], box);
+	    headerContainer.graphics.drawRect(1, 1, r.width, r.height);
+	    headerContainer.graphics.endFill();
+	    var f:Array<BitmapFilter> = new Array<BitmapFilter>();
+	    var blurFilter:BlurFilter = new BlurFilter(2, 2);
+	    f.push(blurFilter);
+	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 1, 4, 4, 1, 1, false, false, false);
+	    f.push(shadowFilter);
+	    headerContainer.filters = f;
+
+	    var borders:Shape = new Shape();
+	    borders.name = "borders";
+	    borders.graphics.lineStyle(2, 0x000000, 0.70);
+	    borders.filters = f;
+	    borders.graphics.drawRect(0, 0, position.width, position.height);
+	    addChild(borders);
+
+	    var dropShadow:DropShadowFilter = new DropShadowFilter( 
+    		8 , 
+    		34 , 
+    		0x000000 , 
+    		0.7 , 
+    		5 , 
+    		5 ,
+    		1 ,
+    		6
+    	);
+    	var f2:Array<BitmapFilter> = new Array<BitmapFilter>();
+    	f2.push(dropShadow);
+
+		this.filters = f2;
+	}
+
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
 		startX = e.localX;
 		startY = e.localY;
+		root.setChildIndex(this, root.numChildren -1);
 		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
 	}
 
@@ -116,65 +175,12 @@ class Window extends BaseContainer {
 	}
 
 	private function draw(): Void {
-		// TODO draw graphics elements
 		this.graphics.clear();
-
-		this.graphics.lineStyle(2, 0x000000);
-		this.graphics.drawRect(0, 0, this.size.x, this.size.y);
-		this.graphics.lineStyle(1, 0x000000);
-		this.graphics.drawRect(
-			this.header.getCurrSize().x, 
-			this.header.getCurrSize().y, 
-			this.header.getCurrSize().width, 
-			this.header.getCurrSize().height
-		);
-		this.graphics.drawRect(
-			this.clientArea.getCurrSize().x, 
-			this.clientArea.getCurrSize().y, 
-			this.clientArea.getCurrSize().width, 
-			this.clientArea.getCurrSize().height
-		);
-		this.graphics.drawRect(
-			this.footer.getCurrSize().x, 
-			this.footer.getCurrSize().y, 
-			this.footer.getCurrSize().width, 
-			this.footer.getCurrSize().height
-		);
-		this.graphics.endFill();
 	}
 
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
-		// TODO : The window should not be moved outside the bounds of the parent container...
-		// var element:ILayoutElement = cast(this.parent, ILayoutElement);
-
-		// var parentRect:Rectangle = element.getCurrSize().clone();
 		
-		// trace ("parent size is " + parentRect.toString());
-		// trace ("this size is " + this.sizeInfo.toString());
-		// var rectPos:Rectangle = new Rectangle(this.x, this.y, this.sizeInfo.width - this.sizeInfo.x, this.sizeInfo.height - this.sizeInfo.y);
-
-		// trace (" my position is " + rectPos.toString());
-		// if (! parentRect.containsRect(rectPos)) {
-		// 	retValue = false;
-		// }
-		// if (this.sizeInfo.x > this.x) { 
-		// 	this.x = this.sizeInfo.x + 2;
-		// 	retValue = false;
-		// }
-		// trace ("my with value is " + this.width);
-		// if (this.sizeInfo.x + this.sizeInfo.width < this.x + this.sizeInfo.width) {
-		// 	this.x = 0;
-		// 	retValue = false;
-		// }
-		// if (this.sizeInfo.y > this.y) {
-		// 	this.y = this.sizeInfo.y + 2;
-		// 	retValue = false;
-		// }
-		// if (this.sizeInfo.y + this.sizeInfo.height < this.y + this.height) {
-		// 	this.y = this.sizeInfo.y + this.sizeInfo.height - this.height - 2;
-		// 	retValue = false;
-		// }
 		return retValue;
 	}
 
@@ -185,7 +191,7 @@ class Window extends BaseContainer {
 		lblTitle.setFontRes(this.fontResPath);
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
-		lblTitle.setBackColor(0xaaaaaa);
+		//lblTitle.setBackColor(0xaaaaaa);
 		
 		var c:Content = this.header.create(1.0, this.lblTitle);
 		c.setVerticalGap(1);

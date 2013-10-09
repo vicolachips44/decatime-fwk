@@ -61,7 +61,7 @@ class TableView extends BaseContainer implements IObserver {
 		this.addChild(this.scPanel);
 	}
 
-	private override function layoutComponant(): Void {
+	private override function layoutComponent(): Void {
 		// todo create the layout table
 	}
 }
