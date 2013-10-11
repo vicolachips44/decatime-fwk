@@ -34,6 +34,10 @@ class Basic implements ILayoutElement {
 		return Lambda.count(this.contents);
 	}
 
+	public function getContent(index:Int): Content {
+		return this.contents.get(index);
+	}
+
 	public function setHorizontalGap(value:Float): Void {
 		this.hgap = value;
 	}

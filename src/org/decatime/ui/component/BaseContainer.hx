@@ -59,7 +59,7 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	}
 
 	private function layoutComponent(): Void {
-		trace ("this method is called once after the first refresh method call");
+		// trace ("this method is called once after the first refresh method call");
 	}
 
 	private function initializeEvent(): Void {

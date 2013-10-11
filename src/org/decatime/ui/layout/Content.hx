@@ -22,6 +22,10 @@ class Content implements ILayoutElement {
 		this.vgap = 0;
 	}
 
+	public function getItem(): ILayoutElement {
+		return this.item;
+	}
+
 	public function setHorizontalGap(value:Float): Void {
 		this.hgap = value;
 	}

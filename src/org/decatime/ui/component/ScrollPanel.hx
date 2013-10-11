@@ -25,9 +25,29 @@ class ScrollPanel extends BaseContainer implements IObserver {
 		return this.scrollArea;
 	}
 
-	public function addChildToScrollArea(c: DisplayObject): Void {
-		this.scrollArea.addChild(c);
-		this.refresh(this.getCurrSize());
+	public function getScrollAreaContainer(): VBox {
+		return this.scrollAreaContainer;
+	}
+
+	public function new(name:String) {
+		super(name);
+		
+		// child objets will be added to this sprite
+		this.scrollArea = new BaseSpriteElement('scrollArea1');
+		this.scrollArea.buttonMode = false;
+		this.scrollArea.isContainer = false;
+		this.scrollArea.elBackColor = 0x000000;
+		this.scrollArea.elBackColorVisibility = 1.0;
+
+		// child objets will be layedout by this container
+		this.scrollAreaContainer = new VBox(this.container);
+		this.scrollAreaContainer.setVerticalGap(0);
+		this.scrollAreaContainer.setHorizontalGap(0);
+
+		this.scrollAreaContainer.create(1.0, this.scrollArea);
+
+		this.scrollRectPosX = 0;
+		this.scrollRectPosY = 0;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -49,7 +69,6 @@ class ScrollPanel extends BaseContainer implements IObserver {
 
 			case HorizontalScrollBar.EVT_SCROLL_LEFT,
 				 HorizontalScrollBar.EVT_SCROLL_RIGHT:
-				 trace ("new data value is " + data);
 				this.scrollRectPosX = data;
 				draw();
 		}
@@ -67,37 +86,29 @@ class ScrollPanel extends BaseContainer implements IObserver {
 	// IObserver implementation END	
 	
 	private override function initializeComponent(): Void {
-		this.scrollRectPosY = 0;
-		this.scrollRectPosX = 0;
-
 		this.container = new HBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
 
-		this.scrollAreaContainer = new VBox(this.container);
-		this.scrollAreaContainer.setVerticalGap(0);
-		this.scrollAreaContainer.setHorizontalGap(0);
-
-		this.scrollArea = new BaseSpriteElement('scrollArea1');
-		this.scrollArea.buttonMode = false;
-		this.scrollArea.isContainer = false;
-		this.scrollArea.elBackColor = 0xdfdfdf;
-		this.scrollArea.elBackColorVisibility = 1.0;
-
-		this.scrollAreaContainer.create(1.0, this.scrollArea);
-		this.addChild(this.scrollArea);
-
 		hsBar1 = new HorizontalScrollBar('hsbar1');
 		hsBar1.addListener(this);
-		this.scrollAreaContainer.create(24, hsBar1);
-		this.addChild(hsBar1);
 
-		this.container.create(1.0, this.scrollAreaContainer);
+		var vb1:VBox = new VBox(this.container);
+		vb1.setHorizontalGap(0);
+		vb1.setVerticalGap(0);
+
+		vb1.create(1.0, this.scrollAreaContainer);
+		vb1.create(24, hsBar1);		
+
+		this.container.create(1.0, vb1);
 
 		vsBar1 = new VerticalScrollBar('vsbar1');
 		vsBar1.addListener(this);
 		this.container.create(24, vsBar1);
+
+		this.addChild(hsBar1);	
 		this.addChild(vsBar1);
+		this.addChild(this.scrollArea);
 	}
 
 	private function updateVsScrollBar(): Void {
@@ -105,9 +116,10 @@ class ScrollPanel extends BaseContainer implements IObserver {
 
 		this.vsBar1.setStepCount(Std.int(this.scrollArea.height));
 		this.vsBar1.setStepPos(this.scrollRectPosY);
-		this.vsBar1.setStepSize(1);
+		this.vsBar1.setStepSize(24);
 		this.vsBar1.setVisibleHeight(this.scrollAreaContainer.getCurrSize().height);
 		this.vsBar1.updatePos();
+		trace ("vsBar1 has been updated...");
 	}
 
 	private function updateHsScrollBar(): Void {
@@ -121,6 +133,8 @@ class ScrollPanel extends BaseContainer implements IObserver {
 	}
 
 	private function draw(): Void {
+		this.graphics.lineStyle(3, 0x000000);
+		this.graphics.drawRect(this.scrollAreaContainer.getCurrSize().x, this.scrollAreaContainer.getCurrSize().y, this.scrollAreaContainer.getCurrSize().width, this.scrollAreaContainer.getCurrSize().height);
 		this.updateScrollAreaRect();
 	}
 
@@ -129,7 +143,7 @@ class ScrollPanel extends BaseContainer implements IObserver {
 			this.scrollAreaRect = new Rectangle(
 				this.scrollAreaContainer.getCurrSize().x, this.scrollAreaContainer.getCurrSize().y,
 				this.scrollAreaContainer.getCurrSize().width,
-				this.scrollAreaContainer.getCurrSize().height - this.hsBar1.height
+				this.scrollAreaContainer.getCurrSize().height
 			);
 		} else {
 			this.scrollAreaRect.y = this.scrollRectPosY;

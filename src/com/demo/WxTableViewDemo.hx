@@ -7,7 +7,7 @@ import flash.display.Bitmap;
 
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.table.TableView;
-import org.decatime.ui.component.table.Column;
+import org.decatime.ui.component.table.Row;
 import org.decatime.ui.component.table.Cell;
 
 import org.decatime.event.IObservable;
@@ -23,8 +23,8 @@ class WxTableViewDemo extends Window implements IObserver {
 	}
 
 	private override function buildClientArea(): Void {
-		myTable = new TableView('DemoTable');
-		// buildTable();
+		myTable = new TableView('DemoTable', 'assets/Vera.ttf');
+		buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);
 	}
@@ -41,17 +41,16 @@ class WxTableViewDemo extends Window implements IObserver {
 	}
 
 	private function buildTable(): Void {
-		// myTable.rowCount = 100;
+		this.myTable.addColumn('Column 1', 120);
+		this.myTable.addColumn('Column 2', 160);
 
-		// myTable.addColumn(new Column('Column 1', 120));
-		// myTable.addColumn(new Column('Column 2', 100));
-		// myTable.addColumn(new Column('Column 3', 180));
+		var i:Int = 0;
+		for (i in 0...2000) {
+			var r1:Row = new Row('row', 24);
+			this.myTable.addRow(r1);
 
-		// var i:Int = 0;
-		// for (i in 0...myTable.rowCount) {
-		// 	myTable.getColumn(0).addCell(new Cell('Essai_0_' + i));
-		// 	myTable.getColumn(1).addCell(new Cell('Essai_1_' + i));
-		// 	myTable.getColumn(2).addCell(new Cell('Essai_2_' + i));
-		// }
+			r1.addCell(new Cell('cell_1_' + i));
+			r1.addCell(new Cell('cell_2_' + i));
+		}
 	}
 }

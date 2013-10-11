@@ -30,7 +30,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	private var nbVisible:Int;
 	private var hPct:Float;
 	private var thumbHeight:Float;
-	private var thumbMinHeight:Float = 16;
+	private var thumbMinHeight:Float = 48;
 
 	// IObserver implementation BEGIN
 
@@ -38,7 +38,10 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		switch (name) {
 			case ArrowButton.EVT_CLICK:
 				if (data == 'btnUp' && this.stepPos > 0) {
-					this.stepPos--;
+					this.stepPos = this.stepPos - this.stepSize;
+					while (this.stepPos % this.stepSize != 0) {
+						this.stepPos--;
+					}
 					this.evManager.notify(EVT_SCROLL_DOWN, this.stepPos);
 					this.thumb.y = this.getThumbPosFromStepPos();
 					trace ("btnUp was clicked");
@@ -51,7 +54,10 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 				}
 
 				if (data == 'btnDown' && this.stepPos < (this.stepCount - nbVisible)) {
-					this.stepPos++;
+					this.stepPos = this.stepPos + this.stepSize;
+					while (this.stepPos % this.stepSize != 0) {
+						this.stepPos++;
+					}
 					this.evManager.notify(EVT_SCROLL_UP, this.stepPos);
 					this.thumb.y = this.getThumbPosFromStepPos();
 				}
@@ -99,7 +105,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 		// the topPosition in pixel
 		topPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getVerticalGap();
 		bottomPos = this.thumbContainer.getCurrSize().y + this.thumbContainer.getCurrSize().height - thumbHeight;
-		nbVisible = Std.int(this.visibleHeight / this.stepSize);
+		nbVisible = Std.int(this.visibleHeight);
 	}
 
 	private override function handleScrollEvent(e:MouseEvent): Void {

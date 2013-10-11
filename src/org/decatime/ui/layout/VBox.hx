@@ -19,7 +19,6 @@ class VBox extends BoxBase {
 
 		for ( i in 1...this.getNbContent() + 1) {
 			content = this.contents.get(i);
-
 			var size:Float = content.getSize();
 
 			// the with is the same for all contents since it's a VBox
