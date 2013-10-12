@@ -18,6 +18,9 @@ import org.decatime.event.IObservable;
 import org.decatime.ui.component.ScrollPanel;
 
 class TableView extends BaseContainer implements IObserver {
+	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";
+	public static var EVT_ROW_SELECTED:String = NAMESPACE + "EVT_ROW_SELECTED";
+
 	private var scPanel: ScrollPanel;
 	private var headerArea: HBox;
 	private var headerSprite: BaseSpriteElement;
@@ -53,6 +56,9 @@ class TableView extends BaseContainer implements IObserver {
 		this.columnsCount++;
 
 		var c:Column = new Column(headerText, colWidth);
+		c.columnIndex = this.columnsCount;
+		c.table = this;
+		
 		c.headerLabel.setFontRes(this.fontRes);
 		c.headerLabel.setText(headerText);
 		this.columns.set(this.columnsCount, c);
@@ -68,18 +74,23 @@ class TableView extends BaseContainer implements IObserver {
 		this.rowsCount++;
 		lrow.table = this;
 		lrow.rowIndex = this.rowsCount;
+		lrow.addListener(this);
 		this.rows.set(this.rowsCount, lrow);
 	}
 
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
-		
+		switch (name) {
+			case Row.EVT_ROW_SELECTED:
+				// relay the event
+				this.notify(EVT_ROW_SELECTED, data);
+		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			
+			Row.EVT_ROW_SELECTED
 		];
 	}
 

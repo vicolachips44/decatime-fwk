@@ -235,7 +235,7 @@ class Window extends BaseContainer implements IObserver {
 		lblTitle.setFontRes(this.fontResPath);
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
-		//lblTitle.setBackColor(0xaaaaaa);
+		lblTitle.setColor(0xffffff);
 		
 		var c:Content = this.header.create(1.0, this.lblTitle);
 		c.setVerticalGap(1);

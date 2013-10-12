@@ -7,8 +7,12 @@ import org.decatime.ui.component.Label;
 
 class Cell {
 	public var text(default, null): Label;
+	public var table(default, default): TableView;
+	public var row(default, default): Row;
+	public var column(default, default): Column;
 
 	public function new(name:String) {
 		this.text = new Label(name);
+		this.text.setTagRef(this);
 	}
 }

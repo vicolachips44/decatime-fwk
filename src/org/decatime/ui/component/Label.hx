@@ -28,6 +28,7 @@ class Label extends BaseBitmapElement {
 	private var isBold:Bool;
 	private var tfield:TextField;
 	private var initialized:Bool;
+	private var tagRef: Dynamic;
 
 	public function new(text:String, ?color:Int = 0x000000, ?align:String = Label.LEFT) {
 		super();
@@ -61,6 +62,14 @@ class Label extends BaseBitmapElement {
 		}
 		this.draw();
 		this.initialized = true;
+	}
+
+	public function setTagRef(value: Dynamic) : Void {
+		this.tagRef = value;
+	}
+
+	public function getTagRef(): Dynamic {
+		return this.tagRef;
 	}
 
 	public function setFontRes(fontRes:String): Void {
@@ -177,6 +186,9 @@ class Label extends BaseBitmapElement {
 				true 
 			);
 		}
+		#if flash
+		this.smoothing = true;
+		#end
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {

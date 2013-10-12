@@ -24,6 +24,7 @@ class WxTableViewDemo extends Window implements IObserver {
 
 	private override function buildClientArea(): Void {
 		myTable = new TableView('DemoTable', 'assets/Vera.ttf');
+		myTable.addListener(this);
 		buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);
@@ -34,11 +35,20 @@ class WxTableViewDemo extends Window implements IObserver {
 
 	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		super.handleEvent(name, sender, data);
+		switch (name) {
+			case TableView.EVT_ROW_SELECTED:
+				trace ("row " + data + " selected event from table view");
+				var r:Row = this.myTable.getRows().get(data);
+				var c:Cell = null;
+				for (c in r.getCells()) {
+					trace ("text of cell: " + c.text.getText());
+				}
+		}
 	}
 
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
-		//parentAy.push( x : String )
+		parentAy.push(TableView.EVT_ROW_SELECTED);
 		return parentAy;
 	}
 
@@ -46,7 +56,7 @@ class WxTableViewDemo extends Window implements IObserver {
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
 		this.myTable.addColumn('Column 3', 120);
-		this.myTable.addColumn('Column 4', 160);
+		this.myTable.addColumn('Column 4', 1.0);
 
 		var i:Int = 0;
 		for (i in 0...200) {

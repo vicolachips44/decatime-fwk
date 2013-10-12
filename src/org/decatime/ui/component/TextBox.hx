@@ -38,6 +38,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 	private var margin:Point;
 	private var initialized:Bool;
 	private var asBorder:Bool;
+	private var isBold:Bool;
 	private var txtBorderColor:Int;
 	private var myStage:Stage;
 	private var evManager:EventManager;
@@ -79,6 +80,8 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		tmCursorBlink = new Timer(300);
 		tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
 		#end
+
+		this.isBold = true;
 	}
 
 	public function setMargin(p:Point): Void {
@@ -98,6 +101,14 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 	public function setFontSize(size:Int): Void {
 		this.fontSize = size;
 		this.updateDisplay();
+	}
+
+	public function setIsBold(value: Bool): Void {
+		this.isBold = value;
+	}
+
+	public function getIsBold(): Bool {
+		return this.isBold;
 	}
 
 	public function getColor(): Int {
@@ -196,7 +207,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			this.fontRes.fontName, 
 			this.fontSize, 
 			this.color,
-			true
+			this.isBold
 		);
 
 		this.embedFonts = true;
@@ -295,7 +306,9 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	private function stopCursorBlinking(): Void {
 		this.tmCursorBlink.stop();
-		this.parent.removeChild(this.cursorOverlay);
+		if (this.parent != null) {
+			this.parent.removeChild(this.cursorOverlay);
+		}
 		this.cursorOverlay = null;
 		this.cursorVisible = false;
 		trace ("cursor overlay has been removed");
@@ -309,5 +322,6 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		#end
 
 		this.borderColor = this.txtBorderColor;
+		trace ("onTxtFocusOut event ended...");
 	}
 }

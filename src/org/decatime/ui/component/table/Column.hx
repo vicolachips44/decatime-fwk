@@ -8,13 +8,30 @@ import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.component.Label;
 
 class Column extends BaseContainer {
+	/**
+	* type should be one of the enum values in EditorType
+	*/
+	public var editorType(default, null): String;
 	public var columnWidth(default, null): Float;
 	public var headerLabel(default, null): Label;
+	public var table(default, default): TableView;
 
-	public function new(name:String, colWidth: Float) {
+	public var columnIndex(default, default): Int;
+
+	private var editor: ITableEditor;
+
+	public function new(name:String, colWidth: Float, ?edType: String = 'EditorTypeText') {
 		super(name);
 		this.headerLabel = new Label('');
 		this.columnWidth = colWidth;
+		this.editorType = edType;
+	}
+
+	public function getEditor(): ITableEditor {
+		if (this.editorType == EditorType.TEXT && this.editor == null) {
+			this.editor = new TextEditor(this.table, 'textEditor_' + this.columnIndex);
+		}
+		return this.editor;
 	}
 
 	public override function refresh(r:Rectangle): Void {
