@@ -5,7 +5,7 @@ import flash.display.Graphics;
 
 import org.decatime.ui.component.Label;
 
-class Cell  {
+class Cell {
 	public var text(default, null): Label;
 
 	public function new(name:String) {

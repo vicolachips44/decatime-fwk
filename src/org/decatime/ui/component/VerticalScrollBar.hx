@@ -44,13 +44,6 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 					}
 					this.evManager.notify(EVT_SCROLL_DOWN, this.stepPos);
 					this.thumb.y = this.getThumbPosFromStepPos();
-					trace ("btnUp was clicked");
-				}
-				if (data == 'btnDown') {
-					trace ("btnDown was clicked");
-					trace ("nbVisible value is " + nbVisible);
-					trace ("stepPos is " + this.stepPos);
-					trace ("stepcount is " + this.stepCount);
 				}
 
 				if (data == 'btnDown' && this.stepPos < (this.stepCount - nbVisible)) {

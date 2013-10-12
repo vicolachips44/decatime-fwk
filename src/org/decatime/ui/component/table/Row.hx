@@ -18,6 +18,7 @@ class Row extends BaseContainer {
 		super(name);
 		this.rowHeight = rHeight;
 		this.cells = new Array<Cell>();
+		this.cacheAsBitmap = true;
 	}
 
 	public function addCell(c:Cell): Cell {
@@ -28,7 +29,6 @@ class Row extends BaseContainer {
 
 	public override function refresh(r:Rectangle): Void {
 		r.y = (this.rowIndex - 1) * rowHeight;
-		r.x = 1;
 		super.refresh(r);
 		var g:Graphics = this.graphics;
 		g.clear();

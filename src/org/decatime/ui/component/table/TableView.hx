@@ -89,14 +89,12 @@ class TableView extends BaseContainer implements IObserver {
 
 		g.lineStyle(1, 0x000000);
 		g.drawRect(r.x, r.y, r.width, r.height);
-
-		this.scPanel.refresh(this.scPanel.getCurrSize());
 	}
 
 	private override function initializeComponent(): Void {
 		this.container = new VBox(this);
-		this.container.setVerticalGap(2);
-		this.container.setHorizontalGap(2);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 
 		var hareaBox: HBox = new HBox(this.container);
 		hareaBox.setHorizontalGap(0);

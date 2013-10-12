@@ -27,6 +27,7 @@ class WxTableViewDemo extends Window implements IObserver {
 		buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);
+		trace ("the client area is now builded");
 	}
 
 	// IObserver implementation BEGIN
@@ -43,6 +44,8 @@ class WxTableViewDemo extends Window implements IObserver {
 	private function buildTable(): Void {
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
+		this.myTable.addColumn('Column 3', 120);
+		this.myTable.addColumn('Column 4', 160);
 
 		var i:Int = 0;
 		for (i in 0...2000) {
@@ -51,6 +54,8 @@ class WxTableViewDemo extends Window implements IObserver {
 
 			r1.addCell(new Cell('cell_1_' + i));
 			r1.addCell(new Cell('cell_2_' + i));
+			r1.addCell(new Cell('cell_3_' + i));
+			r1.addCell(new Cell('cell_4_' + i));
 		}
 	}
 }

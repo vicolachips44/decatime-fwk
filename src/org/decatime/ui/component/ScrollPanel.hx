@@ -48,6 +48,8 @@ class ScrollPanel extends BaseContainer implements IObserver {
 
 		this.scrollRectPosX = 0;
 		this.scrollRectPosY = 0;
+
+		this.addChild(this.scrollArea);
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -108,7 +110,6 @@ class ScrollPanel extends BaseContainer implements IObserver {
 
 		this.addChild(hsBar1);	
 		this.addChild(vsBar1);
-		this.addChild(this.scrollArea);
 	}
 
 	private function updateVsScrollBar(): Void {
@@ -119,7 +120,6 @@ class ScrollPanel extends BaseContainer implements IObserver {
 		this.vsBar1.setStepSize(24);
 		this.vsBar1.setVisibleHeight(this.scrollAreaContainer.getCurrSize().height);
 		this.vsBar1.updatePos();
-		trace ("vsBar1 has been updated...");
 	}
 
 	private function updateHsScrollBar(): Void {
@@ -133,7 +133,7 @@ class ScrollPanel extends BaseContainer implements IObserver {
 	}
 
 	private function draw(): Void {
-		this.graphics.lineStyle(3, 0x000000);
+		this.graphics.lineStyle(1, 0x000000);
 		this.graphics.drawRect(this.scrollAreaContainer.getCurrSize().x, this.scrollAreaContainer.getCurrSize().y, this.scrollAreaContainer.getCurrSize().width, this.scrollAreaContainer.getCurrSize().height);
 		this.updateScrollAreaRect();
 	}
@@ -145,10 +145,10 @@ class ScrollPanel extends BaseContainer implements IObserver {
 				this.scrollAreaContainer.getCurrSize().width,
 				this.scrollAreaContainer.getCurrSize().height
 			);
-		} else {
-			this.scrollAreaRect.y = this.scrollRectPosY;
-			this.scrollAreaRect.x = this.scrollRectPosX;
-		}
+		} 
+
+		this.scrollAreaRect.y = this.scrollRectPosY;
+		this.scrollAreaRect.x = this.scrollRectPosX;
 		this.scrollArea.scrollRect = this.scrollAreaRect;
 	}
 }
