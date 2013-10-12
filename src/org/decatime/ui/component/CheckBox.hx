@@ -13,7 +13,7 @@ class CheckBox extends BaseSelected {
 		var g:Graphics = this.shp.graphics;
 		g.clear();
 
-		if (! this.label.getTransparentBackground()) {
+		if ((this.label != null) && (! this.label.getTransparentBackground())) {
 			g.beginFill(this.label.getBackColor(), 1);
 			g.drawRect(0, 0, this.shp.getCurrSize().width, this.shp.getCurrSize().height);
 			g.endFill();
@@ -34,7 +34,7 @@ class CheckBox extends BaseSelected {
 		}
 	}
 
-	private override function onMouseClick(e:MouseEvent): Void {
+	private override function onMouseDown(e:MouseEvent): Void {
 		this.selected = ! this.selected;
 		draw();
 		evManager.notify(BaseSelected.EVT_CLICK, this);

@@ -20,7 +20,7 @@ class Column extends BaseContainer {
 
 	private var editor: ITableEditor;
 
-	public function new(name:String, colWidth: Float, ?edType: String = 'EditorTypeText') {
+	public function new(name:String, colWidth: Float, edType: String) {
 		super(name);
 		this.headerLabel = new Label('');
 		this.columnWidth = colWidth;
@@ -30,6 +30,9 @@ class Column extends BaseContainer {
 	public function getEditor(): ITableEditor {
 		if (this.editorType == EditorType.TEXT && this.editor == null) {
 			this.editor = new TextEditor(this.table, 'textEditor_' + this.columnIndex);
+		}
+		if (this.editorType == EditorType.CHECK && this.editor == null) {
+			this.editor = new CheckBoxEditor(this.table, 'checkboxEditor_' + this.columnIndex);
 		}
 		return this.editor;
 	}

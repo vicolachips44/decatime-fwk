@@ -9,6 +9,7 @@ import org.decatime.ui.component.Window;
 import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Row;
 import org.decatime.ui.component.table.Cell;
+import org.decatime.ui.component.table.EditorType;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
@@ -52,10 +53,12 @@ class WxTableViewDemo extends Window implements IObserver {
 		return parentAy;
 	}
 
+	// IObserver implementation END
+
 	private function buildTable(): Void {
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
-		this.myTable.addColumn('Column 3', 120);
+		this.myTable.addColumn('Column 3', 30, EditorType.CHECK);
 		this.myTable.addColumn('Column 4', 1.0);
 
 		var i:Int = 0;
@@ -65,7 +68,7 @@ class WxTableViewDemo extends Window implements IObserver {
 
 			r1.addCell(new Cell('cell_1_' + i));
 			r1.addCell(new Cell('cell_2_' + i));
-			r1.addCell(new Cell('cell_3_' + i));
+			r1.addCell(new Cell('1'));
 			r1.addCell(new Cell('cell_4_' + i));
 		}
 	}

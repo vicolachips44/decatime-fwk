@@ -18,8 +18,9 @@ class BaseSelected extends BaseContainer {
 
 	public function new(name:String) {
 		super(name);
-		this.addEventListener(MouseEvent.CLICK, onMouseClick);
-		this.label = new Label('', 0x000000 , 'left');
+		this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		this.createLabel();
+		
 		selected = false;
 	}
 
@@ -41,6 +42,10 @@ class BaseSelected extends BaseContainer {
 		draw();
 	}
 
+	private function createLabel(): Void {
+		this.label = new Label('', 0x000000 , 'left');
+	}
+
 	private function draw(): Void {}
 
 	private override function initializeComponent(): Void {
@@ -51,16 +56,18 @@ class BaseSelected extends BaseContainer {
 		this.shp = new BaseShapeElement('chkItem');
 		this.container.create(20, shp);
 
-		this.container.create(1.0, this.label);
+		if (this.label != null) {
+			this.container.create(1.0, this.label);
+			this.addChild(this.label);
+		}
 
-		this.addChild(this.label);
 		this.addChild(this.shp);
 
 		var blur:flash.filters.BlurFilter = new flash.filters.BlurFilter(2, 2, 1);
 		this.shp.filters = [blur];
 	}
 
-	private function onMouseClick(e:MouseEvent): Void {
+	private function onMouseDown(e:MouseEvent): Void {
 		evManager.notify(EVT_CLICK, this);
 	}
 }

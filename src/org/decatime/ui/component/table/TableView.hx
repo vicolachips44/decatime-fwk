@@ -52,10 +52,10 @@ class TableView extends BaseContainer implements IObserver {
 		return this.rows;
 	}
 
-	public function addColumn(headerText: String, colWidth: Float): Column {
+	public function addColumn(headerText: String, colWidth: Float, ?edType: String = 'EditorTypeText'): Column {
 		this.columnsCount++;
 
-		var c:Column = new Column(headerText, colWidth);
+		var c:Column = new Column(headerText, colWidth, edType);
 		c.columnIndex = this.columnsCount;
 		c.table = this;
 		
