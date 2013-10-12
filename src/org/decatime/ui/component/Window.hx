@@ -53,16 +53,16 @@ class Window extends BaseContainer {
 		return this.title;
 	}
 
-	public function show(): Void {
-		if (! appRoot.contains(this)) {
-			appRoot.addChild(this);
+	public function show(parent: BaseSpriteElement): Void {
+		if (! parent.contains(this)) {
+			parent.addChild(this);
 			this.refresh(position);
 			centerPopup();
 		} else {
 			// bring it to front
 			this.visible = true;
 		}
-		appRoot.setChildIndex(this, appRoot.numChildren -1);
+		parent.setChildIndex(this, parent.numChildren -1);
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -156,7 +156,7 @@ class Window extends BaseContainer {
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
 		startX = e.localX;
 		startY = e.localY;
-		appRoot.setChildIndex(this, appRoot.numChildren -1);
+		this.parent.setChildIndex(this, this.parent.numChildren -1);
 		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
 	}
 
@@ -180,7 +180,24 @@ class Window extends BaseContainer {
 
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
-		
+		var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
+		if (this.x < spEl.getCurrSize().x) {
+			this.x = spEl.getCurrSize().x;
+			return false;
+		}
+		if (this.y < spEl.getCurrSize().y) {
+			this.y = spEl.getCurrSize().y;
+			return false;
+		}
+		if (this.x + this.getCurrSize().width > spEl.getCurrSize().x + spEl.getCurrSize().width) {
+			this.x = spEl.getCurrSize().x + spEl.getCurrSize().width - this.getCurrSize().width;
+			return false;
+		}
+
+		if (this.y + this.getCurrSize().height > spEl.getCurrSize().y + spEl.getCurrSize().height) {
+			this.y = spEl.getCurrSize().y + spEl.getCurrSize().height - this.getCurrSize().height;
+			return false;
+		}
 		return retValue;
 	}
 
