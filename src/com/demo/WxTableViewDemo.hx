@@ -48,7 +48,7 @@ class WxTableViewDemo extends Window implements IObserver {
 		this.myTable.addColumn('Column 4', 160);
 
 		var i:Int = 0;
-		for (i in 0...200) {
+		for (i in 0...2000) {
 			var r1:Row = new Row('row', 24);
 			this.myTable.addRow(r1);
 

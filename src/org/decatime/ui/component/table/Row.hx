@@ -23,7 +23,7 @@ class Row extends BaseContainer {
 		super(name);
 		this.rowHeight = rHeight;
 		this.cells = new Array<Cell>();
-		this.cacheAsBitmap = true;
+		// this.cacheAsBitmap = true;
 		this.selected = false;
 	}
 
