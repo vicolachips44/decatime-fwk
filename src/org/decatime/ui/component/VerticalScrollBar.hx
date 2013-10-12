@@ -102,26 +102,32 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	}
 
 	private override function handleScrollEvent(e:MouseEvent): Void {
-		var newY:Float = e.stageY - this.startY - this.thumbStartY;
+		var newY:Float = this.stage.mouseY - this.startY - this.thumbStartY;
 		
 		// if the position is within the allowed range
 		if (newY >= topPos && newY <= bottomPos) {
-			// apply the new Y position
 			this.thumb.y = newY;
-
-			// compute the new position value (steppos)
-			var newpos:Int = this.getStepPosFromThumbPos();
-
-			if (newpos < this.stepPos) {
-				// it's less than the previous one
-				this.notify(EVT_SCROLL_UP, newpos);
-			} else {
-				// it's greater than the previous one
-				this.notify(EVT_SCROLL_DOWN, newpos);
+		} else {
+			if (newY <= topPos) {
+				this.thumb.y = topPos;
 			}
-			// the stepPos becomes the newpos
-			this.stepPos = newpos;
+			if (newY >= bottomPos) {
+				this.thumb.y = bottomPos;
+			}
 		}
+
+		// compute the new position value (steppos)
+		var newpos:Int = this.getStepPosFromThumbPos();
+
+		if (newpos < this.stepPos) {
+			// it's less than the previous one
+			this.notify(EVT_SCROLL_UP, newpos);
+		} else {
+			// it's greater than the previous one
+			this.notify(EVT_SCROLL_DOWN, newpos);
+		}
+		// the stepPos becomes the newpos
+		this.stepPos = newpos;
 	}
 
 	private function getStepPosFromThumbPos(): Int {

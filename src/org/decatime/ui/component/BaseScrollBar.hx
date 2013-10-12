@@ -142,6 +142,7 @@ class BaseScrollBar extends BaseContainer {
 	}
 
 	private function onScrollbarMouseUp(e:MouseEvent): Void {
+		trace ("MouseUp detected");
 		endScroll();
 	}
 
