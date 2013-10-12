@@ -2,6 +2,9 @@ package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
 import flash.display.DisplayObject;
+import flash.events.FocusEvent;
+import flash.events.MouseEvent;
+import flash.events.KeyboardEvent;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.component.VerticalScrollBar;
@@ -112,10 +115,64 @@ class ScrollPanel extends BaseContainer implements IObserver {
 		this.addChild(vsBar1);
 	}
 
+	private override function initializeEvent(): Void {
+		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
+		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
+	}
+
+	private function onFocusInEvt(e:FocusEvent): Void {
+		trace ("focus in event : making listener for keyup and mousewheel");
+		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
+	}
+
+	private function onFocusOutEvt(e:FocusEvent): Void {
+		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
+	}
+
+	private function onMouseWheelEvt(e:MouseEvent): Void {
+		if (e.delta == 0) { return; }
+		if (e.delta > 0) {
+			movePrevious();
+		} else {
+			moveNext();
+		}
+	}
+
+	private function onStageKeyUp(e:KeyboardEvent): Void {
+		if (e.keyCode == 40) { // down arrow
+			this.moveNext();
+		}
+		if (e.keyCode == 38) { // up arrow
+			this.movePrevious();
+		}
+	}
+
+	private function moveNext(): Void {
+		this.scrollRectPosY = this.scrollRectPosY + 24;
+
+		var avHeight: Float = Math.abs(this.scrollArea.getCurrSize().height);
+
+		if (this.scrollRectPosY > avHeight) {
+			this.scrollRectPosY = Std.int(avHeight);
+		}
+		updateScrollAreaRect();
+		updateVsScrollBar();
+	}
+
+	private function movePrevious(): Void {
+		this.scrollRectPosY = this.scrollRectPosY - 24;
+		if (this.scrollRectPosY  < 0) { this.scrollRectPosY = 0; }
+		updateScrollAreaRect();
+		updateVsScrollBar();
+	}
+
 	private function updateVsScrollBar(): Void {
 		if (this.vsBar1.isScrolling()) { return; }
+		var avHeight: Float = Math.abs(this.scrollArea.getCurrSize().height) + this.scrollAreaContainer.getCurrSize().height;
 
-		this.vsBar1.setStepCount(Std.int(this.scrollArea.height));
+		this.vsBar1.setStepCount(Std.int(avHeight));
 		this.vsBar1.setStepPos(this.scrollRectPosY);
 		this.vsBar1.setStepSize(24);
 		this.vsBar1.setVisibleHeight(this.scrollAreaContainer.getCurrSize().height);
@@ -146,6 +203,7 @@ class ScrollPanel extends BaseContainer implements IObserver {
 				this.scrollAreaContainer.getCurrSize().height
 			);
 		} 
+
 
 		this.scrollAreaRect.y = this.scrollRectPosY;
 		this.scrollAreaRect.x = this.scrollRectPosX;

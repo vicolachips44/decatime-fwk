@@ -23,7 +23,7 @@ class Column extends BaseContainer {
 		
 		g.clear();
 
-		g.lineStyle(1, 0x000000);
+		g.lineStyle(2, 0x000000);
 		g.drawRect(r.x, r.y, r.width, r.height);
 	}
 

@@ -105,10 +105,8 @@ class BaseScrollBar extends BaseContainer {
 		this.mouseDownPoint = new Point(this.mouseX, this.mouseY);
 
 		if (thumb.getRect(this).containsPoint(this.mouseDownPoint)) {
-			trace ("mouse down detected on thumb");
 			if (hasNoScrollSpace()) {
 				this.scrolling = false;
-				trace ("there is no space to scroll");
 			} else {
 				this.startX = e.stageX - e.localX;
 				this.startY = e.stageY - e.localY;
@@ -142,7 +140,6 @@ class BaseScrollBar extends BaseContainer {
 	}
 
 	private function onScrollbarMouseUp(e:MouseEvent): Void {
-		trace ("MouseUp detected");
 		endScroll();
 	}
 

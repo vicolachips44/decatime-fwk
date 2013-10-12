@@ -45,6 +45,10 @@ class TableView extends BaseContainer implements IObserver {
 		return this.fontRes;
 	}
 
+	public function getRows(): IntMap<Row> {
+		return this.rows;
+	}
+
 	public function addColumn(headerText: String, colWidth: Float): Column {
 		this.columnsCount++;
 
@@ -102,12 +106,14 @@ class TableView extends BaseContainer implements IObserver {
 		this.container.create(this.headerHeight, hareaBox);
 
 		this.headerArea = new HBox(this.container);
-		this.headerArea.setHorizontalGap(1);
+		this.headerArea.setHorizontalGap(0);
 		this.headerArea.setVerticalGap(0);
 
 		hareaBox.create(1.0, this.headerArea);
 		hareaBox.create(this.headerHeight, new VBox(hareaBox)); // spacer
-		
+		hareaBox.setHorizontalGap(0);
+		hareaBox.setVerticalGap(0);
+
 		this.container.create(1.0, this.scPanel);
 		this.addChild(this.scPanel);
 
