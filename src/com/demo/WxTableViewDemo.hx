@@ -32,13 +32,14 @@ class WxTableViewDemo extends Window implements IObserver {
 
 	// IObserver implementation BEGIN
 
-	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
-		
+	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+		super.handleEvent(name, sender, data);
 	}
 
-	public function getEventCollection(): Array<String> {
-		return [
-		];
+	public override function getEventCollection(): Array<String> {
+		var parentAy:Array<String> = super.getEventCollection();
+		//parentAy.push( x : String )
+		return parentAy;
 	}
 
 	private function buildTable(): Void {

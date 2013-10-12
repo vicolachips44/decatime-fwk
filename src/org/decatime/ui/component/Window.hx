@@ -13,6 +13,9 @@ import flash.display.GradientType;
 import flash.filters.DropShadowFilter;
 import flash.geom.Matrix;
 
+import org.decatime.event.IObservable;
+import org.decatime.event.IObserver;
+
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
@@ -22,7 +25,7 @@ import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
 
-class Window extends BaseContainer {
+class Window extends BaseContainer implements IObserver {
 
 	private var appRoot:BaseSpriteElement;
 	private var title:String;
@@ -40,10 +43,28 @@ class Window extends BaseContainer {
 		super(name);
 		this.position = new Rectangle(0, 0, in_size.x, in_size.y);
 		this.appRoot = Facade.getInstance().getRoot();
+		Facade.getInstance().addListener(this);
 		this.title = 'Untitled window';
 		this.elBackColorVisibility = 1.0;
 		this.fontResPath = fontResPath;
 	}
+
+	// IObserver implementation BEGIN
+
+	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+		switch (name) {
+			case org.decatime.Facade.EV_RESIZE:
+				checkBounds();
+		}
+	}
+
+	public function getEventCollection(): Array<String> {
+		return [
+			org.decatime.Facade.EV_RESIZE
+		];
+	}
+
+	// IObserver implementation END
 
 	public function setTitle(value:String): Void {
 		this.title = value;
@@ -112,6 +133,7 @@ class Window extends BaseContainer {
 	private override function initializeEvent(): Void {
 		this.headerContainer.addEventListener(MouseEvent.MOUSE_DOWN, onHeaderMouseDownEvt);
 		this.headerContainer.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
+		
 	}
 
 	private override function layoutComponent(): Void {
@@ -181,22 +203,27 @@ class Window extends BaseContainer {
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
 		var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
+		if (spEl == null) {
+			return false;
+		}
+		if (spEl.getCurrSize() == null) { return false; }
+
 		if (this.x < spEl.getCurrSize().x) {
 			this.x = spEl.getCurrSize().x;
-			return false;
+			retValue = false;
 		}
 		if (this.y < spEl.getCurrSize().y) {
 			this.y = spEl.getCurrSize().y;
-			return false;
+			retValue = false;
 		}
 		if (this.x + this.getCurrSize().width > spEl.getCurrSize().x + spEl.getCurrSize().width) {
 			this.x = spEl.getCurrSize().x + spEl.getCurrSize().width - this.getCurrSize().width;
-			return false;
+			retValue = false;
 		}
 
 		if (this.y + this.getCurrSize().height > spEl.getCurrSize().y + spEl.getCurrSize().height) {
 			this.y = spEl.getCurrSize().y + spEl.getCurrSize().height - this.getCurrSize().height;
-			return false;
+			retValue = false;
 		}
 		return retValue;
 	}

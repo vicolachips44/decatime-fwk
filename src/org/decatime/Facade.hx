@@ -14,11 +14,13 @@ import org.decatime.event.EventManager;
 
 class Facade extends EventManager {
 	public static var EV_INIT:String = "org.decatime.Facade.EV_INIT";
+	public static var EV_RESIZE:String = "org.decatime.Facade.EV_RESIZE";
 
 	private static var instance:Facade;
 
 	private var root:BaseSpriteElement;
 	private var tmResize:Timer;
+	private var tmNotifyResize:Timer;
 	private var stageRect:Rectangle;
 
 	/**
@@ -77,6 +79,8 @@ class Facade extends EventManager {
 		// We raise the initialisation event to build the UI from the main application
 		notify(EV_INIT, root);
 
+		tmNotifyResize = new Timer(100);
+		tmNotifyResize.addEventListener(TimerEvent.TIMER, onTmNotifyResizeCycle);
 		// we call it to get the initial size for the initialisation process
 		onResize(null);
 
@@ -98,5 +102,13 @@ class Facade extends EventManager {
 		
 		// we ask the root element to layout it's content
 		root.refresh(stageRect);
+
+		// we notify for the resize with a delay of 100
+		this.tmNotifyResize.start();
+	}
+
+	private function onTmNotifyResizeCycle(e:TimerEvent): Void {
+		tmNotifyResize.stop();
+		this.notify(EV_RESIZE, null);
 	}
 }
