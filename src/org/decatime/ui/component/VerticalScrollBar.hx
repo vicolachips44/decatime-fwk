@@ -118,7 +118,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 
 		// compute the new position value (steppos)
 		var newpos:Int = this.getStepPosFromThumbPos();
-
+		
 		if (newpos < this.stepPos) {
 			// it's less than the previous one
 			this.notify(EVT_SCROLL_UP, newpos);

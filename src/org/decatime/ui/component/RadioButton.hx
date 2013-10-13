@@ -12,7 +12,7 @@ class RadioButton extends CheckBox {
 		super(name);
 		
 		// The click event is managed by the RadioButtonGroup instance
-		this.removeEventListener(MouseEvent.CLICK, onMouseClick);
+		this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 	}
 
 	private override function draw(): Void {

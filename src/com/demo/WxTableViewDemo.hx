@@ -55,7 +55,9 @@ class WxTableViewDemo extends Window implements IObserver {
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
 		this.myTable.addColumn('Chk', 30, EditorType.CHECK);
-		this.myTable.addColumn('Column 4', 1.0);
+		this.myTable.addColumn('Column 4', 100);
+		this.myTable.addColumn('Column 5', 100);
+		this.myTable.addColumn('Column 6', 1.0);
 
 		var fontRes: String = 'assets/Vera.ttf';
 		var i:Int = 0;
@@ -67,6 +69,8 @@ class WxTableViewDemo extends Window implements IObserver {
 			r1.addCell(new Cell('cell_2_' + i, new TextCellRenderer(fontRes)));
 			r1.addCell(new Cell('1', new CheckBoxRenderer()));
 			r1.addCell(new Cell('cell_4_' + i, new TextCellRenderer(fontRes)));
+			r1.addCell(new Cell('cell_5_' + i, new TextCellRenderer(fontRes)));
+			r1.addCell(new Cell('cell_6_' + i, new TextCellRenderer(fontRes)));
 		}
 	}
 }

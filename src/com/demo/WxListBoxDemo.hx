@@ -69,7 +69,8 @@ class WxListBoxDemo extends Window implements IObserver {
 
 	// IObserver implementation BEGIN
 
-	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+		super.handleEvent(name, sender, data);
 		switch (name) {
 			case ListBox.EVT_ITEM_SELECTED:
 				trace ("event selected catch " + data);
@@ -77,9 +78,9 @@ class WxListBoxDemo extends Window implements IObserver {
 		}
 	}
 
-	public function getEventCollection(): Array<String> {
-		return [
-			ListBox.EVT_ITEM_SELECTED
-		];
+	public override function getEventCollection(): Array<String> {
+		var parentAy:Array<String> = super.getEventCollection();
+		parentAy.push(ListBox.EVT_ITEM_SELECTED);
+		return parentAy;
 	}
 }

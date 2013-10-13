@@ -153,7 +153,6 @@ class ListBox extends BaseContainer implements IObserver {
 		
 		g.clear();
 		g.beginFill(0xffffff, 1);
-		// g.lineStyle(2, 0x000000);
 		g.drawRect(0, 0, r.width, r.height);
 		g.endFill;
 
@@ -204,7 +203,7 @@ class ListBox extends BaseContainer implements IObserver {
 
 	private function moveNext(): Void {
 		this.firstVisibleIndex++;
-		if (this.firstVisibleIndex > this.itemsCount) { 
+		if (this.firstVisibleIndex > (this.itemsCount - this.visibleItemsCount)) { 
 			this.firstVisibleIndex = this.itemsCount - this.visibleItemsCount;
 		}
 		this.draw();
@@ -226,7 +225,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.vsBar1.setStepCount(this.itemsCount);
 		this.vsBar1.setStepPos(this.firstVisibleIndex);
 		this.vsBar1.setStepSize(this.itemsHeight);
-		this.vsBar1.setVisibleHeight(this.listContainer.getCurrSize().height);
+		this.vsBar1.setVisibleHeight(this.listContainer.getCurrSize().height / this.visibleItemsCount);
 		this.vsBar1.updatePos();
 	}
 
