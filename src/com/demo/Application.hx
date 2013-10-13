@@ -72,17 +72,15 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
-		var windowContainer: BaseSpriteElement = new BaseSpriteElement('wc');
-		layout.create(1.0, windowContainer);
-		this.addChild(windowContainer);
+		// var windowContainer: BaseSpriteElement = new BaseSpriteElement('wc');
+		// layout.create(1.0, windowContainer);
+		// this.addChild(windowContainer);
 		// var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/BepaOblique.ttf');
 		// wxTable.show(windowContainer);
 
-		// layout.create(1.0, wxTable);
-		// this.addChild(wxTable);
+		// var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
+		// wxList.show(windowContainer);
 
-		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
-		wxList.show(windowContainer);
 		// var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
 		// btn.addListener(this);
 		// layout.create(48, btn);
@@ -101,17 +99,11 @@ class Application extends BaseSpriteElement implements IObserver {
 		// layout.create(64, txtTwo);
 		// this.addChild(txtTwo);
 
-		// var tarea:TextArea = new TextArea();
+		var tarea:TextArea = new TextArea();
 		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		// tarea.setFontRes('assets/BepaOblique.ttf');
-		// layout.create(1.0, tarea);
-		// this.addChild(tarea);
-
-		// var lbox:ListBox = new ListBox('listbox1');
-		// lbox.setListItemHeight(20);
-		// layout.create(0.5, lbox);
-		// this.addChild(lbox);
-		// var i:Int;
+		tarea.setFontRes('assets/BepaOblique.ttf');
+		layout.create(1.0, tarea);
+		this.addChild(tarea);
 
 		// for (i in 0...1000) {
 		// 	var item:ListItem = new ListItem('listItem' + i);

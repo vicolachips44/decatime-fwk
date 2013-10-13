@@ -143,6 +143,7 @@ class VerticalScrollBar extends BaseScrollBar implements IObserver  {
 	private function getThumbPosFromStepPos(): Int {
 		var coarse:Float = this.stepPos / (this.stepCount - nbVisible);
 		var result:Float = (coarse * (bottomPos - topPos) + this.thumbContainer.getCurrSize().y);
+		if (Math.isNaN(result)) { result = topPos; }
 		return Std.int(result);
 	}
 

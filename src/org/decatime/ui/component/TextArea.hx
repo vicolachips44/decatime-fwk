@@ -19,12 +19,14 @@ class TextArea extends BaseContainer implements IObserver {
 	private var color:Int;
 	private var fontSize:Int;
 	private var text:String;
-
+	private var lnHeight:Int;
 	private var vsBar1:VerticalScrollBar;
 
 	public function new() {
 		super('decatimeTextArea');
 		this.fontSize = 12;
+		this.text = '';
+		lnHeight = 0;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -34,12 +36,14 @@ class TextArea extends BaseContainer implements IObserver {
 		this.graphics.clear();
 		this.graphics.lineStyle(1 ,0x000000 ,1.0);
 		this.graphics.drawRect(r.x, r.y, r.width, r.height);
+
+
 		updateScrollBar();
 	}
 
 	public function setFontRes(fontRes:String): Void {
 		this.fontRes = fontRes;
-		if (this.tfield != null) {
+		if (this.initialized) {
 			this.tfield.setFontRes(this.fontRes);
 			this.updateDisplay();
 		}
@@ -47,7 +51,7 @@ class TextArea extends BaseContainer implements IObserver {
 
 	public function setFontSize(size:Int): Void {
 		this.fontSize = size;
-		if (this.tfield != null) {
+		if (this.initialized) {
 			this.tfield.setFontSize(size);
 			this.updateDisplay();
 		}
@@ -55,7 +59,7 @@ class TextArea extends BaseContainer implements IObserver {
 
 	public function setText(value:String): Void {
 		this.text = value;
-		if (this.tfield != null) {
+		if (this.initialized) {
 			this.tfield.text = this.text;
 			this.updateDisplay();
 		}
@@ -76,8 +80,7 @@ class TextArea extends BaseContainer implements IObserver {
 		switch (name) {
 			case VerticalScrollBar.EVT_SCROLL_DOWN,
 				VerticalScrollBar.EVT_SCROLL_UP:
-				trace ("data value is " + Std.int(data / this.fontSize));
-				this.tfield.scrollV = Std.int(data / this.fontSize);
+				this.tfield.scrollV = data;
 			
 			case TextBox.EVT_KEYUP:
 				var kb:KeyboardEvent = cast(data, KeyboardEvent);
@@ -111,21 +114,18 @@ class TextArea extends BaseContainer implements IObserver {
 	private function updateScrollBar(): Void {
 		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }
+		var metrics:flash.text.TextLineMetrics =  this.tfield.getLineMetrics(0);
+		var nbVisibleLine: Float = this.container.getCurrSize().height / metrics.height;
 
-		trace ("numlines value is " + this.tfield.numLines);
-		trace ("bottomScrollV value is " + this.tfield.bottomScrollV);
-		trace ("maxScrollV value is " + this.tfield.maxScrollV);
-		trace ("textHeight value is " + this.tfield.textHeight);
-
-		this.vsBar1.setStepCount(Std.int(this.tfield.textHeight + this.container.getCurrSize().height));
+		this.vsBar1.setStepCount(Std.int(this.tfield.bottomScrollV));
 		this.vsBar1.setStepPos(this.tfield.scrollV);
-		this.vsBar1.setStepSize(1);
-		this.vsBar1.setVisibleHeight(this.container.getCurrSize().height);
+		this.vsBar1.setStepSize(Std.int(metrics.height));
+		this.vsBar1.setVisibleHeight(Std.int(nbVisibleLine) - 1);
+
 		this.vsBar1.updatePos();
 	}
 
 	private override function initializeComponent(): Void {
-		super.initializeComponent();
 		// A TextField 
 		this.tfield = new TextBox('txtInputElement');
 		this.tfield.multiline = true;
@@ -155,7 +155,7 @@ class TextArea extends BaseContainer implements IObserver {
 		this.container.create(1.0, hbox1);
 
 		hbox1.create(1.0, this.tfield);
-		hbox1.create(32, vsBar1);
+		hbox1.create(24, vsBar1);
 
 		this.addChild(this.tfield);
 		this.addChild(vsBar1);
