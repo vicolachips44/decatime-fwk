@@ -259,8 +259,10 @@ class ListBox extends BaseContainer implements IObserver {
 			index++;
 		}
 		this.selectedItemIndex = this.firstVisibleIndex + index;
-		this.selectedItem = this.listItems[this.selectedItemIndex];
-		this.notify(EVT_ITEM_SELECTED, this.selectedItem);
+		if (this.selectedItemIndex < this.listItems.length) {
+			this.selectedItem = this.listItems[this.selectedItemIndex];
+			this.notify(EVT_ITEM_SELECTED, this.selectedItem);
+		}
 	}
 
 	private function onListMouseDown(e:MouseEvent): Void {

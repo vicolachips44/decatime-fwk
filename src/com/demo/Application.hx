@@ -51,12 +51,6 @@ class Application extends BaseSpriteElement implements IObserver {
 			case Facade.EV_INIT:
 				initializeComponent();
 			case ListBox.EVT_ITEM_SELECTED:
-				trace ("list item clicked");
-				
-				// if (activeWindow != null) {
-				// 	activeWindow.remove();
-				// }
-
 				var w:Window = cast(data, Window);
 				// activeWindow = w;
 				w.show(appContainer);
@@ -83,8 +77,8 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
-		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
-		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/BepaOblique.ttf');
+		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
+		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/Vera.ttf');
 
 		var hbox1: HBox = new HBox(this.layout);
 		hbox1.setVerticalGap(0);
@@ -104,52 +98,5 @@ class Application extends BaseSpriteElement implements IObserver {
 		appContainer = new BaseSpriteElement('appContainer');
 		hbox1.create(1.0, appContainer);
 		this.addChild(appContainer);
-
-		// var windowContainer: BaseSpriteElement = new BaseSpriteElement('wc');
-		// layout.create(1.0, windowContainer);
-		// this.addChild(windowContainer);
-		// wxTable.show(windowContainer);
-
-		// var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
-		// wxList.show(windowContainer);
-
-		// var btn:PngButton = new PngButton('btnChangeLabelCaption', 'assets/btn_add_cold.png', 'assets/btn_add_hot.png');
-		// btn.addListener(this);
-		// layout.create(48, btn);
-		// this.addChild(btn);
-
-		// var txt:TextBox = new TextBox('txtInputElement');
-		// txt.setFontRes('assets/BepaOblique.ttf');
-		// txt.setTabIndex(1);
-		// layout.create(32, txt);
-		// this.addChild(txt);
-
-		// txtTwo = new TextBox('txt2InputElement');
-		// txtTwo.setFontRes('assets/BepaOblique.ttf');
-		// txtTwo.setTabIndex(2);
-		// txtTwo.multiline = true;
-		// layout.create(64, txtTwo);
-		// this.addChild(txtTwo);
-
-		// var tarea:TextArea = new TextArea();
-		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		// tarea.setFontRes('assets/BepaOblique.ttf');
-		// layout.create(1.0, tarea);
-		// this.addChild(tarea);
-
-		// for (i in 0...1000) {
-		// 	var item:ListItem = new ListItem('listItem' + i);
-		// 	item.visible = false;
-		// 	item.label.setFontRes('assets/BepaOblique.ttf');
-		// 	item.label.setFontSize(14);
-		// 	item.label.setText('item ' + i);
-		// 	lbox.addItem(item);
-		// }
-
-		// var tarea:TextArea = new TextArea();
-		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		// tarea.setFontRes('assets/BepaOblique.ttf');
-		// layout.create(0.5, tarea);
-		// this.addChild(tarea);
 	}
 }

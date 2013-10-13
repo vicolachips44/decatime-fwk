@@ -6,6 +6,7 @@ import flash.display.Graphics;
 import flash.display.Shape;
 import flash.events.MouseEvent;
 import flash.events.Event;
+import flash.display.Sprite;
 
 import flash.filters.BlurFilter;
 import flash.filters.BitmapFilter;
@@ -29,6 +30,7 @@ class Window extends BaseContainer implements IObserver {
 	private var appRoot:BaseSpriteElement;
 	private var title:String;
 	private var position:Rectangle;
+	private var btnSpriteClose:Sprite;
 	private var startX:Float;
 	private var startY:Float;
 	private var clientArea:VBox;
@@ -92,7 +94,7 @@ class Window extends BaseContainer implements IObserver {
 			return;
 		}
 
-		// parent.removeChild(this);
+		parent.removeChild(this);
 		this.visible = false;
 	}
 
@@ -174,6 +176,22 @@ class Window extends BaseContainer implements IObserver {
 	    borders.graphics.drawRect(0, 0, position.width, position.height);
 	    addChild(borders);
 
+	    btnSpriteClose = new Sprite();
+	    btnSpriteClose.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
+        btnSpriteClose.name = "btnClose";
+        box.createGradientBox(16, 16, 0, 0, 0);
+        btnSpriteClose.graphics.beginGradientFill(GradientType.RADIAL, [0x000000, 0xaaaaaa], [1, 1], [1, 255], box);
+        btnSpriteClose.graphics.drawCircle(8, 8, 8);
+        btnSpriteClose.graphics.endFill();
+        btnSpriteClose.graphics.lineStyle(2, 0xaa0000);
+        btnSpriteClose.graphics.moveTo(4, 8);
+        btnSpriteClose.graphics.lineTo(12, 8);
+        btnSpriteClose.graphics.moveTo(8, 4);
+        btnSpriteClose.graphics.lineTo(8, 12);
+        btnSpriteClose.x = r.width - 20;
+        btnSpriteClose.y = 5;
+    	addChild(btnSpriteClose);
+
 	    var dropShadow:DropShadowFilter = new DropShadowFilter( 
     		8 , 
     		34 , 
@@ -188,6 +206,11 @@ class Window extends BaseContainer implements IObserver {
     	f2.push(dropShadow);
 
 		this.filters = f2;
+		btnSpriteClose.filters = f2;
+	}
+
+	private function onBtnCloseClick(e:MouseEvent): Void {
+		this.remove();
 	}
 
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
