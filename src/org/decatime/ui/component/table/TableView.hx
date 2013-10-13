@@ -21,6 +21,8 @@ class TableView extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";
 	public static var EVT_ROW_SELECTED:String = NAMESPACE + "EVT_ROW_SELECTED";
 
+	public var selectedRow(default, default): Row;
+	
 	private var scPanel: ScrollPanel;
 	private var headerArea: HBox;
 	private var headerSprite: BaseSpriteElement;

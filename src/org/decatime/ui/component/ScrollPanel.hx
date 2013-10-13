@@ -121,7 +121,6 @@ class ScrollPanel extends BaseContainer implements IObserver {
 	}
 
 	private function onFocusInEvt(e:FocusEvent): Void {
-		trace ("focus in event : making listener for keyup and mousewheel");
 		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}

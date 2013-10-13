@@ -3,7 +3,7 @@ package org.decatime.ui.component.table;
 /*
 * All objects that can be an editor for the cell of a table
 */
-interface ITableEditor {
+interface ICellEditor {
 
 	/**
 	* returns the DisplayObject instance of this

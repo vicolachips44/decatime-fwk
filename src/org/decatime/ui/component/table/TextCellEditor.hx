@@ -1,6 +1,6 @@
 package org.decatime.ui.component.table;
 
-class TextEditor extends TextBox implements ITableEditor {
+class TextCellEditor extends TextBox implements ICellEditor {
 	public var table(default, default): TableView;
 
 	public function new(table: TableView, name:String, ?text:String = ' ', ?color:Int=0x000000) {
@@ -14,7 +14,7 @@ class TextEditor extends TextBox implements ITableEditor {
 		this.setIsBold(false);
 	}
 
-	// ITableEditor implementation - BEGIN
+	// ICellEditor implementation - BEGIN
 
 	public function getDisplayObject(): flash.display.InteractiveObject {
 		return this;
@@ -26,6 +26,10 @@ class TextEditor extends TextBox implements ITableEditor {
 
 	public override function setVisible(value:Bool): Void {
 		super.setVisible(value);
+		if (value == true) {
+			// this will only work with flash target
+			this.setSelection(this.text.length, this.text.length);
+		}
 	}
 	
 	public function setValue(newValue: String): Void {
@@ -36,5 +40,5 @@ class TextEditor extends TextBox implements ITableEditor {
 		return this.text;
 	}
 
-	// ITableEditor implementation - END
+	// ICellEditor implementation - END
 }

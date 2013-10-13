@@ -10,6 +10,8 @@ import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Row;
 import org.decatime.ui.component.table.Cell;
 import org.decatime.ui.component.table.EditorType;
+import org.decatime.ui.component.table.TextCellRenderer;
+import org.decatime.ui.component.table.CheckBoxRenderer;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
@@ -29,7 +31,6 @@ class WxTableViewDemo extends Window implements IObserver {
 		buildTable();
 		this.clientArea.create(1.0, myTable);
 		this.addChild(myTable);
-		trace ("the client area is now builded");
 	}
 
 	// IObserver implementation BEGIN
@@ -38,12 +39,7 @@ class WxTableViewDemo extends Window implements IObserver {
 		super.handleEvent(name, sender, data);
 		switch (name) {
 			case TableView.EVT_ROW_SELECTED:
-				trace ("row " + data + " selected event from table view");
-				var r:Row = this.myTable.getRows().get(data);
-				var c:Cell = null;
-				for (c in r.getCells()) {
-					trace ("text of cell: " + c.text.getText());
-				}
+				
 		}
 	}
 
@@ -58,18 +54,19 @@ class WxTableViewDemo extends Window implements IObserver {
 	private function buildTable(): Void {
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
-		this.myTable.addColumn('Column 3', 30, EditorType.CHECK);
+		this.myTable.addColumn('Chk', 30, EditorType.CHECK);
 		this.myTable.addColumn('Column 4', 1.0);
 
+		var fontRes: String = 'assets/Vera.ttf';
 		var i:Int = 0;
-		for (i in 0...200) {
+		for (i in 0...500) {
 			var r1:Row = new Row('row', 24);
 			this.myTable.addRow(r1);
 
-			r1.addCell(new Cell('cell_1_' + i));
-			r1.addCell(new Cell('cell_2_' + i));
-			r1.addCell(new Cell('1'));
-			r1.addCell(new Cell('cell_4_' + i));
+			r1.addCell(new Cell('cell_1_' + i, new TextCellRenderer(fontRes)));
+			r1.addCell(new Cell('cell_2_' + i, new TextCellRenderer(fontRes)));
+			r1.addCell(new Cell('1', new CheckBoxRenderer()));
+			r1.addCell(new Cell('cell_4_' + i, new TextCellRenderer(fontRes)));
 		}
 	}
 }

@@ -18,7 +18,7 @@ class Column extends BaseContainer {
 
 	public var columnIndex(default, default): Int;
 
-	private var editor: ITableEditor;
+	private var editor: ICellEditor;
 
 	public function new(name:String, colWidth: Float, edType: String) {
 		super(name);
@@ -27,13 +27,11 @@ class Column extends BaseContainer {
 		this.editorType = edType;
 	}
 
-	public function getEditor(): ITableEditor {
+	public function getEditor(): ICellEditor {
 		if (this.editorType == EditorType.TEXT && this.editor == null) {
-			this.editor = new TextEditor(this.table, 'textEditor_' + this.columnIndex);
+			this.editor = new TextCellEditor(this.table, 'textEditor_' + this.columnIndex);
 		}
-		if (this.editorType == EditorType.CHECK && this.editor == null) {
-			this.editor = new CheckBoxEditor(this.table, 'checkboxEditor_' + this.columnIndex);
-		}
+		
 		return this.editor;
 	}
 
