@@ -73,7 +73,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.createEmbeddedFontTextFormat();
 		this.tfield.antiAliasType = AntiAliasType.ADVANCED;
 		this.tfield.text = '';
-
+		this.itemsCount = 0;
 		this.shpBackground = new Shape();
 	}
 
@@ -160,10 +160,8 @@ class ListBox extends BaseContainer implements IObserver {
 		g.endFill;
 
 		this.dataRenderer.draw(this.shpBackground, null, null, BlendMode.ERASE);
-		trace ("startIndex value is " + startIndex);
-		trace ("endIndex value is " + endIndex);
 		for (i in startIndex...endIndex) {
-			if (this.listItems.length == i) { break; }
+			if (this.listItems == null || this.listItems.length == i) { break; }
 			this.tfield.text = this.listItems[i].toString();
 
 			var m:Matrix = new Matrix(

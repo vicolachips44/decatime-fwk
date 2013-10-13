@@ -53,12 +53,12 @@ class Application extends BaseSpriteElement implements IObserver {
 			case ListBox.EVT_ITEM_SELECTED:
 				trace ("list item clicked");
 				
-				if (activeWindow != null) {
-					activeWindow.remove();
-				}
+				// if (activeWindow != null) {
+				// 	activeWindow.remove();
+				// }
 
 				var w:Window = cast(data, Window);
-				activeWindow = w;
+				// activeWindow = w;
 				w.show(appContainer);
 		}
 	}
@@ -95,7 +95,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		var demoList: ListBox = new ListBox('demoList', 'assets/Vera.ttf');
 		demoList.add(wxList);
 		demoList.add(wxTable);
-		
+
 		demoList.addListener(this);
 
 		hbox1.create(140, demoList);
@@ -104,7 +104,6 @@ class Application extends BaseSpriteElement implements IObserver {
 		appContainer = new BaseSpriteElement('appContainer');
 		hbox1.create(1.0, appContainer);
 		this.addChild(appContainer);
-
 
 		// var windowContainer: BaseSpriteElement = new BaseSpriteElement('wc');
 		// layout.create(1.0, windowContainer);
@@ -132,11 +131,11 @@ class Application extends BaseSpriteElement implements IObserver {
 		// layout.create(64, txtTwo);
 		// this.addChild(txtTwo);
 
-		var tarea:TextArea = new TextArea();
+		// var tarea:TextArea = new TextArea();
 		// tarea.setText("this is a simple text entry value\nwith new line here !!\na \nb \nc \nd \ne \nf \ng \nh \ni \nj");
-		tarea.setFontRes('assets/BepaOblique.ttf');
-		layout.create(1.0, tarea);
-		this.addChild(tarea);
+		// tarea.setFontRes('assets/BepaOblique.ttf');
+		// layout.create(1.0, tarea);
+		// this.addChild(tarea);
 
 		// for (i in 0...1000) {
 		// 	var item:ListItem = new ListItem('listItem' + i);

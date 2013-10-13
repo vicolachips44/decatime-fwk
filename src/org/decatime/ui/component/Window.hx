@@ -26,8 +26,6 @@ import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
 
 class Window extends BaseContainer implements IObserver {
-	public var isVisible(default, null): Bool;
-
 	private var appRoot:BaseSpriteElement;
 	private var title:String;
 	private var position:Rectangle;
@@ -48,6 +46,9 @@ class Window extends BaseContainer implements IObserver {
 		this.title = 'Untitled window';
 		this.elBackColorVisibility = 1.0;
 		this.fontResPath = fontResPath;
+		this.startX = 0;
+		this.startY = 0;
+		this.visible = false;
 	}
 
 	// IObserver implementation BEGIN
@@ -55,7 +56,7 @@ class Window extends BaseContainer implements IObserver {
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case org.decatime.Facade.EV_RESIZE:
-				if (this.isVisible) { checkBounds(); }
+				if (this.visible) { checkBounds(); }
 		}
 	}
 
@@ -80,30 +81,30 @@ class Window extends BaseContainer implements IObserver {
 			parent.addChild(this);
 			this.refresh(position);
 			centerPopup();
-		} else {
-			// bring it to front
-			this.visible = true;
 		}
+		this.visible = true;
 		parent.setChildIndex(this, parent.numChildren -1);
-		this.isVisible = true;
 	}
 
 	public function remove(): Void {
 		if (! parent.contains(this)) {
-			trace ("the parent does not have me");
+			trace ("WARNING: the parent does not have me");
 			return;
 		}
-		parent.removeChild(this);
-		this.isVisible = false;
+
+		// parent.removeChild(this);
+		this.visible = false;
 	}
 
 	public override function refresh(r:Rectangle): Void {
+		trace ("window refresh method - BEGIN");
 		super.refresh(r);
 		draw();
 		this.graphics.clear();
 		this.graphics.beginFill(0xdfdfdf, 1.0);
 		this.graphics.drawRect(0, 0, r.width, r.height);
 		this.graphics.endFill();
+		trace ("window refresh method - END");
 	}
 
 	private function centerPopup() {
@@ -117,6 +118,7 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	private override function initializeComponent(): Void {
+		trace ("begin of initializeComponent of Window component");
 		this.container = new VBox(this);
 		this.container.setVerticalGap(1);
 		this.container.setHorizontalGap(1);
@@ -140,6 +142,7 @@ class Window extends BaseContainer implements IObserver {
 		initializeHeader();
 		initializeFooter();
 		buildClientArea();
+		trace ("end of initializeComponent of Window component");
 	}
 
 	private override function initializeEvent(): Void {

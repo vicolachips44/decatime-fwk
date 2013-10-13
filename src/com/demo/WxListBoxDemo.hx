@@ -73,7 +73,6 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 		super.handleEvent(name, sender, data);
 		switch (name) {
 			case ListBox.EVT_ITEM_SELECTED:
-				trace ("event selected catch " + data);
 				this.txt.text = Std.string(data);
 		}
 	}
