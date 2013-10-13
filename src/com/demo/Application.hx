@@ -15,6 +15,7 @@ import org.decatime.ui.component.PngButton;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
+import org.decatime.ui.component.Window;
 
 import flash.text.TextFormat;
 
@@ -24,6 +25,8 @@ class Application extends BaseSpriteElement implements IObserver {
 	private var lblTitle:Label;
 	private var testCount:Int = 0;
 	private var txtTwo:TextBox;
+	private var appContainer: BaseSpriteElement;
+	private var activeWindow: Window;
 
 	public function new() {
 		super('DemoApplication');
@@ -47,22 +50,30 @@ class Application extends BaseSpriteElement implements IObserver {
 		switch (name) {
 			case Facade.EV_INIT:
 				initializeComponent();
-			case PngButton.EVT_PNGBUTTON_CLICK:
-				this.lblTitle.setText('this is a new text number: ' + testCount++ + '!!');
+			case ListBox.EVT_ITEM_SELECTED:
+				trace ("list item clicked");
+				
+				if (activeWindow != null) {
+					activeWindow.remove();
+				}
+
+				var w:Window = cast(data, Window);
+				activeWindow = w;
+				w.show(appContainer);
 		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
 			Facade.EV_INIT,
-			PngButton.EVT_PNGBUTTON_CLICK
+			ListBox.EVT_ITEM_SELECTED
 		];
 	}
 
 	// IObserver implementation END
 
 	private function initializeComponent() {
-		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO - V1');
+		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO V1');
 		this.lblTitle.setFontRes('assets/1979rg.ttf');
 		this.lblTitle.setAlign(Label.CENTER);
 		this.lblTitle.setFontSize(24);
@@ -72,10 +83,32 @@ class Application extends BaseSpriteElement implements IObserver {
 		layout.create(32, this.lblTitle);
 		this.addChild(this.lblTitle);
 
+		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');
+		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/BepaOblique.ttf');
+
+		var hbox1: HBox = new HBox(this.layout);
+		hbox1.setVerticalGap(0);
+		hbox1.setHorizontalGap(2);
+
+		this.layout.create(1.0, hbox1);
+
+		var demoList: ListBox = new ListBox('demoList', 'assets/Vera.ttf');
+		demoList.add(wxList);
+		demoList.add(wxTable);
+		
+		demoList.addListener(this);
+
+		hbox1.create(140, demoList);
+		this.addChild(demoList);
+
+		appContainer = new BaseSpriteElement('appContainer');
+		hbox1.create(1.0, appContainer);
+		this.addChild(appContainer);
+
+
 		// var windowContainer: BaseSpriteElement = new BaseSpriteElement('wc');
 		// layout.create(1.0, windowContainer);
 		// this.addChild(windowContainer);
-		// var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/BepaOblique.ttf');
 		// wxTable.show(windowContainer);
 
 		// var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/BepaOblique.ttf');

@@ -12,11 +12,12 @@ import org.decatime.ui.component.table.Cell;
 import org.decatime.ui.component.table.EditorType;
 import org.decatime.ui.component.table.TextCellRenderer;
 import org.decatime.ui.component.table.CheckBoxRenderer;
+import org.decatime.ui.component.IPrintable;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 
-class WxTableViewDemo extends Window implements IObserver {
+class WxTableViewDemo extends Window implements IObserver implements IPrintable {
 
 	private var myTable:TableView;
 
@@ -72,5 +73,9 @@ class WxTableViewDemo extends Window implements IObserver {
 			r1.addCell(new Cell('cell_5_' + i, new TextCellRenderer(fontRes)));
 			r1.addCell(new Cell('cell_6_' + i, new TextCellRenderer(fontRes)));
 		}
+	}
+
+	public override function toString() : String {
+		return "2 - TableView DEMO";
 	}
 }

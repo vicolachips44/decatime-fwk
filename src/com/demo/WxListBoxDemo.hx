@@ -10,13 +10,13 @@ import org.decatime.ui.component.RadioButtonGroup;
 import org.decatime.ui.component.RadioButton;
 import org.decatime.ui.component.CheckBox;
 import org.decatime.ui.layout.HBox;
-
+import org.decatime.ui.component.IPrintable;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 
 import com.demo.MyListboxObj;
 
-class WxListBoxDemo extends Window implements IObserver {
+class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 	private var txt:TextBox;
 
 	private override function buildClientArea(): Void {
@@ -82,5 +82,9 @@ class WxListBoxDemo extends Window implements IObserver {
 		var parentAy:Array<String> = super.getEventCollection();
 		parentAy.push(ListBox.EVT_ITEM_SELECTED);
 		return parentAy;
+	}
+
+	public override function toString() : String {
+		return "1 - Listbox DEMO";
 	}
 }

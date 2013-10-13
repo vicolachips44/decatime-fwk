@@ -63,6 +63,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.firstVisibleIndex = 0;
 		this.selectedItemIndex = -1;
 		this.selectedItem = null;
+		this.visibleItemsCount = 0;
 
 		this.tfield = new TextField();
 		this.tfield.selectable = false;
@@ -71,6 +72,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.fontRes = Assets.getFont(fontRes);
 		this.createEmbeddedFontTextFormat();
 		this.tfield.antiAliasType = AntiAliasType.ADVANCED;
+		this.tfield.text = '';
 
 		this.shpBackground = new Shape();
 	}
@@ -144,7 +146,8 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 
-	private function draw(): Void {		
+	private function draw(): Void {	
+		if (! this.initialized) { return; }	
 		var r:Rectangle    = this.listContainer.getCurrSize();
 		var startIndex:Int = this.firstVisibleIndex;
 		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
@@ -157,8 +160,10 @@ class ListBox extends BaseContainer implements IObserver {
 		g.endFill;
 
 		this.dataRenderer.draw(this.shpBackground, null, null, BlendMode.ERASE);
-
+		trace ("startIndex value is " + startIndex);
+		trace ("endIndex value is " + endIndex);
 		for (i in startIndex...endIndex) {
+			if (this.listItems.length == i) { break; }
 			this.tfield.text = this.listItems[i].toString();
 
 			var m:Matrix = new Matrix(

@@ -4,6 +4,9 @@
 	<meta title="decatime-fwk" package="org.decatime.fwk" version="1.0.0" company="decatime" />
 	<app main="Main" path="bin" file="fwk-test" />
 	
+	<window width="1024" height="768" background="#FFFFFF" fps="120" />
+	<window hardware="true" allow-shaders="true" depth-buffer="true" stencil-buffer="true" vsync="false" />
+	
 	<source path="src" />
 	
 	<haxelib name="openfl" />
@@ -12,5 +15,4 @@
 
 	<assets path="Assets" rename="assets" exclude="nme.svg" />
 	<icon path="Assets/nme.svg" />
-	
 </project>

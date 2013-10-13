@@ -26,6 +26,7 @@ import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
 
 class Window extends BaseContainer implements IObserver {
+	public var isVisible(default, null): Bool;
 
 	private var appRoot:BaseSpriteElement;
 	private var title:String;
@@ -54,7 +55,7 @@ class Window extends BaseContainer implements IObserver {
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case org.decatime.Facade.EV_RESIZE:
-				checkBounds();
+				if (this.isVisible) { checkBounds(); }
 		}
 	}
 
@@ -84,6 +85,16 @@ class Window extends BaseContainer implements IObserver {
 			this.visible = true;
 		}
 		parent.setChildIndex(this, parent.numChildren -1);
+		this.isVisible = true;
+	}
+
+	public function remove(): Void {
+		if (! parent.contains(this)) {
+			trace ("the parent does not have me");
+			return;
+		}
+		parent.removeChild(this);
+		this.isVisible = false;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -96,12 +107,13 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	private function centerPopup() {
-		// by default the window is center on stage
-		var w:Float = flash.Lib.current.stage.stageWidth;
-		var h:Float = flash.Lib.current.stage.stageHeight;
+		var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
 
-		this.x = (w / 2) - (position.width / 2);
-		this.y = (h / 2) - (position.height / 2);
+		var w:Float = spEl.getCurrSize().width;
+		var h:Float = spEl.getCurrSize().height;
+
+		this.x = spEl.getCurrSize().x + (w / 2) - (position.width / 2);
+		this.y = spEl.getCurrSize().y + (h / 2) - (position.height / 2);
 	}
 
 	private override function initializeComponent(): Void {
