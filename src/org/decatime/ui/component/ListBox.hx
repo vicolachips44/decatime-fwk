@@ -36,6 +36,7 @@ import org.decatime.event.IObservable;
 class ListBox extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.List :";
 	public static var EVT_ITEM_SELECTED:String = NAMESPACE + "EVT_ITEM_SELECTED";
+	public var showScrollBar(default, default): Bool;
 
 	private var renderer:BaseBitmapElement;
 	private var dataRenderer:BitmapData;
@@ -52,6 +53,7 @@ class ListBox extends BaseContainer implements IObserver {
 	private var firstVisibleIndex:Int;
 	private var visibleItemsCount:Int;
 	private var shpBackground:Shape;
+
 
 	public function new(name:String, fontRes:String) {
 		super(name);
@@ -75,11 +77,16 @@ class ListBox extends BaseContainer implements IObserver {
 		this.tfield.text = '';
 		this.itemsCount = 0;
 		this.shpBackground = new Shape();
+		this.showScrollBar = true;
 	}
 
 	public function add(value:IPrintable): Void {
 		this.listItems.push(value);
 		this.itemsCount = this.listItems.length;
+	}
+
+	public function getListCount(): Int {
+		return this.listItems.length;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -119,17 +126,20 @@ class ListBox extends BaseContainer implements IObserver {
 		this.listContainer.setHorizontalGap(0);
 		this.listContainer.setVerticalGap(0);
 
-		// A Vertical Scroll bar
-		vsBar1 = new VerticalScrollBar('VsBar1');
-		vsBar1.addListener(this);
-		vsBar1.setStepSize(1);
 
 		this.container.create(1.0, listContainer);
 
-		this.container.create(24, vsBar1);
-		this.listContainer.create(1.0, this.renderer);
+		if (this.showScrollBar) {
+			// A Vertical Scroll bar
+			vsBar1 = new VerticalScrollBar('VsBar1');
+			vsBar1.addListener(this);
+			vsBar1.setStepSize(1);
+			this.container.create(24, vsBar1);
 
-		this.addChild(vsBar1);
+			this.addChild(vsBar1);
+		}
+
+		this.listContainer.create(1.0, this.renderer);
 		this.addChild(this.renderer);
 	}
 
@@ -222,6 +232,7 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 	private function updateScrollBar(): Void {
+		if (this.vsBar1 == null) { return; }
 		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }
 
@@ -282,6 +293,7 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 	private function onListMouseOut(e:MouseEvent): Void {
+		if( this.stage == null) { return; }
 		this.stage.focus = null;
 	}
 

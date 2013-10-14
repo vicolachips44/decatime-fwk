@@ -1,4 +1,5 @@
 package com.demo;
+
 import org.decatime.ui.component.IPrintable;
 
 class MyListboxObj implements IPrintable {

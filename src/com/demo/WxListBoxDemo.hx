@@ -1,6 +1,5 @@
 package com.demo;
 
-import openfl.Assets;
 
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.Label;
@@ -9,6 +8,7 @@ import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.RadioButtonGroup;
 import org.decatime.ui.component.RadioButton;
 import org.decatime.ui.component.CheckBox;
+
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.component.IPrintable;
 import org.decatime.event.IObservable;

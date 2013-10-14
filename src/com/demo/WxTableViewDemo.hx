@@ -1,9 +1,6 @@
 package com.demo;
 
-import openfl.Assets;
-
 import flash.geom.Point;
-import flash.display.Bitmap;
 
 import org.decatime.ui.component.Window;
 import org.decatime.ui.component.table.TableView;
@@ -28,6 +25,7 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 
 	private override function buildClientArea(): Void {
 		myTable = new TableView('DemoTable', 'assets/Vera.ttf');
+		// TODO the listener should be the controller object of this view
 		myTable.addListener(this);
 		buildTable();
 		this.clientArea.create(1.0, myTable);
