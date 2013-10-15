@@ -2,19 +2,20 @@ package org.decatime.ui.component.table;
 
 import flash.events.MouseEvent;
 
-import org.decatime.ui.component.CheckBox;
+import org.decatime.ui.component.ComboBox;
 
-class CheckBoxRenderer extends CheckBox implements ICellRenderer {
+class ComboBoxRenderer extends ComboBox implements ICellRenderer {
 	private var _cell:Cell;
 
-	public function new() {
-		super('checkboxRenderer');
+	public function new(fontRes: String) {
+		super('comboBoxRenderer', fontRes);
+		this.tbox.type = flash.text.TextFieldType.DYNAMIC;
+		this.tbox.selectable = false;
+		this.tbox.mouseEnabled = false;
 	}
 
-	private override function createLabel(): Void { } // we don't need it
-
 	public function alwaysShow(): Bool {
-		return false;
+		return true;
 	}
 
 	public function getDisplayObject(): flash.display.DisplayObject {
@@ -49,17 +50,14 @@ class CheckBoxRenderer extends CheckBox implements ICellRenderer {
 	/**
 	* sets the value to display on this renderer
 	*/ 
-	public function setValue(value:Dynamic): Void {
-		this.selected = value == '1' ? true : false;
-		if (this.initialized) {
-			this.draw();
-		}
+	public override function setValue(value:Dynamic): Void {
+		super.setValue(value);
 	}
 
 	/**
 	* gets the value to edit on this renderer
 	*/ 
-	public function getValue(): Dynamic {
-		return this.selected ? '1' : '0';
+	public override function getValue(): Dynamic {
+		return super.getValue();
 	}
 }

@@ -9,6 +9,7 @@ import org.decatime.ui.component.table.Cell;
 import org.decatime.ui.component.table.EditorType;
 import org.decatime.ui.component.table.TextCellRenderer;
 import org.decatime.ui.component.table.CheckBoxRenderer;
+import org.decatime.ui.component.table.ComboBoxRenderer;
 import org.decatime.ui.component.IPrintable;
 
 import org.decatime.event.IObservable;
@@ -51,6 +52,7 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 	// IObserver implementation END
 
 	private function buildTable(): Void {
+
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
 		this.myTable.addColumn('Chk', 30, EditorType.CHECK);
@@ -61,6 +63,15 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 		var fontRes: String = 'assets/Vera.ttf';
 		var i:Int = 0;
 		for (i in 0...500) {
+			var cbRenderer: ComboBoxRenderer = new ComboBoxRenderer('assets/Vera.ttf');
+			
+			cbRenderer.add(new MyListboxObj(1));
+			cbRenderer.add(new MyListboxObj(2));	
+			cbRenderer.add(new MyListboxObj(3));
+			cbRenderer.add(new MyListboxObj(4));
+
+			var cbCell: Cell = new Cell('List item 1', cbRenderer);
+
 			var r1:Row = new Row('row', 24);
 			this.myTable.addRow(r1);
 
@@ -69,7 +80,7 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 			r1.addCell(new Cell('1', new CheckBoxRenderer()));
 			r1.addCell(new Cell('cell_4_' + i, new TextCellRenderer(fontRes)));
 			r1.addCell(new Cell('cell_5_' + i, new TextCellRenderer(fontRes)));
-			r1.addCell(new Cell('cell_6_' + i, new TextCellRenderer(fontRes)));
+			r1.addCell(cbCell);
 		}
 	}
 

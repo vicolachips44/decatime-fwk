@@ -78,6 +78,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.itemsCount = 0;
 		this.shpBackground = new Shape();
 		this.showScrollBar = true;
+		this.elBackColorVisibility = 1.0;
 	}
 
 	public function add(value:IPrintable): Void {
@@ -207,11 +208,21 @@ class ListBox extends BaseContainer implements IObserver {
 			currItmIdx = currItmIdx + this.itemsHeight;
 		}
 
-		r = this.container.getCurrSize();
-		this.graphics.clear();
-		this.graphics.lineStyle(1, 0x000000);
-		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-		this.graphics.endFill();
+		r = this.listContainer.getCurrSize();
+		var shContour:Shape = new Shape();
+		g = shContour.graphics;
+		g.clear();
+		g.lineStyle(1, 0x000000);
+		g.drawRect(0,  0, r.width - 1, r.height - 1);
+		g.endFill();
+		this.dataRenderer.draw(
+			shContour,
+			null,
+			null,
+			BlendMode.ADD,
+			null,
+			false
+		);
 	}
 
 	private function moveNext(): Void {

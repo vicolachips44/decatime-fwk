@@ -44,6 +44,7 @@ class TableView extends BaseContainer implements IObserver {
 		this.columnsCount = 0;
 		this.rowsCount = 0;
 		this.fontRes = fRes;
+		this.elBackColorVisibility = 1.0;
 	}
 
 	public function getFontRes(): String {

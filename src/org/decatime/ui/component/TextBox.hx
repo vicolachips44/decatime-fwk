@@ -81,7 +81,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
 		#end
 
-		this.isBold = true;
+		this.isBold = false;
 	}
 
 	public function setMargin(p:Point): Void {

@@ -37,6 +37,12 @@ class ComboBox extends BaseContainer implements IObserver {
 	public function new(name:String, fontRes:String) {
 		super(name);
 		this.fontRes = fontRes;
+
+		this.tbox = new TextBox('textBoxValue', '');
+		this.tbox.setFontRes(this.fontRes);
+		this.tbox.setAsBorder(false);
+		
+
 		this.dropDownList = new ListBox('dropDownList', this.fontRes);
 		this.dropDownList.visible = false;
 		this.dropDownList.showScrollBar = false;
@@ -52,14 +58,18 @@ class ComboBox extends BaseContainer implements IObserver {
 		draw();
 	}
 
+	public function getValue(): Dynamic {
+		return this.tbox.text;
+	}
+
+	public function setValue(value: Dynamic): Void {
+		this.tbox.text = Std.string(value);
+	}
+
 	private override function initializeComponent(): Void {
 		this.container = new HBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
-
-		this.tbox = new TextBox('textBoxValue', '');
-		this.tbox.setFontRes(this.fontRes);
-		this.addChild(this.tbox);
 
 		var btnDropDown: ArrowButton = new ArrowButton('dpDownButton', ArrowButton.ORIENTATION_BOTTOM);
 		btnDropDown.addListener(this);
@@ -71,6 +81,7 @@ class ComboBox extends BaseContainer implements IObserver {
 		ct.setHorizontalGap(4);
 		ct.setVerticalGap(4);
 
+		this.addChild(this.tbox);
 		// mask of the list content
 		this.dropDownListMask = new BaseSpriteElement('dropDownListMask');
 
@@ -106,7 +117,7 @@ class ComboBox extends BaseContainer implements IObserver {
 	private function showHideDropDown(bShow: Bool): Void {
 		if (bShow) {
 			var r:Rectangle = this.getBounds(this.myStage);
-			r = new Rectangle(r.x + 2, r.y + this.sizeInfo.height + 2, this.sizeInfo.width, 16 * this.dropDownList.getListCount());
+			r = new Rectangle(r.x + 1, r.y + this.sizeInfo.height, this.sizeInfo.width, 16 * this.dropDownList.getListCount());
 			this.parentContainer.addChild(this.dropDownListMask);
 			
 			this.dropDownList.visible = true;
@@ -125,7 +136,7 @@ class ComboBox extends BaseContainer implements IObserver {
 	private function draw(): Void {
 		var g:Graphics = this.graphics;
 		g.clear();
-		g.lineStyle(2, 0x000000);
+		g.lineStyle(1, 0x000000);
 		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 
 		var r:Rectangle = this.parentContainer.getCurrSize();

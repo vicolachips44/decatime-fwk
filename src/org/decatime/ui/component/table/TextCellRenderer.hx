@@ -11,6 +11,10 @@ class TextCellRenderer extends Label implements ICellRenderer {
 		this.setFontRes(fontRes);
 	}
 
+	public function alwaysShow(): Bool {
+		return false;
+	}
+
 	public function getDisplayObject(): flash.display.DisplayObject {
 		return this;
 	}

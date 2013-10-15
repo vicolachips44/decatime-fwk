@@ -6,6 +6,7 @@ import flash.events.MouseEvent;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
+import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.ui.component.BaseContainer;
