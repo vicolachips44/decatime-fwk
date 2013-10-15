@@ -90,8 +90,29 @@ class ListBox extends BaseContainer implements IObserver {
 		return this.listItems.length;
 	}
 
+	public function getItemsHeight(): Int {
+		return this.itemsHeight;
+	}
+
+	public function setItemsHeight(value:Int): Void {
+		this.itemsHeight = value;
+	}
+
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
+		
+		if (this.dataRenderer != null) { 
+			this.dataRenderer.dispose(); 
+			this.dataRenderer = null;
+		}
+
+		var vsbarWidth: Float = vsBar1 != null ? vsBar1.width : 0;
+
+		this.dataRenderer = new BitmapData(Std.int(r.width - vsbarWidth), Std.int(r.height), true);
+		this.renderer.bitmapData = this.dataRenderer;
+		
+		this.visibleItemsCount = Std.int(r.height / this.itemsHeight);
+
 		draw();
 		updateScrollBar();
 	}
@@ -148,12 +169,6 @@ class ListBox extends BaseContainer implements IObserver {
 		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
 		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
 		this.addEventListener(MouseEvent.MOUSE_DOWN, onListMouseDown);
-
-		var r:Rectangle = this.listContainer.getCurrSize();
-		this.dataRenderer = new BitmapData(Std.int(r.width), Std.int(r.height), true);
-		this.renderer.bitmapData = this.dataRenderer;
-
-		this.visibleItemsCount = Std.int(r.height / this.itemsHeight);
 	}
 
 

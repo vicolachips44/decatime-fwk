@@ -55,7 +55,6 @@ class Row extends BaseContainer {
 		super.refresh(r);
 		this.graphics.clear();
 		this.draw();
-		
 	}
 
 	public function setSelected(value:Bool): Void {

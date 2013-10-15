@@ -2,7 +2,7 @@ package com.demo;
 
 import flash.geom.Point;
 
-import org.decatime.ui.component.Window;
+import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Row;
 import org.decatime.ui.component.table.Cell;
@@ -55,14 +55,14 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 
 		this.myTable.addColumn('Column 1', 120);
 		this.myTable.addColumn('Column 2', 160);
-		this.myTable.addColumn('Chk', 30, EditorType.CHECK);
+		this.myTable.addColumn('Chk', 30);
 		this.myTable.addColumn('Column 4', 100);
 		this.myTable.addColumn('Column 5', 100);
 		this.myTable.addColumn('Column 6', 1.0);
 
 		var fontRes: String = 'assets/Vera.ttf';
 		var i:Int = 0;
-		for (i in 0...500) {
+		for (i in 0...100) {
 			var cbRenderer: ComboBoxRenderer = new ComboBoxRenderer('assets/Vera.ttf');
 			
 			cbRenderer.add(new MyListboxObj(1));

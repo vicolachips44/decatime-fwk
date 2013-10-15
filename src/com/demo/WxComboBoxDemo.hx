@@ -1,6 +1,6 @@
 package com.demo;
 
-import org.decatime.ui.component.Window;
+import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.IPrintable;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;

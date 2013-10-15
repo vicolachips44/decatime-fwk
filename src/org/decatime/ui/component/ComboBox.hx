@@ -117,7 +117,7 @@ class ComboBox extends BaseContainer implements IObserver {
 	private function showHideDropDown(bShow: Bool): Void {
 		if (bShow) {
 			var r:Rectangle = this.getBounds(this.myStage);
-			r = new Rectangle(r.x + 1, r.y + this.sizeInfo.height, this.sizeInfo.width, 16 * this.dropDownList.getListCount());
+			r = new Rectangle(r.x + 1, r.y + this.sizeInfo.height, this.sizeInfo.width, this.dropDownList.getItemsHeight() * this.dropDownList.getListCount());
 			this.parentContainer.addChild(this.dropDownListMask);
 			
 			this.dropDownList.visible = true;

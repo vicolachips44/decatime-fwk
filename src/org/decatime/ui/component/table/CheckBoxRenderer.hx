@@ -13,10 +13,6 @@ class CheckBoxRenderer extends CheckBox implements ICellRenderer {
 
 	private override function createLabel(): Void { } // we don't need it
 
-	public function alwaysShow(): Bool {
-		return false;
-	}
-
 	public function getDisplayObject(): flash.display.DisplayObject {
 		return this;
 	}

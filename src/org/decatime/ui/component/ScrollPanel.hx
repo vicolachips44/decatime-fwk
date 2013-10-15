@@ -195,13 +195,11 @@ class ScrollPanel extends BaseContainer implements IObserver {
 	}
 
 	private function updateScrollAreaRect(): Void {
-		if (this.scrollAreaRect == null) {
-			this.scrollAreaRect = new Rectangle(
-				this.scrollAreaContainer.getCurrSize().x, this.scrollAreaContainer.getCurrSize().y,
-				this.scrollAreaContainer.getCurrSize().width,
-				this.scrollAreaContainer.getCurrSize().height
-			);
-		} 
+		this.scrollAreaRect = new Rectangle(
+			this.scrollAreaContainer.getCurrSize().x, this.scrollAreaContainer.getCurrSize().y,
+			this.scrollAreaContainer.getCurrSize().width,
+			this.scrollAreaContainer.getCurrSize().height
+		);
 
 
 		this.scrollAreaRect.y = this.scrollRectPosY;

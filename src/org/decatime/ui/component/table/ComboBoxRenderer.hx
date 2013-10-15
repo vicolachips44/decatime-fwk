@@ -14,10 +14,6 @@ class ComboBoxRenderer extends ComboBox implements ICellRenderer {
 		this.tbox.mouseEnabled = false;
 	}
 
-	public function alwaysShow(): Bool {
-		return true;
-	}
-
 	public function getDisplayObject(): flash.display.DisplayObject {
 		return this;
 	}

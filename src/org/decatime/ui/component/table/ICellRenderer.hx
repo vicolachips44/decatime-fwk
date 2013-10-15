@@ -2,7 +2,6 @@ package org.decatime.ui.component.table;
 
 interface ICellRenderer {
 
-	function alwaysShow(): Bool;
 	/**
 	* returns the DisplayObject instance of this
 	*/ 

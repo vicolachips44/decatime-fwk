@@ -1,4 +1,4 @@
-package org.decatime.ui.component;
+package org.decatime.ui.component.windows;
 
 import flash.geom.Rectangle;
 import flash.geom.Point;
@@ -29,8 +29,11 @@ import org.decatime.Facade;
 class Window extends BaseContainer implements IObserver {
 	private var appRoot:BaseSpriteElement;
 	private var title:String;
-	private var position:Rectangle;
+	private var position: Rectangle;
+	private var maxGeom: Rectangle;
 	private var btnSpriteClose:Sprite;
+	private var btnSpriteMaximize:Sprite;
+	private var borders:Shape;
 	private var startX:Float;
 	private var startY:Float;
 	private var clientArea:VBox;
@@ -39,6 +42,9 @@ class Window extends BaseContainer implements IObserver {
 	private var lblTitle:Label;
 	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
+	private var windowState:WindowState;
+	private var oldX:Float;
+	private var oldY:Float;
 
 	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name);
@@ -51,6 +57,7 @@ class Window extends BaseContainer implements IObserver {
 		this.startX = 0;
 		this.startY = 0;
 		this.visible = false;
+		this.windowState = WindowState.NORMAL;
 	}
 
 	// IObserver implementation BEGIN
@@ -58,7 +65,11 @@ class Window extends BaseContainer implements IObserver {
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case org.decatime.Facade.EV_RESIZE:
-				if (this.visible) { checkBounds(); }
+				if (this.visible) { 
+					var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
+					this.maxGeom = spEl.getCurrSize();
+					checkBounds(); 
+				}
 		}
 	}
 
@@ -66,6 +77,34 @@ class Window extends BaseContainer implements IObserver {
 		return [
 			org.decatime.Facade.EV_RESIZE
 		];
+	}
+
+	public function getWindowState(): WindowState {
+		return this.windowState;
+	}
+
+	public function setWindowState(value:WindowState): Void {
+		var bRefresh: Bool = this.windowState != value;
+		this.windowState = value;
+		if (bRefresh) {
+			var r:Rectangle = null;
+			
+			if (this.windowState == WindowState.MAXIMIZED) {
+				r = new Rectangle(0, 0, this.maxGeom.width, this.maxGeom.height);
+				this.oldX = this.x;
+				this.oldY = this.y;
+				this.x = this.maxGeom.x;
+				this.y = this.maxGeom.y;
+
+			} else {
+				this.x = this.oldX;
+				this.y = this.oldY;
+				r = this.position;
+			}
+
+			this.refresh(r);
+			this.layoutComponent();
+		}
 	}
 
 	// IObserver implementation END
@@ -81,8 +120,12 @@ class Window extends BaseContainer implements IObserver {
 	public function show(parent: BaseSpriteElement): Void {
 		if (! parent.contains(this)) {
 			parent.addChild(this);
+			this.maxGeom = parent.getCurrSize();
 			this.refresh(position);
-			centerPopup();
+
+			if (this.windowState == WindowState.NORMAL) {
+				centerPopup();
+			}
 		}
 		this.visible = true;
 		parent.setChildIndex(this, parent.numChildren -1);
@@ -101,6 +144,7 @@ class Window extends BaseContainer implements IObserver {
 	public override function refresh(r:Rectangle): Void {
 		trace ("window refresh method - BEGIN");
 		super.refresh(r);
+
 		draw();
 		this.graphics.clear();
 		this.graphics.beginFill(0xdfdfdf, 1.0);
@@ -117,6 +161,8 @@ class Window extends BaseContainer implements IObserver {
 
 		this.x = spEl.getCurrSize().x + (w / 2) - (position.width / 2);
 		this.y = spEl.getCurrSize().y + (h / 2) - (position.height / 2);
+		this.oldX = this.x;
+		this.oldY = this.y;
 	}
 
 	private override function initializeComponent(): Void {
@@ -141,9 +187,24 @@ class Window extends BaseContainer implements IObserver {
 		this.container.create(1.0, this.clientArea);
 		this.container.create(16, this.footer);
 
+		borders = new Shape();
+	    borders.name = "borders";
+
+	    btnSpriteClose = new Sprite();
+	    btnSpriteClose.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
+        btnSpriteClose.name = "btnClose";
+
+        btnSpriteMaximize = new Sprite();
+    	btnSpriteMaximize.addEventListener(MouseEvent.CLICK, onBtnMaximizeClick);
+    	btnSpriteMaximize.name = 'btnSpriteMaximize';
+
 		initializeHeader();
 		initializeFooter();
 		buildClientArea();
+		
+	    addChild(borders);
+        addChild(btnSpriteClose);
+    	addChild(btnSpriteMaximize);
 		trace ("end of initializeComponent of Window component");
 	}
 
@@ -157,6 +218,7 @@ class Window extends BaseContainer implements IObserver {
 		// header 
 		var r:Rectangle = header.getCurrSize();
 		var box:Matrix = new Matrix();
+		headerContainer.graphics.clear();
 		headerContainer.graphics.lineStyle(1, 0x000000, 0.70);
 	    box.createGradientBox(r.width, r.height);
 	    headerContainer.graphics.beginGradientFill(GradientType.LINEAR, [0x444444, 0x999999], [1, 1], [1, 255], box);
@@ -169,29 +231,46 @@ class Window extends BaseContainer implements IObserver {
 	    f.push(shadowFilter);
 	    headerContainer.filters = f;
 
-	    var borders:Shape = new Shape();
-	    borders.name = "borders";
+		borders.graphics.clear();	    
 	    borders.graphics.lineStyle(2, 0x000000, 0.70);
 	    borders.filters = f;
-	    borders.graphics.drawRect(0, 0, position.width, position.height);
-	    addChild(borders);
-
-	    btnSpriteClose = new Sprite();
-	    btnSpriteClose.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
-        btnSpriteClose.name = "btnClose";
+	    if (this.windowState == WindowState.NORMAL) {
+	    	borders.graphics.drawRect(0, 0, position.width, position.height);
+	    } else {
+	    	borders.graphics.drawRect(0, 0, maxGeom.width, maxGeom.height);
+	    }
+	    
+	    
         box.createGradientBox(16, 16, 0, 0, 0);
-        btnSpriteClose.graphics.beginGradientFill(GradientType.RADIAL, [0x000000, 0xaaaaaa], [1, 1], [1, 255], box);
+        btnSpriteClose.graphics.clear();
+        btnSpriteClose.graphics.beginGradientFill(GradientType.RADIAL, [0xffffff, 0xaaaaaa], [1, 1], [1, 255], box);
         btnSpriteClose.graphics.drawCircle(8, 8, 8);
         btnSpriteClose.graphics.endFill();
-        btnSpriteClose.graphics.lineStyle(2, 0xaa0000);
-        btnSpriteClose.graphics.moveTo(4, 8);
-        btnSpriteClose.graphics.lineTo(12, 8);
-        btnSpriteClose.graphics.moveTo(8, 4);
-        btnSpriteClose.graphics.lineTo(8, 12);
+        btnSpriteClose.graphics.lineStyle(1, 0x000000);
+        btnSpriteClose.graphics.moveTo(4, 4);
+        btnSpriteClose.graphics.lineTo(12, 12);
+        btnSpriteClose.graphics.moveTo(4, 12);
+        btnSpriteClose.graphics.lineTo(12, 4);
         btnSpriteClose.x = r.width - 20;
         btnSpriteClose.y = 5;
-    	addChild(btnSpriteClose);
+    	
+    	btnSpriteMaximize.graphics.clear();
+    	btnSpriteMaximize.graphics.lineStyle(1, 0x000000);
+    	btnSpriteMaximize.graphics.beginFill(0xffffff, 1.0);
+    	btnSpriteMaximize.graphics.drawRect(0, 0, 16, 16);
+    	btnSpriteMaximize.graphics.endFill();
+    	btnSpriteMaximize.graphics.beginFill(0x000000, 1.0);
+    	btnSpriteMaximize.graphics.drawRect(0, 0, 16, 3);
+    	btnSpriteMaximize.graphics.endFill();
+    	
+    	if (this.windowState == WindowState.NORMAL) {
+    		btnSpriteMaximize.graphics.lineStyle(1, 0x000000);
+    		btnSpriteMaximize.graphics.drawRect(4, 6, 8, 8);
+    	}
 
+    	btnSpriteMaximize.x = r.width - 44;
+    	btnSpriteMaximize.y = 5;
+    	
 	    var dropShadow:DropShadowFilter = new DropShadowFilter( 
     		8 , 
     		34 , 
@@ -207,6 +286,14 @@ class Window extends BaseContainer implements IObserver {
 
 		this.filters = f2;
 		btnSpriteClose.filters = f2;
+	}
+
+	private function onBtnMaximizeClick(e:MouseEvent): Void {
+		if (this.windowState == WindowState.NORMAL) {
+			this.setWindowState(WindowState.MAXIMIZED);
+		} else {
+			this.setWindowState(WindowState.NORMAL);
+		}
 	}
 
 	private function onBtnCloseClick(e:MouseEvent): Void {
@@ -240,27 +327,24 @@ class Window extends BaseContainer implements IObserver {
 
 	private function checkBounds(): Bool {
 		var retValue:Bool = true;
-		var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
-		if (spEl == null) {
-			return false;
-		}
-		if (spEl.getCurrSize() == null) { return false; }
 
-		if (this.x < spEl.getCurrSize().x) {
-			this.x = spEl.getCurrSize().x;
+		if (this.maxGeom == null) { return false; }
+
+		if (this.x < this.maxGeom.x) {
+			this.x = this.maxGeom.x;
 			retValue = false;
 		}
-		if (this.y < spEl.getCurrSize().y) {
-			this.y = spEl.getCurrSize().y;
+		if (this.y < this.maxGeom.y) {
+			this.y = this.maxGeom.y;
 			retValue = false;
 		}
-		if (this.x + this.getCurrSize().width > spEl.getCurrSize().x + spEl.getCurrSize().width) {
-			this.x = spEl.getCurrSize().x + spEl.getCurrSize().width - this.getCurrSize().width;
+		if (this.x + this.getCurrSize().width > this.maxGeom.x + this.maxGeom.width) {
+			this.x = this.maxGeom.x + this.maxGeom.width - this.getCurrSize().width;
 			retValue = false;
 		}
 
-		if (this.y + this.getCurrSize().height > spEl.getCurrSize().y + spEl.getCurrSize().height) {
-			this.y = spEl.getCurrSize().y + spEl.getCurrSize().height - this.getCurrSize().height;
+		if (this.y + this.getCurrSize().height > this.maxGeom.y + this.maxGeom.height) {
+			this.y = this.maxGeom.y + this.maxGeom.height - this.getCurrSize().height;
 			retValue = false;
 		}
 		return retValue;
@@ -275,7 +359,7 @@ class Window extends BaseContainer implements IObserver {
 		lblTitle.setFontSize(16);
 		lblTitle.setColor(0xffffff);
 		
-		var c:Content = this.header.create(1.0, this.lblTitle);
+		var c:Content = this.header.create(1.0, this.headerContainer);
 		c.setVerticalGap(1);
 		c.setHorizontalGap(1);
 		this.headerContainer.addChild(lblTitle);

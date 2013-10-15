@@ -15,7 +15,7 @@ import org.decatime.ui.component.PngButton;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
-import org.decatime.ui.component.Window;
+import org.decatime.ui.component.windows.Window;
 
 import flash.text.TextFormat;
 
@@ -88,6 +88,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		this.layout.create(1.0, hbox1);
 
 		var demoList: ListBox = new ListBox('demoList', 'assets/Vera.ttf');
+		demoList.showScrollBar = false;
 		demoList.add(wxList);
 		demoList.add(wxTable);
 		demoList.add(wxCombo);
