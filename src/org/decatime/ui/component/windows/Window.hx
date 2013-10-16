@@ -28,7 +28,6 @@ import org.decatime.Facade;
 
 class Window extends BaseContainer implements IObserver {
 	private var appRoot:BaseSpriteElement;
-	private var title:String;
 	private var position: Rectangle;
 	private var maxGeom: Rectangle;
 	private var btnSpriteClose:Sprite;
@@ -51,7 +50,6 @@ class Window extends BaseContainer implements IObserver {
 		this.position = new Rectangle(0, 0, in_size.x, in_size.y);
 		this.appRoot = Facade.getInstance().getRoot();
 		Facade.getInstance().addListener(this);
-		this.title = 'Untitled window';
 		this.elBackColorVisibility = 1.0;
 		this.fontResPath = fontResPath;
 		this.startX = 0;
@@ -90,41 +88,29 @@ class Window extends BaseContainer implements IObserver {
 			var r:Rectangle = null;
 			
 			if (this.windowState == WindowState.MAXIMIZED) {
-				r = new Rectangle(0, 0, this.maxGeom.width, this.maxGeom.height);
-				this.oldX = this.x;
-				this.oldY = this.y;
-				this.x = this.maxGeom.x;
-				this.y = this.maxGeom.y;
-
+				this.doMaximize();
 			} else {
 				this.x = this.oldX;
 				this.y = this.oldY;
 				r = this.position;
+				this.refresh(r);
 			}
-
-			this.refresh(r);
 			this.layoutComponent();
 		}
 	}
 
 	// IObserver implementation END
 
-	public function setTitle(value:String): Void {
-		this.title = value;
-	}
-
-	public function getTitle(): String {
-		return this.title;
-	}
-
 	public function show(parent: BaseSpriteElement): Void {
 		if (! parent.contains(this)) {
 			parent.addChild(this);
 			this.maxGeom = parent.getCurrSize();
-			this.refresh(position);
-
+			
 			if (this.windowState == WindowState.NORMAL) {
+				this.refresh(position);
 				centerPopup();
+			} else {
+				doMaximize();
 			}
 		}
 		this.visible = true;
@@ -142,7 +128,6 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	public override function refresh(r:Rectangle): Void {
-		trace ("window refresh method - BEGIN");
 		super.refresh(r);
 
 		draw();
@@ -150,7 +135,15 @@ class Window extends BaseContainer implements IObserver {
 		this.graphics.beginFill(0xdfdfdf, 1.0);
 		this.graphics.drawRect(0, 0, r.width, r.height);
 		this.graphics.endFill();
-		trace ("window refresh method - END");
+	}
+
+	private function doMaximize(): Void {
+		var r:Rectangle = new Rectangle(0, 0, this.maxGeom.width, this.maxGeom.height);
+		this.oldX = this.x;
+		this.oldY = this.y;
+		this.x = this.maxGeom.x;
+		this.y = this.maxGeom.y;
+		this.refresh(r);
 	}
 
 	private function centerPopup() {
@@ -166,7 +159,6 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	private override function initializeComponent(): Void {
-		trace ("begin of initializeComponent of Window component");
 		this.container = new VBox(this);
 		this.container.setVerticalGap(1);
 		this.container.setHorizontalGap(1);
@@ -205,7 +197,6 @@ class Window extends BaseContainer implements IObserver {
 	    addChild(borders);
         addChild(btnSpriteClose);
     	addChild(btnSpriteMaximize);
-		trace ("end of initializeComponent of Window component");
 	}
 
 	private override function initializeEvent(): Void {
@@ -353,17 +344,18 @@ class Window extends BaseContainer implements IObserver {
 	private function initializeHeader(): Void {
 		this.headerContainer = new BaseSpriteElement('headerContainer');
 
-		lblTitle = new Label(this.title);
+		lblTitle = new Label(this.toString());
 		lblTitle.setFontRes(this.fontResPath);
 		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
 		lblTitle.setColor(0xffffff);
 		
-		var c:Content = this.header.create(1.0, this.headerContainer);
+		var c:Content = this.header.create(1.0, this.lblTitle);
 		c.setVerticalGap(1);
 		c.setHorizontalGap(1);
-		this.headerContainer.addChild(lblTitle);
+
 		this.addChild(this.headerContainer);
+		this.addChild(lblTitle);
 	}
 
 	private function initializeFooter(): Void {

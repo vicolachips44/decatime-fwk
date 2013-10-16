@@ -21,7 +21,6 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 
 	public function new(name:String, size:Point, fontResPath:String) {
 		super(name, size, fontResPath);
-		this.setTitle('Table view demo');
 	}
 
 	private override function buildClientArea(): Void {
