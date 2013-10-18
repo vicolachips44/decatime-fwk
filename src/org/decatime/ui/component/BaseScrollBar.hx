@@ -99,8 +99,7 @@ class BaseScrollBar extends BaseContainer {
 	}
 
 	private function onScrollbarMouseDown(e:MouseEvent): Void {
-		this.addEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
-		this.addEventListener(MouseEvent.MOUSE_OUT, onScrollbarMouseUp);
+		this.stage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUpEvt);
 
 		this.mouseDownPoint = new Point(this.mouseX, this.mouseY);
 
@@ -113,7 +112,7 @@ class BaseScrollBar extends BaseContainer {
 				this.thumbStartX = thumb.mouseX;
 				this.thumbStartY = thumb.mouseY;
 				this.scrolling = true;
-				this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
+				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
 			}
 		} else {
 			this.scrolling = false;
@@ -125,21 +124,21 @@ class BaseScrollBar extends BaseContainer {
 	}
 
 	private function endScroll(): Void {
-		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
-		this.removeEventListener(MouseEvent.MOUSE_UP, onScrollbarMouseUp);
-		this.removeEventListener(MouseEvent.MOUSE_OVER, onScrollbarMouseUp);
+		this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseThumbMove);
+		this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUpEvt);
 		this.scrolling = false;
 	}
 
 	private function onMouseThumbMove(e:MouseEvent): Void {
-			this.handleScrollEvent(e);	
+		trace ("mouse is moving...");
+		this.handleScrollEvent(e);	
 	}
 
 	private function handleScrollEvent(e:MouseEvent): Void {
 		trace ("warning this method should be overrided");
 	}
 
-	private function onScrollbarMouseUp(e:MouseEvent): Void {
+	private function onStageMouseUpEvt(e:MouseEvent): Void {
 		endScroll();
 	}
 

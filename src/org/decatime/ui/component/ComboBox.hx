@@ -31,7 +31,6 @@ class ComboBox extends BaseContainer implements IObserver {
 	private var tbox: TextBox;
 	private var fontRes: String;
 	private var dropDownList:ListBox;
-	private var dropDownListMask: BaseSpriteElement;
 	private var parentContainer:BaseSpriteElement;
 
 	public function new(name:String, fontRes:String) {
@@ -82,12 +81,6 @@ class ComboBox extends BaseContainer implements IObserver {
 		ct.setVerticalGap(4);
 
 		this.addChild(this.tbox);
-		// mask of the list content
-		this.dropDownListMask = new BaseSpriteElement('dropDownListMask');
-
-		this.dropDownListMask.addChild(this.dropDownList);
-		this.parentContainer = cast (org.decatime.Facade.getInstance().getRoot(), BaseSpriteElement);
-		this.dropDownListMask.addEventListener(flash.events.MouseEvent.CLICK, onListContainerMouseClick);
 	}
 
 	private override function initializeEvent(): Void {
@@ -116,21 +109,31 @@ class ComboBox extends BaseContainer implements IObserver {
 
 	private function showHideDropDown(bShow: Bool): Void {
 		if (bShow) {
+			this.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
+
 			var r:Rectangle = this.getBounds(this.myStage);
 			r = new Rectangle(r.x + 1, r.y + this.sizeInfo.height, this.sizeInfo.width, this.dropDownList.getItemsHeight() * this.dropDownList.getListCount());
-			this.parentContainer.addChild(this.dropDownListMask);
-			
+			this.dropDownList.refresh(r);
+
+			this.stage.addChild(this.dropDownList);
 			this.dropDownList.visible = true;
 			this.myStage.focus = this.dropDownList;
-			this.dropDownList.refresh(r);
+		} else {
+			if (this.dropDownList == null) { return; }
+			this.dropDownList.visible = false;
+			if (this.stage.contains(this.dropDownList)) {
+				this.stage.removeChild(this.dropDownList);
+			}
 		}
 	}
 
+	private function onStageMouseUp(e:flash.events.MouseEvent): Void {
+		this.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
+		showHideDropDown(false);
+	}
+
 	private function onListContainerMouseClick(e:flash.events.MouseEvent): Void {
-		if (this.parentContainer.contains(this.dropDownListMask)) {
-			this.parentContainer.removeChild(this.dropDownListMask);
-		}
-		this.dropDownList.visible = false;
+		showHideDropDown(false);
 	}
 
 	private function draw(): Void {
@@ -138,12 +141,5 @@ class ComboBox extends BaseContainer implements IObserver {
 		g.clear();
 		g.lineStyle(1, 0x000000);
 		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
-
-		var r:Rectangle = this.parentContainer.getCurrSize();
-
-		g = this.dropDownListMask.graphics;
-		g.clear();
-		g.beginFill(0x000000, 0.0);
-		g.drawRect(r.x, r.y, r.width, r.height);
 	}
 }

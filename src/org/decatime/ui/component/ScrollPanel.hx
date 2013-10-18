@@ -201,7 +201,12 @@ class ScrollPanel extends BaseContainer implements IObserver {
 			this.scrollAreaContainer.getCurrSize().height
 		);
 
+		var avHeight: Float = Math.abs(this.scrollArea.getCurrSize().height);
 
+		if (this.scrollRectPosY > avHeight) {
+			this.scrollRectPosY = Std.int(avHeight);
+		}
+		
 		this.scrollAreaRect.y = this.scrollRectPosY;
 		this.scrollAreaRect.x = this.scrollRectPosX;
 		this.scrollArea.scrollRect = this.scrollAreaRect;
