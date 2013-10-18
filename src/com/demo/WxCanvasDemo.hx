@@ -1,6 +1,8 @@
 package com.demo;
+import flash.geom.Point;
 
 import org.decatime.ui.component.windows.Window;
+import org.decatime.ui.component.windows.WindowState;
 import org.decatime.ui.component.IPrintable;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
@@ -15,6 +17,12 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 		this.addChild(this.canvas);
 	}
 
+	public function new(name:String, in_size:Point, fontResPath:String) {
+		super(name, in_size, fontResPath);
+		this.windowState = WindowState.MAXIMIZED;
+		this.showStateButton = false;
+		this.showCloseButton = false;
+    }
 	// IObserver implementation BEGIN
 
 	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {

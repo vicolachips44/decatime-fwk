@@ -130,7 +130,6 @@ class BaseScrollBar extends BaseContainer {
 	}
 
 	private function onMouseThumbMove(e:MouseEvent): Void {
-		trace ("mouse is moving...");
 		this.handleScrollEvent(e);	
 	}
 

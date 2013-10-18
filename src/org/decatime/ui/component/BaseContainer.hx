@@ -8,6 +8,7 @@ import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.event.EventManager;
+import org.decatime.ui.layout.HBox;
 
 class BaseContainer extends BaseSpriteElement implements IObservable {
 
@@ -55,7 +56,9 @@ class BaseContainer extends BaseSpriteElement implements IObservable {
 	// IObservable implementation END
 
 	private function initializeComponent(): Void {
-		throw new flash.errors.Error("You must override this method");
+		this.container = new HBox(this);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 	}
 
 	private function layoutComponent(): Void {

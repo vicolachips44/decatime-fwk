@@ -80,6 +80,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/Vera.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
+		var wxCanvas:WxCanvasDemo = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
 
 		var hbox1: HBox = new HBox(this.layout);
 		hbox1.setVerticalGap(0);
@@ -92,6 +93,7 @@ class Application extends BaseSpriteElement implements IObserver {
 		demoList.add(wxList);
 		demoList.add(wxTable);
 		demoList.add(wxCombo);
+		demoList.add(wxCanvas);
 
 		demoList.addListener(this);
 
