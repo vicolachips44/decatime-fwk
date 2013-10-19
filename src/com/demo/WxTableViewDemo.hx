@@ -3,13 +3,6 @@ package com.demo;
 import flash.geom.Point;
 
 import org.decatime.ui.component.windows.Window;
-import org.decatime.ui.component.table.TableView;
-import org.decatime.ui.component.table.Row;
-import org.decatime.ui.component.table.Cell;
-import org.decatime.ui.component.table.EditorType;
-import org.decatime.ui.component.table.TextCellRenderer;
-import org.decatime.ui.component.table.CheckBoxRenderer;
-import org.decatime.ui.component.table.ComboBoxRenderer;
 import org.decatime.ui.component.IPrintable;
 
 import org.decatime.event.IObservable;
@@ -17,71 +10,25 @@ import org.decatime.event.IObserver;
 
 class WxTableViewDemo extends Window implements IObserver implements IPrintable {
 
-	private var myTable:TableView;
-
 	public function new(name:String, size:Point, fontResPath:String) {
 		super(name, size, fontResPath);
 	}
 
 	private override function buildClientArea(): Void {
-		myTable = new TableView('DemoTable', 'assets/Vera.ttf');
-		// TODO the listener should be the controller object of this view
-		myTable.addListener(this);
-		buildTable();
-		this.clientArea.create(1.0, myTable);
-		this.addChild(myTable);
 	}
 
 	// IObserver implementation BEGIN
 
 	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		super.handleEvent(name, sender, data);
-		switch (name) {
-			case TableView.EVT_ROW_SELECTED:
-				
-		}
 	}
 
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
-		parentAy.push(TableView.EVT_ROW_SELECTED);
 		return parentAy;
 	}
 
 	// IObserver implementation END
-
-	private function buildTable(): Void {
-
-		this.myTable.addColumn('Column 1', 120);
-		this.myTable.addColumn('Column 2', 160);
-		this.myTable.addColumn('Chk', 30);
-		this.myTable.addColumn('Column 4', 100);
-		this.myTable.addColumn('Column 5', 100);
-		this.myTable.addColumn('Column 6', 1.0);
-
-		var fontRes: String = 'assets/Vera.ttf';
-		var i:Int = 0;
-		for (i in 0...100) {
-			var cbRenderer: ComboBoxRenderer = new ComboBoxRenderer('assets/Vera.ttf');
-			
-			cbRenderer.add(new MyListboxObj(1));
-			cbRenderer.add(new MyListboxObj(2));	
-			cbRenderer.add(new MyListboxObj(3));
-			cbRenderer.add(new MyListboxObj(4));
-
-			var cbCell: Cell = new Cell('List item 1', cbRenderer);
-
-			var r1:Row = new Row('row', 24);
-			this.myTable.addRow(r1);
-
-			r1.addCell(new Cell('cell_1_' + i, new TextCellRenderer(fontRes)));
-			r1.addCell(new Cell('cell_2_' + i, new TextCellRenderer(fontRes)));
-			r1.addCell(new Cell('1', new CheckBoxRenderer()));
-			r1.addCell(new Cell('cell_4_' + i, new TextCellRenderer(fontRes)));
-			r1.addCell(new Cell('cell_5_' + i, new TextCellRenderer(fontRes)));
-			r1.addCell(cbCell);
-		}
-	}
 
 	public override function toString() : String {
 		return "2 - TableView DEMO";
