@@ -45,9 +45,9 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	#if !(flash || html5)
 	private var tabIndex:Int;
-	private var tmCursorBlink:Timer;
-	private var cursorOverlay:Sprite;
-	private var cursorVisible:Bool;
+	// private var tmCursorBlink:Timer;
+	// private var cursorOverlay:Sprite;
+	// private var cursorVisible:Bool;
 	#end
 
 	private var borderColorFocus:Int;
@@ -70,15 +70,16 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.txtBorderColor = 0x000000;
 		this.borderColorFocus = 0x0000fa;
 
+		#if !(flash || html5)
 		this.tabIndex = -1; // must be setted client side
-
+		#end
 
 		this.addEventListener(FocusEvent.FOCUS_IN, onTxtFocusIn);
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 
 		#if !(flash || html5)
-		tmCursorBlink = new Timer(300);
-		tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
+		// tmCursorBlink = new Timer(300);
+		// tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
 		#end
 
 		this.isBold = false;
@@ -221,13 +222,13 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			processTabIndex();
 		}
 		#if !(flash || html5)
-		if (this.text.length > 0) {
-			if (this.cursorOverlay != null) {
-				stopCursorBlinking();
-			}
-		} else {
-			startCursorBlinking();
-		}
+		// if (this.text.length > 0) {
+		// 	if (this.cursorOverlay != null) {
+		// 		stopCursorBlinking();
+		// 	}
+		// } else {
+		// 	startCursorBlinking();
+		// }
 		#end
 
 		this.notify(EVT_KEYUP, e);
@@ -274,51 +275,51 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		
 		this.borderColor = this.borderColorFocus;
 		if (this.text.length == 0) {
-			#if !(flash || html5)
-			this.startCursorBlinking();
-			#end
+			// #if !(flash || html5)
+			// this.startCursorBlinking();
+			// #end
 		}
 	}
 
 	#if !(flash || html5)
-	private function startCursorBlinking(): Void {
-		var r:Rectangle = this.getRect(this).clone();
-		if (this.cursorOverlay != null) {
-			this.parent.removeChild(this.cursorOverlay);
-		}
-		this.cursorOverlay = new Sprite();
-		this.cursorOverlay.x = this.x;
-		this.cursorOverlay.y = this.y;
-		this.parent.addChild(this.cursorOverlay);
-		tmCursorBlink.start();
-	}
+	// private function startCursorBlinking(): Void {
+	// 	var r:Rectangle = this.getRect(this).clone();
+	// 	if (this.cursorOverlay != null) {
+	// 		this.parent.removeChild(this.cursorOverlay);
+	// 	}
+	// 	this.cursorOverlay = new Sprite();
+	// 	this.cursorOverlay.x = this.x;
+	// 	this.cursorOverlay.y = this.y;
+	// 	this.parent.addChild(this.cursorOverlay);
+	// 	tmCursorBlink.start();
+	// }
 
-	private function onTmCursorCycle(e:TimerEvent): Void {
-		cursorVisible = ! cursorVisible;
-		var g:Graphics = this.cursorOverlay.graphics;
-		g.clear();
-		if (cursorVisible) {
-			g.lineStyle(0.5, 0x000000);
-			g.moveTo(3, 2);
-			g.lineTo(2, 16);
-		}	
-	}
+	// private function onTmCursorCycle(e:TimerEvent): Void {
+	// 	cursorVisible = ! cursorVisible;
+	// 	var g:Graphics = this.cursorOverlay.graphics;
+	// 	g.clear();
+	// 	if (cursorVisible) {
+	// 		g.lineStyle(0.5, 0x000000);
+	// 		g.moveTo(3, 2);
+	// 		g.lineTo(2, 16);
+	// 	}	
+	// }
 
-	private function stopCursorBlinking(): Void {
-		this.tmCursorBlink.stop();
-		if (this.parent != null) {
-			this.parent.removeChild(this.cursorOverlay);
-		}
-		this.cursorOverlay = null;
-		this.cursorVisible = false;
-		trace ("cursor overlay has been removed");
-	}
+	// private function stopCursorBlinking(): Void {
+	// 	this.tmCursorBlink.stop();
+	// 	if (this.parent != null) {
+	// 		this.parent.removeChild(this.cursorOverlay);
+	// 	}
+	// 	this.cursorOverlay = null;
+	// 	this.cursorVisible = false;
+	// 	trace ("cursor overlay has been removed");
+	// }
 	#end
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
 		#if !flash
 		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
-		stopCursorBlinking();
+		// stopCursorBlinking();
 		#end
 
 		this.borderColor = this.txtBorderColor;

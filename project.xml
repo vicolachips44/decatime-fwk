@@ -4,7 +4,7 @@
 	<meta title="decatime-fwk" package="org.decatime.fwk" version="1.0.0" company="decatime" />
 	<app main="Main" path="bin" file="fwk-test" />
 	
-	<window width="1024" height="768" background="#FFFFFF" fps="120" unless="android" />
+	<window width="1024" height="768" background="#FFFFFF" fps="60" unless="android" />
 	<window hardware="true" allow-shaders="false" depth-buffer="true" stencil-buffer="false" vsync="false" />
 	
 	<source path="src" />

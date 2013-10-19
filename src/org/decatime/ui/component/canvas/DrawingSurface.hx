@@ -3,20 +3,26 @@ import flash.events.MouseEvent;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
 import flash.geom.Rectangle;
-
 import flash.geom.Point;
+import flash.display.Graphics;
+
+import cpp.vm.Thread;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseShapeElement;
 
 class DrawingSurface extends BaseContainer {
 	private var drawingFeedBack: BaseShapeElement;
+
 	private var bmp : Bitmap;
 
 	private var startx: Float;
 	private var starty: Float;
-	private var swithTo: Bool;
+	private static var swithTo: Bool;
 	private var absRectangle: Rectangle;
+	private var fg: Graphics;
+	private var pt: Point;
+	private var t1: Thread;
 
 	public function new(name:String) {
 		super(name);
@@ -25,29 +31,29 @@ class DrawingSurface extends BaseContainer {
 
 	private function onMouseDown(e:MouseEvent): Void {
 		this.absRectangle = this.getBounds(this.stage);
+		
 		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
 
-		this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, true, 2147483647);
 		this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 	}
 
 	private function onMouseMove(e:MouseEvent): Void {
 		processMove(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
-		e.stopImmediatePropagation();
 	}
 
 	private function onMouseUp(e:MouseEvent): Void {
 		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		
-		this.bmp.bitmapData.draw(this.drawingFeedBack);
-		this.drawingFeedBack.graphics.clear();
+		this.bmp.bitmapData.draw(drawingFeedBack);
+		drawingFeedBack.graphics.clear();
+
 	}
 
 	private function processDown(xpos:Float, ypos:Float): Void {
 		startx = xpos;
 		starty = ypos;
 		swithTo = true;
-		this.drawingFeedBack.graphics.lineStyle(
+		drawingFeedBack.graphics.lineStyle(
 			3, 
 			0x000000, 
 			1.0, 
@@ -62,11 +68,22 @@ class DrawingSurface extends BaseContainer {
 	private function processMove(xpos:Float, ypos:Float): Void {
 		var posX:Float = xpos;
 		var posY:Float = ypos;
-		if (swithTo) {
-			drawingFeedBack.graphics.moveTo(posX, posY);
-			swithTo = false;
-		} else {
-			drawingFeedBack.graphics.lineTo( xpos, ypos);
+
+		t1.sendMessage(drawingFeedBack);
+		t1.sendMessage(new Point(posX, posY));
+	}
+
+	static function drawLine(): Void {
+		while (true) {
+			var feedback: BaseShapeElement = Thread.readMessage(true);
+			var pt:Point = Thread.readMessage(true);
+
+			if (swithTo) {
+				feedback.graphics.moveTo(pt.x, pt.y);
+				swithTo = false;
+			} else {
+				feedback.graphics.lineTo(pt.x, pt.y);
+			}
 		}
 	}
 
@@ -77,11 +94,12 @@ class DrawingSurface extends BaseContainer {
 	private override function initializeComponent() {
 		super.initializeComponent();
 
-		this.drawingFeedBack = new BaseShapeElement('canvas');
+		drawingFeedBack = new BaseShapeElement('canvas');
 		
-		this.container.create(1.0, this.drawingFeedBack);
-		this.addChild(this.drawingFeedBack);
-		
+		this.container.create(1.0, drawingFeedBack);
+		this.addChild(drawingFeedBack);
+
+		t1 = Thread.create(drawLine);
 	}
 
 	private override function initializeEvent(): Void {
@@ -96,6 +114,6 @@ class DrawingSurface extends BaseContainer {
 		this.bmp.x = this.container.getCurrSize().x;
 		this.bmp.y = this.container.getCurrSize().y;
 
-		this.setChildIndex(this.drawingFeedBack, this.numChildren -1);
+		this.setChildIndex(drawingFeedBack, this.numChildren -1);
 	}
 }
