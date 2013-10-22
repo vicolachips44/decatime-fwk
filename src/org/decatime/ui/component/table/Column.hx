@@ -3,57 +3,39 @@ package org.decatime.ui.component.table;
 import flash.geom.Rectangle;
 import flash.display.Graphics;
 
-import org.decatime.ui.layout.HBox;
-import org.decatime.ui.component.BaseContainer;
-import org.decatime.ui.component.Label;
-
-class Column extends BaseContainer {
-	/**
-	* type should be one of the enum values in EditorType
-	*/
-	public var editorType(default, null): String;
+class Column  {
+	
 	public var columnWidth(default, null): Float;
-	public var headerLabel(default, null): Label;
 	public var table(default, default): TableView;
-
 	public var columnIndex(default, default): Int;
+	public var cells(default, default):Array<Cell>;
 
-	private var editor: ICellEditor;
+	private var columnRect: Rectangle;
 
-	public function new(name:String, colWidth: Float, edType: String) {
-		super(name);
-		this.headerLabel = new Label('');
+	public function new(name:String, colWidth: Float) {
 		this.columnWidth = colWidth;
-		this.editorType = edType;
+		this.cells = new Array<Cell>();
 	}
 
-	public function getEditor(): ICellEditor {
-		if (this.editorType == EditorType.TEXT && this.editor == null) {
-			this.editor = new TextCellEditor(this.table, 'textEditor_' + this.columnIndex);
+	public function getCellRect(c:Cell): Rectangle {
+		var x: Float = this.columnRect.x;
+		var y: Float = this.columnRect.y;
+		var w: Float = this.columnRect.width;
+		var h: Float = this.table.rowHeight;
+
+		var cell:Cell = null;
+		for (cell in cells) {
+			if (cell.rowIndex == c.rowIndex) { break; }
+			y+= this.table.rowHeight;
 		}
-		
-		return this.editor;
+		return new Rectangle(x, y, w, h);
 	}
 
-	public override function refresh(r:Rectangle): Void {
-		super.refresh(r);
-		var g:Graphics = this.graphics;
-		
-		g.clear();
-
-		g.lineStyle(2, 0x000000);
+	public function draw(g:Graphics): Void {
+		var r:Rectangle = table.getColumnRect(this);
+		g.lineStyle(1);
 		g.drawRect(r.x, r.y, r.width, r.height);
+		this.columnRect = r;
 	}
 
-	private override function initializeComponent(): Void {
-		this.container = new HBox(this);
-		this.container.setVerticalGap(0);
-		this.container.setHorizontalGap(0);
-
-		this.headerLabel.setAlign('center');
-		this.headerLabel.setBackColor(0x808080);
-
-		this.container.create(1.0, this.headerLabel);
-		this.addChild(this.headerLabel);
-	}
 }

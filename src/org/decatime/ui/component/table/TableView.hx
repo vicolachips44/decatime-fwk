@@ -19,81 +19,79 @@ import org.decatime.ui.component.ScrollPanel;
 
 class TableView extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";
-	public static var EVT_ROW_SELECTED:String = NAMESPACE + "EVT_ROW_SELECTED";
-
-	public var selectedRow(default, default): Row;
 	
-	private var scPanel: ScrollPanel;
-	private var headerArea: HBox;
-	private var headerSprite: BaseSpriteElement;
-	private var rowsCount: Int;
-	private var rowHeight: Int;
-	private var headerHeight: Int;
-	private var columns: IntMap<Column>;
-	private var columnsCount: Int;
-	private var rows: IntMap<Row>;
+	public var spreadLastColumn(default, default): Bool;
+	public var rowHeight(default, default): Float;
+	public var headerHeight(default, default): Float;
+	private var topRowIndex:Int;
+
+	private var columns:Array<Column>;
 	private var fontRes:String;
 
 	public function new(name:String, fRes: String) {
 		super(name);
-		this.scPanel = new ScrollPanel('scPanel1');
-		this.rowHeight = 24;
-		this.headerHeight = 24;
-		this.columns = new IntMap<Column>();
-		this.rows = new IntMap<Row>();
-		this.columnsCount = 0;
-		this.rowsCount = 0;
 		this.fontRes = fRes;
+		this.elBackColor = 0xffffff;
 		this.elBackColorVisibility = 1.0;
+		this.spreadLastColumn = true;
+		this.columns = new Array<Column>();
+		this.rowHeight = 20;
+		this.headerHeight = 24;
+		this.topRowIndex = 0;
+	}
+
+	public function addColumns(value: Array<Column>): Void {
+		var c:Column = null;
+		for (c in value) { this.addColumn(c); }
+	}
+
+	public function addColumn(c:Column): Void {
+		c.table = this;
+		c.columnIndex = this.columns.length;
+		this.columns.push(c);
+	}
+
+	public function addCell(r:Int, c:Int, content: String) {
+		var cell:Cell = new Cell(content);
+		cell.table = this;
+		cell.column = this.columns[c];
+		cell.rowIndex = r;
+		this.columns[c].cells.push(cell);
+	}
+
+	public function getColumnRect(c:Column): Rectangle {
+		var x:Float = this.sizeInfo.x;
+		var y:Float = this.sizeInfo.y;
+		var w:Float = c.columnWidth;
+		var h:Float = this.sizeInfo.height;
+
+		var col:Column = null;
+		var i:Int = 0;
+		for (i in 0...this.columns.length) {
+			col = this.columns[i];
+			if (col.columnIndex == c.columnIndex) { break; }
+			x += col.columnWidth;
+			if (i == this.columns.length - 2) {
+				w = this.getLastColumnWidth(x, w);
+			}
+		}
+		
+		return new Rectangle(x, y, w, h);
 	}
 
 	public function getFontRes(): String {
 		return this.fontRes;
 	}
 
-	public function getRows(): IntMap<Row> {
-		return this.rows;
-	}
-
-	public function addColumn(headerText: String, colWidth: Float, ?edType: String = 'EditorTypeText'): Column {
-		this.columnsCount++;
-
-		var c:Column = new Column(headerText, colWidth, edType);
-		c.columnIndex = this.columnsCount;
-		c.table = this;
-		
-		c.headerLabel.setFontRes(this.fontRes);
-		c.headerLabel.setText(headerText);
-		this.columns.set(this.columnsCount, c);
-
-		return c;
-	}
-
-	public function getColumn(idx:Int): Column {
-		return this.columns.get(idx);
-	}
-
-	public function addRow(lrow:Row): Void {
-		this.rowsCount++;
-		lrow.table = this;
-		lrow.rowIndex = this.rowsCount;
-		lrow.addListener(this);
-		this.rows.set(this.rowsCount, lrow);
-	}
-
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
-		switch (name) {
-			case Row.EVT_ROW_SELECTED:
-				// relay the event
-				this.notify(EVT_ROW_SELECTED, data);
-		}
+
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			Row.EVT_ROW_SELECTED
+			
 		];
 	}
 
@@ -102,49 +100,40 @@ class TableView extends BaseContainer implements IObserver {
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 		var g:Graphics = this.graphics;
-		
 		g.clear();
 
-		g.lineStyle(1, 0x000000);
+		drawBackground(g, this.sizeInfo);
+
+		var col: Column = null;
+		var cel: Cell = null;
+
+		for (col in columns) {
+			col.draw(g);
+			for (cell in col.cells) {
+				cell.draw(g);
+				if (cell.getRect().y > this.container.getCurrSize().y + this.sizeInfo.height - (this.rowHeight)) {
+					break; // TODO make a scroll logic here...
+				}
+			}
+		}
+	}
+
+	private function getLastColumnWidth(x: Float, w: Float): Float {
+		var remaining: Float = this.sizeInfo.width - (x + w);
+		if (remaining > 0) { return remaining + w; }
+		return 0;
+	}
+
+	private function drawBackground(g:Graphics, r:Rectangle): Void {
+		g.beginFill(0xffffff);
 		g.drawRect(r.x, r.y, r.width, r.height);
+		g.endFill();
 	}
 
 	private override function initializeComponent(): Void {
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
-
-		var hareaBox: HBox = new HBox(this.container);
-		hareaBox.setHorizontalGap(0);
-		hareaBox.setVerticalGap(0);
-		this.container.create(this.headerHeight, hareaBox);
-
-		this.headerArea = new HBox(this.container);
-		this.headerArea.setHorizontalGap(0);
-		this.headerArea.setVerticalGap(0);
-
-		hareaBox.create(1.0, this.headerArea);
-		hareaBox.create(this.headerHeight, new VBox(hareaBox)); // spacer
-		hareaBox.setHorizontalGap(0);
-		hareaBox.setVerticalGap(0);
-
-		this.container.create(1.0, this.scPanel);
-		this.addChild(this.scPanel);
-
-		var i:Int = 1;
-		for (i in 1...this.columnsCount + 1) {
-			this.headerArea.create(this.columns.get(i).columnWidth, this.columns.get(i));
-			this.addChild(this.columns.get(i));
-		}
-
-		var scArea:VBox = this.scPanel.getScrollAreaContainer();
-		
-		for (i in 1...this.rowsCount + 1) {
-			scArea.create(
-				this.rows.get(i).rowHeight, 
-				this.rows.get(i) 
-			);
-			this.scPanel.getScrollArea().addChild(this.rows.get(i));
-		}
+		trace ("number of columns to show is " + this.columns.length);
 	}
 }

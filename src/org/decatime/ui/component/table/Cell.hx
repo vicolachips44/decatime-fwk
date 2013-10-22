@@ -6,18 +6,27 @@ import flash.display.Graphics;
 import org.decatime.ui.component.Label;
 
 class Cell {
-	public var renderer(default, null): ICellRenderer;
 	public var table(default, default): TableView;
-	public var row(default, default): Row;
 	public var column(default, default): Column;
+	public var rowIndex(default, default): Int;
+	private var rect:Rectangle;
 
-	public function new(value:Dynamic, r: ICellRenderer) {
-		this.renderer = r;
-		renderer.setParentCell(this);
-		renderer.setValue(value);
+	private var content: String;
+
+	public function new(content: String) {
+		this.content = content;
 	}
 
-	public function getValue(): Dynamic {
-		return this.renderer.getValue();
+	public function getRect(): Rectangle {
+		return this.rect;
 	}
+
+	public function draw(g:Graphics) : Void {
+		var r:Rectangle = this.column.getCellRect(this);
+		this.rect = r;
+		
+		g.lineStyle(1);
+		g.drawRect(r.x, r.y, r.width, r.height);
+	}
+
 }
