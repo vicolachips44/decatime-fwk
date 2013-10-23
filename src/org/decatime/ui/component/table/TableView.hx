@@ -20,7 +20,8 @@ import org.decatime.ui.component.ScrollPanel;
 
 class TableView extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";
-	
+	public static var EV_ROW_SELECTED: String = NAMESPACE + "EV_ROW_SELECTED";
+
 	public var spreadLastColumn(default, default): Bool;
 	public var rowHeight(default, default): Float;
 	public var headerHeight(default, default): Float;
@@ -61,7 +62,7 @@ class TableView extends BaseContainer implements IObserver {
 		return this.topRowIndex;
 	}
 
-	public function getBottomRowIndx(): Int {
+	public function getBottomRowIndex(): Int {
 		return this.bottomRowIndex;
 	}
 
@@ -83,6 +84,11 @@ class TableView extends BaseContainer implements IObserver {
 		cell.rowIndex = r;
 
 		this.columns[c].cells.push(cell);
+	}
+
+	public function getCellAt(r:Int, c:Int): Cell {
+		var col:Column = this.columns[c];
+		return col.cells[r];
 	}
 
 	public function getColumnRect(in_col:Column): Rectangle {
@@ -124,7 +130,8 @@ class TableView extends BaseContainer implements IObserver {
 				VerticalScrollBar.EVT_SCROLL_UP:
 				this.topRowIndex = data;
 				if (this.topRowIndex > this.getRowCount() - this.visibleItemsCount) { 
-					this.topRowIndex = this.getRowCount() - this.visibleItemsCount;
+					this.topRowIndex = this.getRowCount() - this.visibleItemsCount + 1;
+					trace ("the data " + data + " has been blocked...");
 				}
 				if (this.topRowIndex < 0) { this.topRowIndex = 0; }
 				draw();
@@ -154,10 +161,11 @@ class TableView extends BaseContainer implements IObserver {
 	private function draw() : Void {
 		var g:Graphics = this.gridSprite.graphics;//this.graphics;
 		g.clear();
-
 		locate();
 		drawGrid(g);
-		
+		g.lineStyle(4);
+		var r:Rectangle = this.gridArea.getCurrSize();
+		g.drawRect(r.x, r.y, r.width, r.height);
 	}
 
 	private function getLastColumnWidth(x: Float, w: Float): Float {
@@ -185,6 +193,8 @@ class TableView extends BaseContainer implements IObserver {
 	}
 
 	private function drawGrid(g:Graphics): Void {
+		g.lineStyle(1, 0xC0C0C0);
+
 		var col: Column = null;
 		for (col in columns) {
 			col.draw(g);
@@ -207,7 +217,7 @@ class TableView extends BaseContainer implements IObserver {
 		var w: Float = this.gridArea.getCurrSize().width - (this.gridArea.getCurrSize().x / 2);
 		var h: Float = this.rowHeight;
 
-		g.beginFill(0xffff00, 0.4);
+		g.beginFill(0xffff99, 0.5);
 		g.drawRect(x, y, w, h);
 		g.endFill();
 	}
@@ -248,16 +258,18 @@ class TableView extends BaseContainer implements IObserver {
 	}
 
 	private function onMouseEvtClick(e:MouseEvent): Void {
-		trace (e.localY);
 		var searchY: Float = this.gridArea.getCurrSize().y + this.headerHeight;
 		this.selectedRowIndex = -1;
 		while (e.localY >= searchY) {
 			this.selectedRowIndex++;
 			searchY += this.rowHeight;
 		}
+		
 		if (this.selectedRowIndex > -1) {
 			this.selectedRowIndex += this.topRowIndex;
+			this.notify(EV_ROW_SELECTED, this.selectedRowIndex);
 		}
+
 		drawGrid(this.gridSprite.graphics);
 	}
 }

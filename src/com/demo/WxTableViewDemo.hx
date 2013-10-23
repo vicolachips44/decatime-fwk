@@ -10,6 +10,7 @@ import org.decatime.event.IObserver;
 
 import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Column;
+import org.decatime.ui.component.table.Cell;
 
 class WxTableViewDemo extends Window implements IObserver implements IPrintable {
 
@@ -21,7 +22,7 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 
 	private override function buildClientArea(): Void {
 		this.myTable = new TableView('demoTable1', this.fontResPath);
-		this.myTable.headerHeight = 24;
+		this.myTable.headerHeight = 26;
 		this.myTable.rowHeight = 20;
 
 		this.clientArea.create(1.0, this.myTable);
@@ -37,23 +38,32 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 		var r:Int = 0;
 		var c: Int = 0;
 
-		for (r in 0...5000) {
+		for (r in 0...1400) {
 			for (c in 0...4) {
-				this.myTable.addCell(r, c, 'content_row' + r + "_col" + c);		
+				this.myTable.addCell(r, c, 'row_' + r + "_col" + c);		
 			}
 		}
-		
+		this.myTable.addListener(this);
 	}
 
 	// IObserver implementation BEGIN
 
 	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		super.handleEvent(name, sender, data);
-		
+		switch (name) {
+			case TableView.EV_ROW_SELECTED:
+				var rowIndex:Int = Std.parseInt(Std.string(data));
+				var c:Cell = this.myTable.getCellAt(rowIndex, 0);
+				var value: String = c.getContent();
+				trace ("the value of cell zero is " + value);
+				value = "new value !";
+				c.setContent(value);
+		}
 	}
 
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
+		parentAy.push(TableView.EV_ROW_SELECTED);
 		return parentAy;
 	}
 

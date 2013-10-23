@@ -18,13 +18,24 @@ class Cell {
 
 	public function new(content: String) {
 		this.content = content;
+		this.rowIndex = -1;
+		this.isVisible = false;
+	}
+
+	public function getContent(): String {
+		return this.content;
+	}
+
+	public function setContent(content: String) {
+		this.content = content;
+		updateDisplay();
 	}
 
 	public function getRect(): Rectangle {
 		return this.rect;
 	}
 
-	public function draw(g:Graphics) : Void {
+	public function draw(g:Graphics) : Bool {
 		var r:Rectangle = this.column.getCellRect(this);
 		
 		if (r == null) {
@@ -34,12 +45,11 @@ class Cell {
 				this.label = null;
 			}
 			
-			return;
+			return false;
 		}
 
 		this.rect = r;
 		
-		g.lineStyle(1);
 		g.beginFill(0xffffff);
 		g.drawRect(r.x, r.y, r.width, r.height);
 		g.endFill();
@@ -50,7 +60,19 @@ class Cell {
 			this.label.x = r.x;
 			this.label.y = r.y;
 		}
+		
+		if (this.label.getText() != this.content) {
+			this.label.setText(this.content);
+		}
+
 		this.isVisible = true;
+		return true;
+	}
+
+	private function updateDisplay(): Void {
+		if (this.isVisible) { 
+			this.draw(this.table.getGridSprite().graphics); 
+		}
 	}
 
 	private function createLabel(): Void {

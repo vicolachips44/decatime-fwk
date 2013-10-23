@@ -11,10 +11,13 @@ class Column  {
 	public var cells(default, default):Array<Cell>;
 
 	private var columnRect: Rectangle;
+	private var label: Label;
+	private var columnName: String;
 
 	public function new(name:String, colWidth: Float) {
 		this.columnWidth = colWidth;
 		this.cells = new Array<Cell>();
+		this.columnName = name;
 	}
 
 	public function getCellRect(in_cell: Cell): Rectangle {
@@ -28,14 +31,17 @@ class Column  {
 		var cell:Cell = null;
 		var i: Int = 0;
 		var t: Int = table.getTopRowIndex();
-		var b: Int = table.getBottomRowIndx();
+		var b: Int = table.getBottomRowIndex();
 
 		for (i in t...b) {
 			cell = this.cells[i];
-			if (cell == null) { return null; }
+			
+			if (cell == null) { break; }
+
 			if (cell.rowIndex == in_cell.rowIndex) {
 				return new Rectangle(x, y, w, h);
 			}
+
 			y+= this.table.rowHeight;
 		}
 		return null;
@@ -44,23 +50,35 @@ class Column  {
 	public function draw(g:Graphics): Void {
 		var r:Rectangle = table.getColumnRect(this);
 
+		if (this.label == null) { this.createLabel(); }
 		this.drawHeader(g, r);
 
 		this.columnRect = r;
 
 		var c:Cell  = null;
-		if (this.cells.length == 0) {
-		}
-		for (c in cells) {
-			c.draw(g);
-		}
+		for (c in cells) { c.draw(g); }
+	}
+
+	private function createLabel(): Void {
+		this.label = new Label(this.columnName, 0xffffff, 'center');
+		this.label.setFontRes(this.table.getFontRes());
+		this.label.setIsBold(true);
+		this.label.setFontSize(14);
+		this.table.getGridSprite().addChild(this.label);
+		this.label.visible = false;
 	}
 
 	private function drawHeader(g:Graphics, r:Rectangle): Void {
-		g.lineStyle(1);
-		g.beginFill(0xaaaaaa);
-		g.drawRect(r.x, r.y, r.width, r.height);
+		var rectHeader: Rectangle = r.clone();
+		rectHeader.height = this.table.headerHeight;
+
+		g.beginFill(0x000099);
+		g.drawRect(r.x, r.y, r.width, this.table.headerHeight);
 		g.endFill();
+		this.label.refresh(rectHeader);
+		
+		this.label.visible = true;
+
 	}
 
 }
