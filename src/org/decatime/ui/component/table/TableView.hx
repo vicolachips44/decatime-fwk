@@ -24,6 +24,11 @@ class TableView extends BaseContainer implements IObserver {
 	public var rowHeight(default, default): Float;
 	public var headerHeight(default, default): Float;
 	private var topRowIndex:Int;
+	private var bottomRowIndex: Int;
+	private var vsBar1: VerticalScrollBar;
+	private var gridArea: VBox;
+	private var gridSprite: BaseSpriteElement;
+	private var visibleItemsCount: Int;
 
 	private var columns:Array<Column>;
 	private var fontRes:String;
@@ -38,6 +43,22 @@ class TableView extends BaseContainer implements IObserver {
 		this.rowHeight = 20;
 		this.headerHeight = 24;
 		this.topRowIndex = 0;
+	}
+
+	public function getGridSprite(): BaseSpriteElement {
+		return this.gridSprite;
+	}
+
+	public function getRowCount(): Int {
+		return this.columns[0].cells.length;
+	}
+
+	public function getTopRowIndex(): Int {
+		return this.topRowIndex;
+	}
+
+	public function getBottomRowIndx(): Int {
+		return this.bottomRowIndex;
 	}
 
 	public function addColumns(value: Array<Column>): Void {
@@ -56,26 +77,34 @@ class TableView extends BaseContainer implements IObserver {
 		cell.table = this;
 		cell.column = this.columns[c];
 		cell.rowIndex = r;
+
 		this.columns[c].cells.push(cell);
 	}
 
-	public function getColumnRect(c:Column): Rectangle {
-		var x:Float = this.sizeInfo.x;
-		var y:Float = this.sizeInfo.y;
-		var w:Float = c.columnWidth;
-		var h:Float = this.sizeInfo.height;
+	public function getColumnRect(in_col:Column): Rectangle {
+		var x:Float = this.gridArea.getCurrSize().x;
+		var y:Float = this.gridArea.getCurrSize().y;
+		var w:Float = in_col.columnWidth;
+		var h:Float = this.gridArea.getCurrSize().height;
 
 		var col:Column = null;
 		var i:Int = 0;
 		for (i in 0...this.columns.length) {
 			col = this.columns[i];
-			if (col.columnIndex == c.columnIndex) { break; }
-			x += col.columnWidth;
-			if (i == this.columns.length - 2) {
+
+			if (i == this.columns.length - 1) {
 				w = this.getLastColumnWidth(x, w);
 			}
+
+			if (col.columnIndex == in_col.columnIndex) { 
+				x+= col.columnIndex;
+				break; 
+			} else {
+				x += col.columnWidth;
+			}
+
 		}
-		
+				
 		return new Rectangle(x, y, w, h);
 	}
 
@@ -86,12 +115,22 @@ class TableView extends BaseContainer implements IObserver {
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
-
+		switch (name) {
+			case VerticalScrollBar.EVT_SCROLL_DOWN,
+				VerticalScrollBar.EVT_SCROLL_UP:
+				this.topRowIndex = data;
+				if (this.topRowIndex > this.getRowCount() - this.visibleItemsCount) { 
+					this.topRowIndex = this.getRowCount() - this.visibleItemsCount;
+				}
+				if (this.topRowIndex < 0) { this.topRowIndex = 0; }
+				draw();
+		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			
+			VerticalScrollBar.EVT_SCROLL_UP,
+			VerticalScrollBar.EVT_SCROLL_DOWN
 		];
 	}
 
@@ -99,29 +138,54 @@ class TableView extends BaseContainer implements IObserver {
 
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		var g:Graphics = this.graphics;
+
+		this.gridSprite.scrollRect = this.gridArea.getCurrSize();
+		this.gridSprite.x = this.gridArea.getCurrSize().x;
+		this.gridSprite.y = this.gridArea.getCurrSize().y;
+
+		draw();
+		this.updateScrollBar();
+	}
+
+	private function draw() : Void {
+		var g:Graphics = this.gridSprite.graphics;//this.graphics;
 		g.clear();
 
 		drawBackground(g, this.sizeInfo);
+		locate();
+		drawGrid(g);
+		
+	}
 
-		var col: Column = null;
-		var cel: Cell = null;
+	private function getLastColumnWidth(x: Float, w: Float): Float {
+		var remaining: Float = this.gridArea.getCurrSize().width - (x + w);
+		if (remaining > 0) { return remaining + w; }
+		return 0;
+	}
 
-		for (col in columns) {
-			col.draw(g);
-			for (cell in col.cells) {
-				cell.draw(g);
-				if (cell.getRect().y > this.container.getCurrSize().y + this.sizeInfo.height - (this.rowHeight)) {
-					break; // TODO make a scroll logic here...
-				}
+	private function locate(): Void {
+		this.bottomRowIndex = this.topRowIndex;
+
+		var virtualY: Float = this.gridArea.getCurrSize().y;
+		virtualY += this.headerHeight;
+
+		var avHeight: Float = this.gridArea.getCurrSize().height - virtualY;
+		var position: Float = 0;
+		while (true) {
+			position += this.rowHeight;
+			this.bottomRowIndex++;
+			if (position > avHeight + (this.rowHeight * 2)) {
+				this.visibleItemsCount = this.bottomRowIndex - this.topRowIndex - 1;
+				break;
 			}
 		}
 	}
 
-	private function getLastColumnWidth(x: Float, w: Float): Float {
-		var remaining: Float = this.sizeInfo.width - (x + w);
-		if (remaining > 0) { return remaining + w; }
-		return 0;
+	private function drawGrid(g:Graphics): Void {
+		var col: Column = null;
+		for (col in columns) {
+			col.draw(g);
+		}
 	}
 
 	private function drawBackground(g:Graphics, r:Rectangle): Void {
@@ -130,10 +194,38 @@ class TableView extends BaseContainer implements IObserver {
 		g.endFill();
 	}
 
+	private function updateScrollBar(): Void {
+		if (this.vsBar1 == null) { return; }
+		// the thumb is being dragged
+		if (this.vsBar1.isScrolling()) { return; }
+
+		this.vsBar1.setStepCount(this.getRowCount());
+		this.vsBar1.setStepPos(this.topRowIndex);
+		this.vsBar1.setStepSize(Std.int(this.rowHeight));
+		this.vsBar1.setVisibleHeight(this.vsBar1.getCurrSize().height / (this.bottomRowIndex - this.topRowIndex));
+		this.vsBar1.updatePos();
+	}
+
 	private override function initializeComponent(): Void {
-		this.container = new VBox(this);
-		this.container.setVerticalGap(0);
-		this.container.setHorizontalGap(0);
-		trace ("number of columns to show is " + this.columns.length);
+		this.container = new HBox(this);
+
+		var hbox1: HBox = new HBox(this.container);
+		hbox1.setHorizontalGap(0);
+		hbox1.setVerticalGap(0);
+
+		this.container.create(1.0, hbox1);
+
+		this.vsBar1 = new VerticalScrollBar('vsGridScrollbar');
+		this.vsBar1.addListener(this);
+		this.gridArea = new VBox(this.container);
+
+		hbox1.create(1.0, this.gridArea);
+		hbox1.create(24, this.vsBar1);
+
+		gridSprite = new BaseSpriteElement('gridContainer');
+		gridSprite.isContainer = false;
+		
+		this.addChild(this.vsBar1);
+		this.addChild(gridSprite);
 	}
 }

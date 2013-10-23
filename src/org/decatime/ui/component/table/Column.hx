@@ -17,25 +17,50 @@ class Column  {
 		this.cells = new Array<Cell>();
 	}
 
-	public function getCellRect(c:Cell): Rectangle {
+	public function getCellRect(in_cell: Cell): Rectangle {
 		var x: Float = this.columnRect.x;
 		var y: Float = this.columnRect.y;
 		var w: Float = this.columnRect.width;
 		var h: Float = this.table.rowHeight;
 
+		y += table.headerHeight;
+
 		var cell:Cell = null;
-		for (cell in cells) {
-			if (cell.rowIndex == c.rowIndex) { break; }
+		var i: Int = 0;
+		var t: Int = table.getTopRowIndex();
+		var b: Int = table.getBottomRowIndx();
+
+		for (i in t...b) {
+			cell = this.cells[i];
+			if (cell == null) { return null; }
+			if (cell.rowIndex == in_cell.rowIndex) {
+				return new Rectangle(x, y, w, h);
+			}
 			y+= this.table.rowHeight;
 		}
-		return new Rectangle(x, y, w, h);
+		return null;
 	}
 
 	public function draw(g:Graphics): Void {
 		var r:Rectangle = table.getColumnRect(this);
-		g.lineStyle(1);
-		g.drawRect(r.x, r.y, r.width, r.height);
+
+		this.drawHeader(g, r);
+
 		this.columnRect = r;
+
+		var c:Cell  = null;
+		if (this.cells.length == 0) {
+		}
+		for (c in cells) {
+			c.draw(g);
+		}
+	}
+
+	private function drawHeader(g:Graphics, r:Rectangle): Void {
+		g.lineStyle(1);
+		g.beginFill(0xaaaaaa);
+		g.drawRect(r.x, r.y, r.width, r.height);
+		g.endFill();
 	}
 
 }
