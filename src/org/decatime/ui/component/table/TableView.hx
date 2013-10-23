@@ -198,8 +198,12 @@ class TableView extends BaseContainer implements IObserver {
 
 	private function drawSelectedRow(g:Graphics): Void {
 		var rcoord:Float = this.selectedRowIndex - this.topRowIndex;
+		
 		var x: Float = this.gridArea.getCurrSize().x;
 		var y: Float = this.gridArea.getCurrSize().y + (rcoord * this.rowHeight) + this.headerHeight;
+
+		if (y < this.gridArea.getCurrSize().y + this.headerHeight) { return; }
+
 		var w: Float = this.gridArea.getCurrSize().width - (this.gridArea.getCurrSize().x / 2);
 		var h: Float = this.rowHeight;
 
@@ -210,7 +214,6 @@ class TableView extends BaseContainer implements IObserver {
 
 	private function updateScrollBar(): Void {
 		if (this.vsBar1 == null) { return; }
-		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }
 
 		this.vsBar1.setStepCount(this.getRowCount());
