@@ -155,7 +155,6 @@ class TableView extends BaseContainer implements IObserver {
 		var g:Graphics = this.gridSprite.graphics;//this.graphics;
 		g.clear();
 
-		drawBackground(g, this.sizeInfo);
 		locate();
 		drawGrid(g);
 		
@@ -190,25 +189,21 @@ class TableView extends BaseContainer implements IObserver {
 		for (col in columns) {
 			col.draw(g);
 		}
+
 		if (this.selectedRowIndex > -1) {
 			this.drawSelectedRow(g);
 		}
-	}
 
-	private function drawBackground(g:Graphics, r:Rectangle): Void {
-		g.beginFill(0xffffff);
-		g.drawRect(r.x, r.y, r.width, r.height);
-		g.endFill();
 	}
 
 	private function drawSelectedRow(g:Graphics): Void {
 		var rcoord:Float = this.selectedRowIndex - this.topRowIndex;
 		var x: Float = this.gridArea.getCurrSize().x;
 		var y: Float = this.gridArea.getCurrSize().y + (rcoord * this.rowHeight) + this.headerHeight;
-		var w: Float = this.gridArea.getCurrSize().width;
+		var w: Float = this.gridArea.getCurrSize().width - (this.gridArea.getCurrSize().x / 2);
 		var h: Float = this.rowHeight;
 
-		g.beginFill(0xcccccc, 0.7);
+		g.beginFill(0xffff00, 0.4);
 		g.drawRect(x, y, w, h);
 		g.endFill();
 	}
@@ -220,7 +215,7 @@ class TableView extends BaseContainer implements IObserver {
 
 		this.vsBar1.setStepCount(this.getRowCount());
 		this.vsBar1.setStepPos(this.topRowIndex);
-		this.vsBar1.setStepSize(Std.int(this.rowHeight));
+		this.vsBar1.setStepSize(1);
 		this.vsBar1.setVisibleHeight(this.vsBar1.getCurrSize().height / (this.bottomRowIndex - this.topRowIndex));
 		this.vsBar1.updatePos();
 	}
