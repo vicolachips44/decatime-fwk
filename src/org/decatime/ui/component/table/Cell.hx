@@ -97,7 +97,7 @@ class Cell {
 		this.bmCache = null;
 
 		this.bmCache = new Bitmap();
-		this.bmCache.bitmapData = new flash.display.BitmapData(13, 13, false, 0x000000);
+		this.bmCache.bitmapData = new flash.display.BitmapData(13, 13, false);
 		this.table.getGridSprite().addChild(this.bmCache);
 		
 		var sh:Shape = new Shape();

@@ -91,7 +91,7 @@ class Application extends BaseSpriteElement implements IObserver {
 
 		this.layout.create(1.0, hbox1);
 
-		var demoList: ListBox = new ListBox('demoList', 'assets/VeraMono.ttf');
+		var demoList: ListBox = new ListBox('demoList', 'assets/BepaOblique.ttf');
 		demoList.showScrollBar = false;
 		demoList.add(wxList);
 		demoList.add(wxTable);

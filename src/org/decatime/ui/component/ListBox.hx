@@ -272,7 +272,7 @@ class ListBox extends BaseContainer implements IObserver {
 	private function createEmbeddedFontTextFormat(): Void {
 		var format:TextFormat = new TextFormat(
 			this.fontRes.fontName,
-			10, 
+			12, 
 			0x000000,
 			false
 		);
