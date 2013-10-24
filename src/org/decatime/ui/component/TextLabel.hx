@@ -129,6 +129,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		} else if (this.align == 'right') {
 			format.align = flash.text.TextFormatAlign.RIGHT;
 		}
+		
 		this.embedFonts = true;
 		this.defaultTextFormat = format;
 		this.setTextFormat(format);

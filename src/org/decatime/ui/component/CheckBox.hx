@@ -13,15 +13,9 @@ class CheckBox extends BaseSelected {
 		var g:Graphics = this.shp.graphics;
 		g.clear();
 
-		if ((this.label != null) && (! this.label.getTransparentBackground())) {
-			g.beginFill(this.label.getBackColor(), 1);
-			g.drawRect(0, 0, this.shp.getCurrSize().width, this.shp.getCurrSize().height);
-			g.endFill();
-		}
-
 		g.lineStyle(1 ,0x000000, 1.0);
 		var originX:Float = (this.shp.getCurrSize().width / 2) - 6;
-		var originY:Float = (this.shp.getCurrSize().height / 2) - 6;
+		var originY:Float = (this.shp.getCurrSize().height / 2) - 14;
 
 		g.drawRect(originX, originY, 12, 12);
 

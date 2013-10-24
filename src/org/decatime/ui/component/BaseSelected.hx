@@ -5,14 +5,14 @@ import flash.events.MouseEvent;
 
 import org.decatime.ui.BaseShapeElement;
 import org.decatime.ui.component.BaseContainer;
-import org.decatime.ui.component.Label;
+import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.layout.HBox;
 
 class BaseSelected extends BaseContainer {
 	private static var NAMESPACE:String = "org.decatime.ui.componnet.BaseSelected :";
 	public static var EVT_CLICK:String = NAMESPACE + "EVT_CLICK";
 
-	public var label(default, null): Label;
+	public var label(default, null): TextLabel;
 	private var selected: Bool;
 	private var shp:BaseShapeElement;
 
@@ -30,7 +30,7 @@ class BaseSelected extends BaseContainer {
 		selected = false;
 	}
 
-	public function get_label(): Label {
+	public function get_label(): TextLabel {
 		return label;
 	}
 
@@ -49,7 +49,7 @@ class BaseSelected extends BaseContainer {
 	}
 
 	private function createLabel(): Void {
-		this.label = new Label('', 0x000000 , 'left');
+		this.label = new TextLabel('', 0x000000 , 'left');
 	}
 
 	private function draw(): Void {}

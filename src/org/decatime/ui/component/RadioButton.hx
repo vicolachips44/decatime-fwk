@@ -21,12 +21,6 @@ class RadioButton extends CheckBox {
 		var g:Graphics = this.shp.graphics;
 		g.clear();
 
-		if (! this.label.getTransparentBackground()) {
-			g.beginFill(this.label.getBackColor(), 1);
-			g.drawRect(0, 0, this.shp.getCurrSize().width, this.shp.getCurrSize().height);
-			g.endFill();
-		}
-
 		g.lineStyle(1 ,0x000000, 1.0);
 		g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, 6);
 
@@ -35,5 +29,7 @@ class RadioButton extends CheckBox {
 			g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, 3);
 			g.endFill();
 		}
+
+		this.shp.y = this.sizeInfo.y - 4;
 	}
 }
