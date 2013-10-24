@@ -29,18 +29,22 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 		this.addChild(this.myTable);
 
 		this.myTable.addColumns ([
-			new Column("First Name", 100),
-			new Column("Last Name", 100),
-			new Column("Email Name", 150),
-			new Column("Age", 60)
+			new Column("Col_1", 80),
+			new Column("Col_2", 80),
+			new Column("Col_3", 80),
+			new Column("Col_4", 80),
+			new Column("Col_5", 80),
+			new Column("Col_6", 80),
+			new Column("Col_7", 80),
+			new Column("Col_8", 80)
 		]);
 
 		var r:Int = 0;
 		var c: Int = 0;
 
-		for (r in 0...1400) {
-			for (c in 0...4) {
-				this.myTable.addCell(r, c, 'row_' + r + "_col" + c);		
+		for (r in 0...5000) {
+			for (c in 0...8) {
+				this.myTable.addCell(r, c, 'r_' + r + "_c_" + c);		
 			}
 		}
 		this.myTable.addListener(this);

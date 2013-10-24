@@ -45,7 +45,7 @@ class Label extends BaseBitmapElement {
 		this.tfield.mouseEnabled = false;
 		this.tfield.text = text;
 		
-		this.tfield.antiAliasType = flash.text.AntiAliasType.ADVANCED;
+		this.tfield.antiAliasType = flash.text.AntiAliasType.NORMAL;
 		this.initialized = false;
 
 	}
@@ -186,9 +186,6 @@ class Label extends BaseBitmapElement {
 				true 
 			);
 		}
-		#if flash
-		this.smoothing = true;
-		#end
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {
