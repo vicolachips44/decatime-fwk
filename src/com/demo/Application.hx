@@ -11,6 +11,7 @@ import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.Label;
+import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.component.PngButton;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.TextArea;
@@ -24,6 +25,8 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	private var layout:VBox;
 	private var lblTitle:Label;
+	private var lblAppTitle: TextLabel;
+
 	private var testCount:Int = 0;
 	private var txtTwo:TextBox;
 	private var appContainer: BaseSpriteElement;
@@ -68,15 +71,22 @@ class Application extends BaseSpriteElement implements IObserver {
 	// IObserver implementation END
 
 	private function initializeComponent() {
-		this.lblTitle = new Label('DECATIME FRAMEWORK DEMO V1');
-		this.lblTitle.setFontRes('assets/1979rg.ttf');
-		this.lblTitle.setAlign(Label.CENTER);
-		this.lblTitle.setFontSize(24);
-		this.lblTitle.setColor(0x0000ff);
-		this.lblTitle.setVerticalGap(0);
-		this.lblTitle.setBackColor(0xafafaf);
-		layout.create(32, this.lblTitle);
-		this.addChild(this.lblTitle);
+		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
+		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
+		this.lblAppTitle.setFontSize(24);
+		this.lblAppTitle.setColor(0x0000ff);
+		layout.create(32, this.lblAppTitle);
+		this.addChild(this.lblAppTitle);
+
+		// this.lblTitle = new Label('DECATIME FRAMEWORK DEMO V1');
+		// this.lblTitle.setFontRes('assets/1979rg.ttf');
+		// this.lblTitle.setAlign(Label.CENTER);
+		// this.lblTitle.setFontSize(24);
+		// this.lblTitle.setColor(0x0000ff);
+		// this.lblTitle.setVerticalGap(0);
+		// this.lblTitle.setBackColor(0xafafaf);
+		// layout.create(32, this.lblTitle);
+		// this.addChild(this.lblTitle);
 
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');

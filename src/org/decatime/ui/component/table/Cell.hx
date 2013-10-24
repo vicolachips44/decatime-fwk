@@ -6,6 +6,7 @@ import flash.display.Bitmap;
 import flash.display.Shape;
 
 import org.decatime.ui.component.Label;
+import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.component.CheckBox;
 
 class Cell {
@@ -15,7 +16,7 @@ class Cell {
 	public var isVisible(default, null): Bool;
 
 	private var rect:Rectangle;
-	private var label: Label;
+	private var label: TextLabel;
 	private var chkValue: Dynamic;
 	private var bmCache: Bitmap;
 
@@ -128,7 +129,7 @@ class Cell {
 
 
 	private function createLabel(): Void {
-		this.label = new Label(this.content, 0x000000, 'left');
+		this.label = new TextLabel(this.content, 0x000000, 'left');
 		this.label.setFontRes(this.table.getFontRes());
 		this.label.refresh(this.rect);
 		this.table.getGridSprite().addChild(this.label);

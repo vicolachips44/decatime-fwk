@@ -2,6 +2,7 @@ package org.decatime.ui.component.table;
 
 import flash.geom.Rectangle;
 import flash.display.Graphics;
+import org.decatime.ui.component.TextLabel;
 
 class Column  {
 	
@@ -11,7 +12,7 @@ class Column  {
 	public var cells(default, default):Array<Cell>;
 	public var columnType(default, default): ColumnType;
 	private var columnRect: Rectangle;
-	private var label: Label;
+	private var label: TextLabel;
 	private var columnName: String;
 
 	public function new(name:String, colWidth: Float) {
@@ -62,7 +63,7 @@ class Column  {
 	}
 
 	private function createLabel(): Void {
-		this.label = new Label(this.columnName, 0xffffff, 'center');
+		this.label = new TextLabel(this.columnName, 0xffffff, 'center');
 		this.label.setFontRes(this.table.getFontRes());
 		this.label.setIsBold(true);
 		this.label.setFontSize(14);

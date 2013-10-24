@@ -21,7 +21,7 @@ import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 
-import org.decatime.ui.component.Label;
+import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
@@ -41,7 +41,7 @@ class Window extends BaseContainer implements IObserver {
 	private var clientArea:VBox;
 	private var header:HBox;
 	private var footer:HBox;
-	private var lblTitle:Label;
+	private var lblTitle:TextLabel;
 	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
 	private var windowState:WindowState;
@@ -369,11 +369,9 @@ class Window extends BaseContainer implements IObserver {
 	private function initializeHeader(): Void {
 		this.headerContainer = new BaseSpriteElement('headerContainer');
 
-		lblTitle = new Label(this.toString());
+		lblTitle = new TextLabel(this.toString(), 0xffffff, 'center');
 		lblTitle.setFontRes(this.fontResPath);
-		lblTitle.setAlign(Label.CENTER);
 		lblTitle.setFontSize(16);
-		lblTitle.setColor(0xffffff);
 		
 		var c:Content = this.header.create(1.0, this.lblTitle);
 		c.setVerticalGap(1);
