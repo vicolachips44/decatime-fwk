@@ -94,7 +94,7 @@ class Window extends BaseContainer implements IObserver {
 	public function setWindowState(value:WindowState): Void {
 		var bRefresh: Bool = this.windowState != value;
 		this.windowState = value;
-		if (bRefresh) {
+		if (bRefresh && this.initialized) {
 			if (this.windowState == WindowState.NORMAL) {
 				this.x = this.oldX;
 				this.y = this.oldY;

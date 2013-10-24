@@ -16,6 +16,7 @@ import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.windows.Window;
+import org.decatime.ui.component.windows.WindowState;
 
 import flash.text.TextFormat;
 
@@ -81,19 +82,22 @@ class Application extends BaseSpriteElement implements IObserver {
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxCanvas:WxCanvasDemo = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
-
+		var wxMenu:WxMenuDemo = new WxMenuDemo('wxMenu', new Point(400, 480), 'assets/VeraMono.ttf');
+		wxMenu.setWindowState(WindowState.MAXIMIZED);
+		
 		var hbox1: HBox = new HBox(this.layout);
 		hbox1.setVerticalGap(0);
 		hbox1.setHorizontalGap(2);
 
 		this.layout.create(1.0, hbox1);
 
-		var demoList: ListBox = new ListBox('demoList', 'assets/Vera.ttf');
+		var demoList: ListBox = new ListBox('demoList', 'assets/VeraMono.ttf');
 		demoList.showScrollBar = false;
 		demoList.add(wxList);
 		demoList.add(wxTable);
 		demoList.add(wxCombo);
 		demoList.add(wxCanvas);
+		demoList.add(wxMenu);
 
 		demoList.addListener(this);
 

@@ -50,6 +50,15 @@ class Label extends BaseBitmapElement {
 
 	}
 
+	public function getNeededSize(): Float {
+		if (this.fontRes != null) { createEmbeddedFontTextFormat(); }
+		var ltext: String = this.tfield.text;
+		this.tfield.text = '';
+		this.tfield.text = ltext;
+		trace ("computing with of text with content " + this.tfield.text);
+		return this.tfield.textWidth + 10;
+	}
+
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 
@@ -199,5 +208,6 @@ class Label extends BaseBitmapElement {
 		this.tfield.embedFonts = true;
 		this.tfield.defaultTextFormat = format;
 		this.tfield.setTextFormat(format);
+		trace ("embedFonts text format has been created;..");
 	}
 }
