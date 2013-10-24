@@ -22,6 +22,7 @@ class WxMenuDemo extends Window implements IPrintable implements IObserver {
 		this.mnuBar.addItem(new MenuItem('Edit'));
 		this.mnuBar.addItem(new MenuItem('Projects'));
 		this.mnuBar.addItem(new MenuItem('About'));
+		
 		this.clientArea.create(24, this.mnuBar);
 		this.addChild(this.mnuBar);
 	}

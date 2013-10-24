@@ -9,7 +9,7 @@ class Column  {
 	public var table(default, default): TableView;
 	public var columnIndex(default, default): Int;
 	public var cells(default, default):Array<Cell>;
-
+	public var columnType(default, default): ColumnType;
 	private var columnRect: Rectangle;
 	private var label: Label;
 	private var columnName: String;
@@ -56,7 +56,9 @@ class Column  {
 		this.columnRect = r;
 
 		var c:Cell  = null;
-		for (c in cells) { c.draw(g); }
+		for (c in cells) {
+			c.draw(g);
+		}
 	}
 
 	private function createLabel(): Void {

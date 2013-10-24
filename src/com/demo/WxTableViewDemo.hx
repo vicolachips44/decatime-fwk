@@ -10,6 +10,7 @@ import org.decatime.event.IObserver;
 
 import org.decatime.ui.component.table.TableView;
 import org.decatime.ui.component.table.Column;
+import org.decatime.ui.component.table.ColumnType;
 import org.decatime.ui.component.table.Cell;
 
 class WxTableViewDemo extends Window implements IObserver implements IPrintable {
@@ -32,20 +33,29 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 			new Column("Col_1", 80),
 			new Column("Col_2", 80),
 			new Column("Col_3", 80),
-			new Column("Col_4", 80),
+			new Column("CHK", 50),
 			new Column("Col_5", 80),
 			new Column("Col_6", 80),
 			new Column("Col_7", 80),
 			new Column("Col_8", 80)
 		]);
 
+		var colCheck: Column = this.myTable.columns[3];
+		colCheck.columnType = ColumnType.CHECKBOX;
+
+
 		var r:Int = 0;
 		var c: Int = 0;
-
+		var sw:Bool = false;
 		for (r in 0...5000) {
 			for (c in 0...8) {
-				this.myTable.addCell(r, c, 'r_' + r + "_c_" + c);		
+				if (c != 3) {
+					this.myTable.addCell(r, c, 'r_' + r + "_c_" + c);		
+				} else {
+					this.myTable.addCell(r, c, sw ? '1' : '0');
+				}
 			}
+			sw = ! sw;
 		}
 		this.myTable.addListener(this);
 	}
@@ -57,10 +67,10 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 		switch (name) {
 			case TableView.EV_ROW_SELECTED:
 				var rowIndex:Int = Std.parseInt(Std.string(data));
-				var c:Cell = this.myTable.getCellAt(rowIndex, 0);
+				var c:Cell = this.myTable.getCellAt(rowIndex, 3);
 				var value: String = c.getContent();
 				trace ("the value of cell zero is " + value);
-				value = "new value !";
+				value = value == '1' ? '0' : '1';
 				c.setContent(value);
 		}
 	}

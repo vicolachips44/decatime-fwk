@@ -208,6 +208,5 @@ class Label extends BaseBitmapElement {
 		this.tfield.embedFonts = true;
 		this.tfield.defaultTextFormat = format;
 		this.tfield.setTextFormat(format);
-		trace ("embedFonts text format has been created;..");
 	}
 }

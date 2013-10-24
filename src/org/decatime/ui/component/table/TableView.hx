@@ -21,11 +21,17 @@ import org.decatime.ui.component.ScrollPanel;
 class TableView extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";
 	public static var EV_ROW_SELECTED: String = NAMESPACE + "EV_ROW_SELECTED";
+	public static var EV_ROW_OVER: String = NAMESPACE + "EV_ROW_OVER";
 
 	public var spreadLastColumn(default, default): Bool;
 	public var rowHeight(default, default): Float;
 	public var headerHeight(default, default): Float;
 	public var selectedRowIndex(default, null): Int;
+	public var selectedRowColor(default, default): Int;
+	public var overRowIndex(default, null): Int;
+	public var overRowColor(default, default): Int;
+	public var gridColor(default, default): Int;
+	public var columns(default, null):Array<Column>;
 
 	private var topRowIndex:Int;
 	private var bottomRowIndex: Int;
@@ -34,7 +40,6 @@ class TableView extends BaseContainer implements IObserver {
 	private var gridSprite: BaseSpriteElement;
 	private var visibleItemsCount: Int;
 
-	private var columns:Array<Column>;
 	private var fontRes:String;
 
 	public function new(name:String, fRes: String) {
@@ -48,6 +53,10 @@ class TableView extends BaseContainer implements IObserver {
 		this.headerHeight = 24;
 		this.topRowIndex = 0;
 		this.selectedRowIndex = -1;
+		this.overRowIndex = -1;
+		this.gridColor = 0xC0C0C0;
+		this.selectedRowColor = 0xffff99;
+		this.overRowColor = 0xdddddd;
 	}
 
 	public function getGridSprite(): BaseSpriteElement {
@@ -73,6 +82,7 @@ class TableView extends BaseContainer implements IObserver {
 
 	public function addColumn(c:Column): Void {
 		c.table = this;
+		c.columnType = ColumnType.TEXT;
 		c.columnIndex = this.columns.length;
 		this.columns.push(c);
 	}
@@ -82,7 +92,6 @@ class TableView extends BaseContainer implements IObserver {
 		cell.table = this;
 		cell.column = this.columns[c];
 		cell.rowIndex = r;
-
 		this.columns[c].cells.push(cell);
 	}
 
@@ -131,7 +140,6 @@ class TableView extends BaseContainer implements IObserver {
 				this.topRowIndex = data;
 				if (this.topRowIndex > this.getRowCount() - this.visibleItemsCount) { 
 					this.topRowIndex = this.getRowCount() - this.visibleItemsCount + 1;
-					trace ("the data " + data + " has been blocked...");
 				}
 				if (this.topRowIndex < 0) { this.topRowIndex = 0; }
 				draw();
@@ -159,13 +167,21 @@ class TableView extends BaseContainer implements IObserver {
 	}
 
 	private function draw() : Void {
-		var g:Graphics = this.gridSprite.graphics;//this.graphics;
+		var g:Graphics = this.gridSprite.graphics;
 		g.clear();
 		locate();
 		drawGrid(g);
+		drawOutline();
+	}
+
+	private function drawOutline(): Void {
+		var g:Graphics = this.gridSprite.graphics;
 		g.lineStyle(4);
 		var r:Rectangle = this.gridArea.getCurrSize();
 		g.drawRect(r.x, r.y, r.width, r.height);
+
+		// reset the line template
+		this.gridSprite.graphics.lineStyle(1, this.gridColor);
 	}
 
 	private function getLastColumnWidth(x: Float, w: Float): Float {
@@ -193,33 +209,35 @@ class TableView extends BaseContainer implements IObserver {
 	}
 
 	private function drawGrid(g:Graphics): Void {
-		g.lineStyle(1, 0xC0C0C0);
+		g.lineStyle(1, this.gridColor);
 
 		var col: Column = null;
 		for (col in columns) {
 			col.draw(g);
+			g.lineStyle(1, gridColor);
 		}
-
-		if (this.selectedRowIndex > -1) {
-			this.drawSelectedRow(g);
-		}
-
 	}
 
-	private function drawSelectedRow(g:Graphics): Void {
-		var rcoord:Float = this.selectedRowIndex - this.topRowIndex;
-		
-		var x: Float = this.gridArea.getCurrSize().x;
-		var y: Float = this.gridArea.getCurrSize().y + (rcoord * this.rowHeight) + this.headerHeight;
+	private function repaintRow(index:Int): Void {
+		var col:Column = null;
+		var g:Graphics = this.gridSprite.graphics;
+		g.lineStyle(1, gridColor);
+		for (col in this.columns) {
+			col.cells[index].draw(this.gridSprite.graphics);
+		}
+		drawOutline();
+	}
 
-		if (y < this.gridArea.getCurrSize().y + this.headerHeight) { return; }
+	
+	private function drawSelectedRow(index:Int, color: Int): Void {
+		var col:Column = null;
+		var g:Graphics = this.gridSprite.graphics;
+		g.lineStyle(1, gridColor);
+		for (col in this.columns) {
+			col.cells[index].draw(this.gridSprite.graphics, color);	
+		}
 
-		var w: Float = this.gridArea.getCurrSize().width - (this.gridArea.getCurrSize().x / 2);
-		var h: Float = this.rowHeight;
-
-		g.beginFill(0xffff99, 0.5);
-		g.drawRect(x, y, w, h);
-		g.endFill();
+		drawOutline();
 	}
 
 	private function updateScrollBar(): Void {
@@ -252,13 +270,39 @@ class TableView extends BaseContainer implements IObserver {
 		gridSprite = new BaseSpriteElement('gridContainer');
 		gridSprite.isContainer = false;
 		gridSprite.addEventListener(MouseEvent.CLICK, onMouseEvtClick);
+		gridSprite.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		
 		this.addChild(this.vsBar1);
 		this.addChild(gridSprite);
 	}
 
+	private function onMouseMove(e:MouseEvent): Void {
+		var searchY: Float = this.gridArea.getCurrSize().y + this.headerHeight;
+
+		if (this.overRowIndex > -1 && this.overRowIndex != this.selectedRowIndex) {
+			this.repaintRow(this.overRowIndex);
+		}
+
+		this.overRowIndex = -1;
+		while (e.localY >= searchY) {
+			this.overRowIndex++;
+			searchY += this.rowHeight;
+		}
+		
+		if (this.overRowIndex > -1 && this.overRowIndex != this.selectedRowIndex) {
+			this.overRowIndex += this.topRowIndex;
+			this.notify(EV_ROW_OVER, this.overRowIndex);
+			this.drawSelectedRow(this.overRowIndex, this.overRowColor);
+		}
+	}
+
 	private function onMouseEvtClick(e:MouseEvent): Void {
 		var searchY: Float = this.gridArea.getCurrSize().y + this.headerHeight;
+
+		if (this.selectedRowIndex > -1) {
+			this.repaintRow(this.selectedRowIndex);
+		}
+
 		this.selectedRowIndex = -1;
 		while (e.localY >= searchY) {
 			this.selectedRowIndex++;
@@ -268,8 +312,7 @@ class TableView extends BaseContainer implements IObserver {
 		if (this.selectedRowIndex > -1) {
 			this.selectedRowIndex += this.topRowIndex;
 			this.notify(EV_ROW_SELECTED, this.selectedRowIndex);
+			this.drawSelectedRow(this.selectedRowIndex, this.selectedRowColor);
 		}
-
-		drawGrid(this.gridSprite.graphics);
 	}
 }

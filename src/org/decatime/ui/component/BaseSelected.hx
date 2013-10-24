@@ -16,10 +16,16 @@ class BaseSelected extends BaseContainer {
 	private var selected: Bool;
 	private var shp:BaseShapeElement;
 
-	public function new(name:String) {
+	public function new(name:String, ?listen: Bool = true, ?useLabel: Bool = true) {
 		super(name);
-		this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		this.createLabel();
+		
+		if (listen) {
+			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		}
+
+		if (useLabel) {
+			this.createLabel();
+		}
 		
 		selected = false;
 	}
