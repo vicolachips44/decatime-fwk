@@ -189,7 +189,7 @@ class ListBox extends BaseContainer implements IObserver {
 		for (i in startIndex...endIndex) {
 			if (this.listItems == null || this.listItems.length == i) { break; }
 			this.tfield.text = this.listItems[i].toString();
-
+			
 			var m:Matrix = new Matrix(
 				1, 0, 0 , 1 , 2,
 				(this.itemsHeight / 2) - (this.tfield.textHeight / 2)

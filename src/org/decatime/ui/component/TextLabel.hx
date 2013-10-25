@@ -28,6 +28,7 @@ class TextLabel extends TextField implements ILayoutElement {
 	private var color: Int;
 	private var align: String;
 	private var isBold:Bool;
+	private var tagRef: Dynamic;
 
 	public function new(text:String, ?color:Int = 0x000000, ?align: String = 'center') {
 		super();
@@ -43,6 +44,22 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.isBold = false;
 
 		this.antiAliasType = flash.text.AntiAliasType.NORMAL;
+	}
+
+	public function getNeededSize(): Float {
+		if (this.fontRes != null) { createEmbeddedFontTextFormat(); }
+		var ltext: String = this.text;
+		this.text = '';
+		this.text = ltext;
+		return this.textWidth + 10;
+	}
+
+	public function setTagRef(value: Dynamic) : Void {
+		this.tagRef = value;
+	}
+
+	public function getTagRef(): Dynamic {
+		return this.tagRef;
 	}
 
 
