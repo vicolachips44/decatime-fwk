@@ -12,13 +12,27 @@ import org.decatime.ui.layout.ILayoutElement;
 class BaseSpriteElement extends Sprite implements ILayoutElement implements IDrawingSurface {
 	
 	private var sizeInfo:Rectangle;
+
+	/**
+	* If this object is a container it will not have a default size but it's x, y property
+	* will be set by the Rectangle object passed to the refresh() method.
+	* If this object is a container then a call to the refresh method will paint a
+	* background on this Sprite in order that it's size match the Rectangle instance.
+	* <i>A sprite object canno't be size directly</i>. <br />
+	* If this is done (by adjusting the width and
+	* height property), the object will be scaled.
+	*/
 	public var isContainer:Bool;
+
 	private var elBackColor:Int;
 	private var elBackColorVisibility:Float;
 
 	/**
-	* Default constructor.
-	* @param name The name for this BaseShapeElement instance	
+	* Default constructor.</br>
+	* @param </br>
+	* <ol>
+	* <li>name The name for this BaseShapeElement instance</li>
+	* </ol>
 	*/
 	public function new(name:String) {
 		super();
@@ -40,11 +54,12 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 
 	/**
 	* ILayoutElement implementation. will make the position X and Y match
-	* the provided Rectangle instance x and y.
+	* the provided Rectangle instance x and y if this his not a container.
+	* Otherwise, the container is painted by the size provided.
 	*
-	* @see org.decatime.display.ui.IVisualElement
+	* @see <a href="layout/ILayoutElement.html">org.decatime.display.ui.ILayoutElement</a>
 	*
-	* @throws nme.error.Error if the provided Rectangle argument is null
+	* @throw Error if the provided Rectangle argument is null
 	*/
 	public function refresh(r:Rectangle): Void {
 		if (r == null) {
@@ -70,7 +85,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 	* ILayoutElement implementation. returns the sizeInfo property that was
 	* setted in the refresh method call.
 	*
-	* @return nme.geom.Rectangle containing the dimension.
+	* @return flash.geom.Rectangle containing the dimension.
 	*/
 	public function getCurrSize(): Rectangle {
 		return sizeInfo;
@@ -92,7 +107,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 	* IDrawingSurface implementation. returns the Graphics instance of this
 	* Object.
 	*
-	* @return Graphics a Graphics instance.
+	* @return flash.display.Graphics a Graphics instance.
 	*/
 	public function getDrawingSurface(): Graphics {
 		return graphics;

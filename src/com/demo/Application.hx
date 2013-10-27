@@ -4,6 +4,7 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 
 import org.decatime.ui.BaseSpriteElement;
+import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.Facade;
@@ -21,9 +22,8 @@ import org.decatime.ui.component.windows.WindowState;
 
 import flash.text.TextFormat;
 
-class Application extends BaseSpriteElement implements IObserver {
+class Application extends BaseContainer implements IObserver {
 
-	private var layout:VBox;
 	private var lblTitle:Label;
 	private var lblAppTitle: TextLabel;
 
@@ -34,24 +34,12 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	public function new() {
 		super('DemoApplication');
-
-		// I am the main container and i do not handle mouse events (for now...)
-		this.buttonMode = false;
-
-		Facade.getInstance().addListener(this);
-	}
-
-	public override function refresh(r:Rectangle): Void {
-		super.refresh(r);
-		layout.refresh(r);
 	}
 
 	// IObserver implementation BEGIN
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
-			case Facade.EV_INIT:
-				initializeComponent();
 			case ListBox.EVT_ITEM_SELECTED:
 				var w:Window = cast(data, Window);
 				// activeWindow = w;
@@ -61,21 +49,22 @@ class Application extends BaseSpriteElement implements IObserver {
 
 	public function getEventCollection(): Array<String> {
 		return [
-			Facade.EV_INIT,
 			ListBox.EVT_ITEM_SELECTED
 		];
 	}
 
 	// IObserver implementation END
 
-	private function initializeComponent() {
-		this.layout = new VBox(this);
+	private override function initializeComponent() {
+		this.container = new VBox(this);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 
 		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
 		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
 		this.lblAppTitle.setFontSize(24);
 		this.lblAppTitle.setColor(0x0000ff);
-		layout.create(32, this.lblAppTitle);
+		this.container.create(32, this.lblAppTitle);
 		this.addChild(this.lblAppTitle);
 
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
@@ -83,11 +72,11 @@ class Application extends BaseSpriteElement implements IObserver {
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxCanvas:WxCanvasDemo = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
 		
-		var hbox1: HBox = new HBox(this.layout);
+		var hbox1: HBox = new HBox(this.container);
 		hbox1.setVerticalGap(0);
 		hbox1.setHorizontalGap(2);
 
-		this.layout.create(1.0, hbox1);
+		this.container.create(1.0, hbox1);
 
 		var demoList: ListBox = new ListBox('demoList', 'assets/BepaOblique.ttf');
 		demoList.showScrollBar = false;

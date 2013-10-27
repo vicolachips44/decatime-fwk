@@ -2,7 +2,12 @@ package org.decatime.ui.layout;
 
 import flash.geom.Rectangle;
 
-
+/**
+* This object will do an horizontal layout for all the Content instance
+* that are attach to him. 
+* This object contains only private methods
+* @see <a href="BoxBase.html">BoxBase</a>
+*/
 class HBox extends BoxBase {
 	private override function doLayout(r:Array<Rectangle>, oRect:Rectangle) {
 		// starting x,y by adding the horizontal and vertical gap

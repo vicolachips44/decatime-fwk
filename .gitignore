@@ -7,6 +7,9 @@ bin-release/
 .settings/
 .hash
 output.xml
+template.xml
+index.html
+content/
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important

@@ -9,16 +9,35 @@ import flash.utils.Timer;
 import flash.events.TimerEvent;
 import flash.geom.Rectangle;
 
-import org.decatime.ui.BaseSpriteElement;
+import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.EventManager;
 
+/**
+* <p> 
+* The Facade object is based on the singleton design pattern and is
+* the entry point for the application. Every application using
+* decatime framework make a call to the run method aka: 
+* <pre>Facade.getInstance().run($application) where
+* $application is the main application container.</pre></p>
+* <p>Every layoutable objects within the framework area must implement the ILayoutElement
+* interface.</p>
+*/
 class Facade extends EventManager {
+	
+	/** 
+	* This event is fired when the initialisation event
+	* as last. The listener (witch is a IObserver) must
+	* register to the facade IObservable interface in order to
+	* manage the event with it's handleEvent implementation.
+	*/
 	public static var EV_INIT:String = "org.decatime.Facade.EV_INIT";
+
+	/** This event is fired when ever the stage is resized */
 	public static var EV_RESIZE:String = "org.decatime.Facade.EV_RESIZE";
 
 	private static var instance:Facade;
 
-	private var root:BaseSpriteElement;
+	private var root:BaseContainer;
 	private var tmResize:Timer;
 	private var tmNotifyResize:Timer;
 	private var stageRect:Rectangle;
@@ -50,12 +69,18 @@ class Facade extends EventManager {
 	/**
 	* Accessor to the root element (primary element on the stage) 
 	*/
-	public function getRoot(): BaseSpriteElement {
+	public function getRoot(): BaseContainer {
 		return root;
 	}
 
 
-	public function run(root:BaseSpriteElement, ?bFullScreen:Bool = false): Void {
+	/**
+	* The application is started by calling this method.</br>
+	* When the BaseSpriteElement root instance has been added to the
+	* stage an initialisation phase is begining that will raise EV_INIT
+	* event when done.
+	*/
+	public function run(root:BaseContainer, ?bFullScreen:Bool = false): Void {
 		if (bFullScreen) {
 			Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN;
 			flash.ui.Mouse.hide();
@@ -76,12 +101,13 @@ class Facade extends EventManager {
 		tmResize = new Timer(1);
 		tmResize.addEventListener(TimerEvent.TIMER, onTmResizeCycle);
 
-		// We raise the initialisation event to build the UI from the main application
+		// We raise the initialisation event before building the UI main application
 		notify(EV_INIT, root);
 
 		tmNotifyResize = new Timer(100);
 		tmNotifyResize.addEventListener(TimerEvent.TIMER, onTmNotifyResizeCycle);
-		// we call it to get the initial size for the initialisation process
+
+		// we call it to build the all layout
 		onResize(null);
 
 		// we then map the event to the event listener function
