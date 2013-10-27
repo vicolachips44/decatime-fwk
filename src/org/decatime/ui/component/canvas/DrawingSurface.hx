@@ -128,6 +128,11 @@ class DrawingSurface extends BaseContainer {
 
 		this.x = this.realParent.x;
 		this.y = this.realParent.y;
+		
+		if (this.bmp.width != this.container.getCurrSize().width || this.bmp.height != this.container.getCurrSize().height) {
+			this.bmp.bitmapData.dispose();
+			this.bmp.bitmapData = new BitmapData(Std.int(this.container.getCurrSize().width), Std.int(this.container.getCurrSize().height), true);
+		}
 
 		stage.addChild(this);
 		stage.setChildIndex(this, this.stage.numChildren - 1);
