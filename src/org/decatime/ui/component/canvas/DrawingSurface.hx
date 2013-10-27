@@ -5,19 +5,23 @@ import flash.display.Bitmap;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Graphics;
+import flash.Vector;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseShapeElement;
 
 class DrawingSurface extends BaseContainer {
 	private static var drawingFeedBack: BaseShapeElement;
+	inline private static var BUFFER_SIZE:Int = 11;
 
 	private var bmp : Bitmap;
 	private var startx: Float;
 	private var starty: Float;
 	private static var swithTo: Bool;
 	private var absRectangle: Rectangle;
-	private var pathBuffer:Array<Float>;
+	private var ayOfPathCmds:Vector<Int>;
+	private var ayOfPathPoints:Vector<Float>;
+
 	private var gfx:Graphics;
 
 	public function new(name:String) {
@@ -40,19 +44,12 @@ class DrawingSurface extends BaseContainer {
 	private function onMouseUp(e:MouseEvent): Void {
 		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 
-		if (pathBuffer.length > 0) {
-			var ayOfCmds: Array<Int> = new Array<Int>();
-			var nbCmds: Int = Std.int(pathBuffer.length / 2);
-			var ayOfPath:Array<Float> = new Array<Float>();
-			for (i in 0...nbCmds) {
-				ayOfCmds.push(2);
-			}
-			for (i in 0...pathBuffer.length) {
-				ayOfPath.push(pathBuffer[i]);
-			}
-			gfx.drawPath(ayOfCmds, ayOfPath);
+		#if !flash
+		if (ayOfPathPoints.length > 0) {
+			drawPathBuffer();
 		}
-
+		#end
+		
 		this.bmp.bitmapData.lock();
 		this.bmp.bitmapData.draw(drawingFeedBack);
 		this.bmp.bitmapData.unlock();
@@ -74,29 +71,37 @@ class DrawingSurface extends BaseContainer {
 			flash.display.JointStyle.ROUND, 
 			4
 		);
-		this.pathBuffer = new Array<Float>();
+		this.ayOfPathPoints = new Vector<Float>();
 	}
 
 	private function processMove(xpos:Float, ypos:Float): Void {
 		var pt:Point = new Point(xpos, ypos);
 		if (swithTo) {
 			swithTo = false;
-			gfx.drawPath([1],[pt.x, pt.y]);
-		} else {
-			pathBuffer.push(pt.x);
-			pathBuffer.push(pt.y);
+			var vint:Vector<Int> = new Vector<Int>();
+			vint.push(1);
 
-			if (pathBuffer.length >= 11) {
-				gfx.drawPath(
-					[2, 2, 2, 2, 2, 2],
-					[pathBuffer[0], pathBuffer[1], pathBuffer[2], pathBuffer[3], 
-			        pathBuffer[4], pathBuffer[5], pathBuffer[6], pathBuffer[7], 
-			        pathBuffer[8], pathBuffer[9], pathBuffer[10], pathBuffer[11]
-				]);
-				pathBuffer = new Array<Float>();
+			var vfloat:Vector<Float> = new Vector<Float>();
+			vfloat.push(pt.x);
+			vfloat.push(pt.y);
+
+			gfx.drawPath(vint, vfloat);
+		} else {
+			this.ayOfPathPoints.push(pt.x);
+			this.ayOfPathPoints.push(pt.y);
+			if (this.ayOfPathPoints.length >= BUFFER_SIZE) {
+				drawPathBuffer();
 			}
 			
 		}
+	}
+
+	private function drawPathBuffer(): Void {
+		gfx.drawPath(
+			this.ayOfPathCmds,
+			this.ayOfPathPoints
+		);
+		this.ayOfPathPoints = new Vector<Float>();
 	}
 
 	public override function refresh(r: Rectangle): Void {
@@ -108,6 +113,14 @@ class DrawingSurface extends BaseContainer {
 
 		drawingFeedBack = new BaseShapeElement('canvas');
 		this.gfx = drawingFeedBack.graphics;
+		this.ayOfPathCmds = new Vector<Int>();
+		
+		this.ayOfPathCmds.push(2);
+		this.ayOfPathCmds.push(2);
+		this.ayOfPathCmds.push(2);
+		this.ayOfPathCmds.push(2);
+		this.ayOfPathCmds.push(2);
+		this.ayOfPathCmds.push(2);
 
 		this.container.create(1.0, drawingFeedBack);
 		this.addChild(drawingFeedBack);
