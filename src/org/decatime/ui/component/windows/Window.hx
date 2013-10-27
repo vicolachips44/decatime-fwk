@@ -25,6 +25,7 @@ import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
+import org.decatime.ui.component.IDisposable;
 
 class Window extends BaseContainer implements IObserver {
 	public var showStateButton(default, default): Bool;
@@ -107,7 +108,7 @@ class Window extends BaseContainer implements IObserver {
 	// IObserver implementation END
 
 	public function show(parent: BaseSpriteElement): Void {
-		if (! parent.contains(this)) {
+		if (parent == null || parent.contains(this) == false) {
 			parent.addChild(this);
 			this.maxGeom = parent.getCurrSize();
 			
@@ -121,11 +122,18 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	public function remove(): Void {
+		if (parent == null) { return; }
 		if (! parent.contains(this)) {
 			trace ("WARNING: the parent does not have me");
 			return;
 		}
 
+		for (i in 0...this.numChildren -1) {
+			if (Std.is(IDisposable, this.getChildAt(i))) {
+				var dispObj:IDisposable = cast(this.getChildAt(i), IDisposable);
+				dispObj.dispose();
+			}
+		}
 		parent.removeChild(this);
 		this.visible = false;
 	}

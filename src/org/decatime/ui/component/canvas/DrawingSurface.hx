@@ -6,22 +6,26 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Graphics;
 import flash.Vector;
+import flash.events.FocusEvent;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseShapeElement;
+import org.decatime.ui.component.IDisposable;
 
-class DrawingSurface extends BaseContainer {
-	private static var drawingFeedBack: BaseShapeElement;
-	inline private static var BUFFER_SIZE:Int = 11;
+class DrawingSurface extends BaseContainer implements IDisposable {
+	inline private static var BUFFER_SIZE:Int = 9;
 
+	private var swithTo: Bool;
 	private var bmp : Bitmap;
+	private var drawingFeedBack: BaseSpriteElement;
 	private var startx: Float;
 	private var starty: Float;
-	private static var swithTo: Bool;
 	private var absRectangle: Rectangle;
 	private var ayOfPathCmds:Vector<Int>;
 	private var ayOfPathPoints:Vector<Float>;
 	private var realParent:flash.display.DisplayObjectContainer;
+	private var lastXPos: Int;
+	private var lastYPos: Int;
 
 	private var gfx:Graphics;
 
@@ -30,22 +34,24 @@ class DrawingSurface extends BaseContainer {
 		this.elBackColorVisibility = 1.0;
 	}
 
+	public function dispose(): Void {
+		this.putMeBackToReal();
+		this.bmp.bitmapData.dispose();
+	}
+
 	private function onMouseDown(e:MouseEvent): Void {
 		this.absRectangle = this.getBounds(this.stage);
-		
 		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
 
-		this.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		drawingFeedBack.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 	}
 
 	private function onMouseMove(e:MouseEvent): Void {
 		processMove(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
-		e.stopPropagation();
-		e.stopImmediatePropagation();
 	}
 
 	private function onMouseUp(e:MouseEvent): Void {
-		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		drawingFeedBack.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		#if !flash
 		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
 			drawPathBuffer();
@@ -56,7 +62,7 @@ class DrawingSurface extends BaseContainer {
 		this.bmp.bitmapData.draw(drawingFeedBack);
 		this.bmp.bitmapData.unlock();
 
-		drawingFeedBack.graphics.clear();
+		sizeFeedBack();
 	}
 
 	private function processDown(xpos:Float, ypos:Float): Void {
@@ -64,20 +70,21 @@ class DrawingSurface extends BaseContainer {
 		starty = ypos;
 		swithTo = true;
 		drawingFeedBack.graphics.lineStyle(
-			3, 
+			10, 
 			0x000000, 
 			1.0, 
 			false, // pixelHinting 
-			flash.display.LineScaleMode.NONE, 
+			flash.display.LineScaleMode.HORIZONTAL, 
 			flash.display.CapsStyle.ROUND, 
-			flash.display.JointStyle.ROUND, 
-			4
+			flash.display.JointStyle.MITER, 
+			0
 		);
 		this.ayOfPathPoints = new Vector<Float>();
 	}
 
 	private function processMove(xpos:Float, ypos:Float): Void {
 		var pt:Point = new Point(xpos, ypos);
+		
 		if (swithTo) {
 			swithTo = false;
 			var vint:Vector<Int> = new Vector<Int>();
@@ -103,49 +110,57 @@ class DrawingSurface extends BaseContainer {
 			this.ayOfPathCmds,
 			this.ayOfPathPoints
 		);
+		
 		this.ayOfPathPoints = new Vector<Float>();
+	}
+
+	private function putMeBackToReal(): Void {
+		if (drawingFeedBack == null) { return; }
+		if (drawingFeedBack.parent != null && Std.is(drawingFeedBack.parent, this.stage)) {
+			this.stage.removeChild(drawingFeedBack);
+			this.addChild(drawingFeedBack);
+		}
 	}
 
 	public override function refresh(r: Rectangle): Void {
 		var stage:flash.display.Stage = this.stage;
 
-		if (this.realParent == null) {
-			this.realParent = this.parent;
-		}
-
-		if (Std.is(this.parent, this.stage)) {
-			trace ("removing my self from the stage");
-			this.stage.removeChild(this);
-			trace ("adding my self to the parent");
-			this.realParent.addChild(this);
-		}
+		putMeBackToReal();
 
 		super.refresh(r);
 
-		trace ("putting me back on the stage");
+		this.removeChild(drawingFeedBack);
 
-		this.parent.removeChild(this);
-
-		this.x = this.realParent.x;
-		this.y = this.realParent.y;
-		
 		if (this.bmp.width != this.container.getCurrSize().width || this.bmp.height != this.container.getCurrSize().height) {
 			this.bmp.bitmapData.dispose();
 			this.bmp.bitmapData = new BitmapData(Std.int(this.container.getCurrSize().width), Std.int(this.container.getCurrSize().height), true);
 		}
 
-		stage.addChild(this);
-		stage.setChildIndex(this, this.stage.numChildren - 1);
+		stage.addChild(drawingFeedBack);
+
+		sizeFeedBack();
+		
+		drawingFeedBack.x = this.parent.x + this.container.getCurrSize().x;
+		drawingFeedBack.y = this.parent.y + this.container.getCurrSize().y;
+		stage.setChildIndex(drawingFeedBack, this.stage.numChildren - 1);
+	}
+
+	private function sizeFeedBack(): Void {
+		gfx.clear();
+		gfx.beginFill(0x000000, 0.0);
+		gfx.drawRect(0, 0, this.sizeInfo.width, this.sizeInfo.height);
+		gfx.endFill();
 	}
 
 	private override function initializeComponent() {
 		super.initializeComponent();
 
-		drawingFeedBack = new BaseShapeElement('canvas');
+		drawingFeedBack = new BaseSpriteElement('canvas');
+		drawingFeedBack.isContainer = false;
+
 		this.gfx = drawingFeedBack.graphics;
 		this.ayOfPathCmds = new Vector<Int>();
 		
-		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
@@ -157,9 +172,9 @@ class DrawingSurface extends BaseContainer {
 	}
 
 	private override function initializeEvent(): Void {
-		this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		this.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		this.addEventListener(MouseEvent.MOUSE_OUT, onMouseUp);
+		drawingFeedBack.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		drawingFeedBack.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		drawingFeedBack.addEventListener(MouseEvent.MOUSE_OUT, onMouseUp);
 		
 	}
 
