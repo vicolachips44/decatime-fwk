@@ -19,6 +19,7 @@ import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.WindowState;
+import org.decatime.ui.component.canvas.DrawingSurface;
 
 import flash.text.TextFormat;
 
@@ -59,7 +60,9 @@ class Application extends BaseContainer implements IObserver {
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
-
+		/*var canvas:DrawingSurface = new DrawingSurface('surface');
+		this.container.create(1.0, canvas);
+		this.addChild(canvas);*/
 		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
 		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
 		this.lblAppTitle.setFontSize(24);

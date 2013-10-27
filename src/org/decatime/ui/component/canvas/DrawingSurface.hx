@@ -21,6 +21,7 @@ class DrawingSurface extends BaseContainer {
 	private var absRectangle: Rectangle;
 	private var ayOfPathCmds:Vector<Int>;
 	private var ayOfPathPoints:Vector<Float>;
+	private var realParent:flash.display.DisplayObjectContainer;
 
 	private var gfx:Graphics;
 
@@ -39,13 +40,14 @@ class DrawingSurface extends BaseContainer {
 
 	private function onMouseMove(e:MouseEvent): Void {
 		processMove(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
+		e.stopPropagation();
+		e.stopImmediatePropagation();
 	}
 
 	private function onMouseUp(e:MouseEvent): Void {
 		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-
 		#if !flash
-		if (ayOfPathPoints.length > 0) {
+		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
 			drawPathBuffer();
 		}
 		#end
@@ -105,7 +107,30 @@ class DrawingSurface extends BaseContainer {
 	}
 
 	public override function refresh(r: Rectangle): Void {
+		var stage:flash.display.Stage = this.stage;
+
+		if (this.realParent == null) {
+			this.realParent = this.parent;
+		}
+
+		if (Std.is(this.parent, this.stage)) {
+			trace ("removing my self from the stage");
+			this.stage.removeChild(this);
+			trace ("adding my self to the parent");
+			this.realParent.addChild(this);
+		}
+
 		super.refresh(r);
+
+		trace ("putting me back on the stage");
+
+		this.parent.removeChild(this);
+
+		this.x = this.realParent.x;
+		this.y = this.realParent.y;
+
+		stage.addChild(this);
+		stage.setChildIndex(this, this.stage.numChildren - 1);
 	}
 
 	private override function initializeComponent() {
@@ -130,6 +155,7 @@ class DrawingSurface extends BaseContainer {
 		this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		this.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		this.addEventListener(MouseEvent.MOUSE_OUT, onMouseUp);
+		
 	}
 
 	private override function layoutComponent(): Void {
