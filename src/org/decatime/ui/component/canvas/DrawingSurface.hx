@@ -17,6 +17,8 @@ class DrawingSurface extends BaseContainer {
 	private var starty: Float;
 	private static var swithTo: Bool;
 	private var absRectangle: Rectangle;
+	private var pathBuffer:Array<Float>;
+	private var gfx:Graphics;
 
 	public function new(name:String) {
 		super(name);
@@ -37,6 +39,19 @@ class DrawingSurface extends BaseContainer {
 
 	private function onMouseUp(e:MouseEvent): Void {
 		this.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+
+		if (pathBuffer.length > 0) {
+			var ayOfCmds: Array<Int> = new Array<Int>();
+			var nbCmds: Int = Std.int(pathBuffer.length / 2);
+			var ayOfPath:Array<Float> = new Array<Float>();
+			for (i in 0...nbCmds) {
+				ayOfCmds.push(2);
+			}
+			for (i in 0...pathBuffer.length) {
+				ayOfPath.push(pathBuffer[i]);
+			}
+			gfx.drawPath(ayOfCmds, ayOfPath);
+		}
 
 		this.bmp.bitmapData.lock();
 		this.bmp.bitmapData.draw(drawingFeedBack);
@@ -59,15 +74,28 @@ class DrawingSurface extends BaseContainer {
 			flash.display.JointStyle.ROUND, 
 			4
 		);
+		this.pathBuffer = new Array<Float>();
 	}
 
 	private function processMove(xpos:Float, ypos:Float): Void {
 		var pt:Point = new Point(xpos, ypos);
 		if (swithTo) {
-			drawingFeedBack.graphics.moveTo(pt.x, pt.y);
 			swithTo = false;
+			gfx.drawPath([1],[pt.x, pt.y]);
 		} else {
-			drawingFeedBack.graphics.lineTo(pt.x, pt.y);
+			pathBuffer.push(pt.x);
+			pathBuffer.push(pt.y);
+
+			if (pathBuffer.length >= 11) {
+				gfx.drawPath(
+					[2, 2, 2, 2, 2, 2],
+					[pathBuffer[0], pathBuffer[1], pathBuffer[2], pathBuffer[3], 
+			        pathBuffer[4], pathBuffer[5], pathBuffer[6], pathBuffer[7], 
+			        pathBuffer[8], pathBuffer[9], pathBuffer[10], pathBuffer[11]
+				]);
+				pathBuffer = new Array<Float>();
+			}
+			
 		}
 	}
 
@@ -79,6 +107,7 @@ class DrawingSurface extends BaseContainer {
 		super.initializeComponent();
 
 		drawingFeedBack = new BaseShapeElement('canvas');
+		this.gfx = drawingFeedBack.graphics;
 
 		this.container.create(1.0, drawingFeedBack);
 		this.addChild(drawingFeedBack);

@@ -12,13 +12,26 @@ import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
 import org.decatime.event.EventManager;
 
+/**
+* ArrowButton is a kind of button that is displayed has an arrow that can be
+* oriented to Left, Right, Top and bottom. It can be use in Scrollbars, treeviews,
+*/
 class ArrowButton extends BaseSpriteElement  implements IObservable {
 	private static var NAMESPACE:String = "org.decatime.ui.componnet.BaseScrollBar :";
+
+	/** Event raised when the button is clicked */
 	public static var EVT_CLICK:String = NAMESPACE + "EVT_CLICK";
 
+	/** left orientation for this button */
 	public static inline var ORIENTATION_LEFT:String = "left";
+
+	/** right orientation for this button */
 	public static inline var ORIENTATION_RIGHT:String = "right";
+
+	/** top orientation for this button */
 	public static inline var ORIENTATION_TOP:String = "top";
+
+	/** bottom orientation for this button */
 	public static inline var ORIENTATION_BOTTOM:String = "bottom";
 
 	private var initialized:Bool;
@@ -26,6 +39,12 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	private var evManager:EventManager;
 	private var blurFx:BlurFilter;
 
+	/**
+	* Construct a new instance of arrow button.
+	*
+	* @param name:String a name
+	* @orientation (can be ORIENTATION-LEFT, ORIENTATION_RIGHT, ORIENTATION_BOTTOM, ORIENTATION_TOP)
+	*/
 	public function new(name:String, orientation: String) {
 		super(name);
 		evManager = new EventManager(this);
@@ -35,9 +54,14 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		this.filters = [blurFx];
 	}
 
+	/**
+	* Override of the refresh of the ILayoutElement implementation to draw the Arrow.
+	*/
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		this.drawArrow();
+		if (! this.initialized) {
+			this.drawArrow();
+		}
 		this.initialized = true;
 	}
 
