@@ -14,7 +14,7 @@
 	<haxelib name="sqlite" unless="flash"/>
 
 	<!-- <haxedef name="dotest"></haxedef> -->
-
+	<haxeflag name="-xml" value="output.xml" />
 	<assets path="Assets" rename="assets" exclude="nme.svg" />
 	<icon path="Assets/nme.svg" />
 </project>
