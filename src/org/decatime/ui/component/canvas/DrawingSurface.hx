@@ -9,7 +9,7 @@ import flash.Vector;
 import flash.events.FocusEvent;
 
 import org.decatime.ui.component.BaseContainer;
-import org.decatime.ui.BaseShapeElement;
+import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.component.IDisposable;
 
 class DrawingSurface extends BaseContainer implements IDisposable {
@@ -23,7 +23,6 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 	private var absRectangle: Rectangle;
 	private var ayOfPathCmds:Vector<Int>;
 	private var ayOfPathPoints:Vector<Float>;
-	private var realParent:flash.display.DisplayObjectContainer;
 	private var lastXPos: Int;
 	private var lastYPos: Int;
 
@@ -40,6 +39,7 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 	}
 
 	private function onMouseDown(e:MouseEvent): Void {
+		trace ("mousedown detected...");
 		this.absRectangle = this.getBounds(this.stage);
 		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
 
@@ -57,28 +57,27 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 			drawPathBuffer();
 		}
 		#end
-		
-		this.bmp.bitmapData.lock();
-		this.bmp.bitmapData.draw(drawingFeedBack);
-		this.bmp.bitmapData.unlock();
-
-		sizeFeedBack();
+		gfx.endFill();
+		// this.bmp.bitmapData.lock();
+		// this.bmp.bitmapData.draw(drawingFeedBack);
+		// this.bmp.bitmapData.unlock();
 	}
 
 	private function processDown(xpos:Float, ypos:Float): Void {
 		startx = xpos;
 		starty = ypos;
 		swithTo = true;
-		drawingFeedBack.graphics.lineStyle(
-			10, 
-			0x000000, 
+		gfx.lineStyle(
+			1, 
+			0xffffff, 
 			1.0, 
-			false, // pixelHinting 
+			true, // pixelHinting 
 			flash.display.LineScaleMode.HORIZONTAL, 
 			flash.display.CapsStyle.ROUND, 
 			flash.display.JointStyle.MITER, 
-			0
+			1
 		);
+		gfx.beginFill(0xffffff);
 		this.ayOfPathPoints = new Vector<Float>();
 	}
 
@@ -103,6 +102,20 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 			}
 			
 		}
+	}
+
+	private function init() {
+		gfx.clear();
+
+		drawingFeedBack.x = this.parent.x + this.container.getCurrSize().x;
+		drawingFeedBack.y = this.parent.y + this.container.getCurrSize().y;
+		gfx.beginFill(0x000000);
+		gfx.drawRect(0,
+			0,
+			this.container.getCurrSize().width,
+			this.container.getCurrSize().height
+		);
+		gfx.endFill();
 	}
 
 	private function drawPathBuffer(): Void {
@@ -137,19 +150,7 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 		}
 
 		stage.addChild(drawingFeedBack);
-
-		sizeFeedBack();
-		
-		drawingFeedBack.x = this.parent.x + this.container.getCurrSize().x;
-		drawingFeedBack.y = this.parent.y + this.container.getCurrSize().y;
-		stage.setChildIndex(drawingFeedBack, this.stage.numChildren - 1);
-	}
-
-	private function sizeFeedBack(): Void {
-		gfx.clear();
-		gfx.beginFill(0x000000, 0.0);
-		gfx.drawRect(0, 0, this.sizeInfo.width, this.sizeInfo.height);
-		gfx.endFill();
+		init();
 	}
 
 	private override function initializeComponent() {
@@ -157,7 +158,6 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 
 		drawingFeedBack = new BaseSpriteElement('canvas');
 		drawingFeedBack.isContainer = false;
-
 		this.gfx = drawingFeedBack.graphics;
 		this.ayOfPathCmds = new Vector<Int>();
 		
