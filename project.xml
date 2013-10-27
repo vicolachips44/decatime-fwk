@@ -11,10 +11,13 @@
 	
 	<haxelib name="openfl" />
 	
-	<haxelib name="sqlite" unless="flash"/>
-
+	<haxelib name="sqlite" unless="flash" />
+	<haxelib name="actuate" />
+	
 	<!-- <haxedef name="dotest"></haxedef> -->
+
 	<haxeflag name="-xml" value="output.xml" />
+
 	<assets path="Assets" rename="assets" exclude="nme.svg" />
 	<icon path="Assets/nme.svg" />
 </project>
