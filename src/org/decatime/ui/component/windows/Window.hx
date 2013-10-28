@@ -107,10 +107,10 @@ class Window extends BaseContainer implements IObserver {
 
 	// IObserver implementation END
 
-	public function show(parent: BaseSpriteElement): Void {
-		if (parent == null || parent.contains(this) == false) {
-			parent.addChild(this);
-			this.maxGeom = parent.getCurrSize();
+	public function show(in_parent: BaseSpriteElement): Void {
+		if (in_parent == null || in_parent.contains(this) == false) {
+			in_parent.addChild(this);
+			this.maxGeom = in_parent.getCurrSize();
 			
 			if (this.windowState == WindowState.NORMAL) {
 				centerPopup();
@@ -118,21 +118,23 @@ class Window extends BaseContainer implements IObserver {
 		}
 		this.refresh(position);
 		this.visible = true;
-		parent.setChildIndex(this, parent.numChildren -1);
+		in_parent.setChildIndex(this, in_parent.numChildren -1);
 	}
 
 	public function remove(): Void {
-		if (parent == null) { return; }
+		if (parent == null) { 
+			return; 
+		}
+
 		if (! parent.contains(this)) {
-			trace ("WARNING: the parent does not have me");
 			return;
 		}
 
-		for (i in 0...this.numChildren -1) {
-			if (Std.is(IDisposable, this.getChildAt(i))) {
+		for (i in 0...this.numChildren) {
+			if (Std.is(this.getChildAt(i), IDisposable)) {
 				var dispObj:IDisposable = cast(this.getChildAt(i), IDisposable);
 				dispObj.dispose();
-			}
+			} 
 		}
 		parent.removeChild(this);
 		this.visible = false;
@@ -140,7 +142,6 @@ class Window extends BaseContainer implements IObserver {
 
 	public override function refresh(r:Rectangle): Void {
 		var r:Rectangle = r.clone();
-		trace ("refresh event on window object is begining");
 		if (this.windowState == WindowState.MAXIMIZED) {
 			r = new Rectangle(0, 0, this.maxGeom.width, this.maxGeom.height);
 			this.oldX = this.x;
