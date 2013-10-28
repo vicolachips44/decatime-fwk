@@ -1,4 +1,5 @@
 package org.decatime.ui.component.canvas;
+
 import flash.events.MouseEvent;
 import flash.display.BitmapData;
 import flash.display.Bitmap;
@@ -7,16 +8,23 @@ import flash.geom.Point;
 import flash.display.Graphics;
 import flash.Vector;
 import flash.events.FocusEvent;
+import flash.display.Shape;
 
-import org.decatime.ui.BaseShapeElement;
+
 import org.decatime.ui.component.IDisposable;
+import org.decatime.event.IObserver;
+import org.decatime.event.IObservable;
 
-class DrawingSurface extends BaseContainer implements IDisposable {
+import org.decatime.ui.component.windows.Window;
+
+class DrawingSurface extends BaseContainer implements IDisposable implements IObserver {
 	inline private static var BUFFER_SIZE:Int = 5;
+
+	private var parentWindow: Window;
 
 	private var swithTo: Bool;
 	private var bmp : Bitmap;
-	private var drawingFeedBack: BaseShapeElement;
+	private var drawingFeedBack: Shape;
 	private var startx: Float;
 	private var starty: Float;
 	private var absRectangle: Rectangle;
@@ -32,37 +40,43 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 		this.elBackColorVisibility = 1.0;
 	}
 
+	public function setParentWindow(value: Window): Void {
+		this.parentWindow = value;
+		this.parentWindow.addListener(this);
+	}
+
+	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+		switch (name) {
+			case Window.EVT_MOVING:
+			
+		}
+	}
+
+	public function getEventCollection(): Array<String> {
+		return [
+			Window.EVT_MOVING
+		];
+	}
+
 	public function dispose(): Void {
 		if (this.bmp != null && this.bmp.bitmapData != null) {
 			this.bmp.bitmapData.dispose();
 		}
-		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+
+		removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 	}
 
 	private function onMouseDown(e:MouseEvent): Void {
+		trace ("mouse down detected on DrawingSurface");
 		this.absRectangle = this.getBounds(this.stage);
+
+		this.stage.addChild(this.drawingFeedBack);
 		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-	}
-
-	private function onMouseMove(e:MouseEvent): Void {
-		processMove(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
-	}
-
-	private function onMouseUp(e:MouseEvent): Void {
-		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		#if !flash
-		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
-			drawPathBuffer();
-		}
-		#end
-		// this.bmp.bitmapData.lock();
-		// this.bmp.bitmapData.draw(drawingFeedBack);
-		// this.bmp.bitmapData.unlock();
-		// gfx.clear();
+		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 	}
 
 	private function processDown(xpos:Float, ypos:Float): Void {
@@ -81,6 +95,13 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 		);
 		gfx.beginFill(0x202020);
 		this.ayOfPathPoints = new Vector<Float>();
+	}
+
+	private function onMouseMove(e:MouseEvent): Void {
+		if (! absRectangle.contains(e.stageX, e.stageY)) {
+			onMouseUp(null);
+		}
+		processMove(e.stageX, e.stageY);
 	}
 
 	private function processMove(xpos:Float, ypos:Float): Void {
@@ -106,7 +127,6 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 		}
 	}
 
-
 	private function drawPathBuffer(): Void {
 		gfx.drawPath(
 			this.ayOfPathCmds,
@@ -116,53 +136,56 @@ class DrawingSurface extends BaseContainer implements IDisposable {
 		
 		this.ayOfPathPoints = new Vector<Float>();
 	}
+	
+	private function onMouseUp(e:MouseEvent): Void {
+		trace ("mouse up detected on DrawingSurface");
+
+		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+
+		#if !flash
+		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
+			drawPathBuffer();
+		}
+		#end
+
+		this.bmp.bitmapData.lock();
+		var m:flash.geom.Matrix = new flash.geom.Matrix(1, 0, 0, 1, - this.absRectangle.x, - this.absRectangle.y);
+		this.bmp.bitmapData.draw(drawingFeedBack, m);
+		this.bmp.bitmapData.unlock();
+
+		this.addChild(this.drawingFeedBack);
+		gfx.clear();
+	}
+
 
 	public override function refresh(r: Rectangle): Void {
 		super.refresh(r);
-		if (this.contains(drawingFeedBack)) {
-			this.removeChild(drawingFeedBack);
-		}
-
 		if (this.bmp.width != this.container.getCurrSize().width || this.bmp.height != this.container.getCurrSize().height) {
 			this.bmp.bitmapData.dispose();
 			this.bmp.bitmapData = new BitmapData(Std.int(this.container.getCurrSize().width), Std.int(this.container.getCurrSize().height), true);
 		}
-
-		this.stage.addChild(drawingFeedBack);
-		init();
-	}
-
-	private function init() {
-		gfx.clear();
-
-		drawingFeedBack.x = this.parent.x + this.container.getCurrSize().x;
-		drawingFeedBack.y = this.parent.y + this.container.getCurrSize().y;
 	}
 
 	private override function initializeComponent() {
 		super.initializeComponent();
 
-		drawingFeedBack = new BaseShapeElement('canvas');
+		drawingFeedBack = new Shape();
+		drawingFeedBack.name = "drawingFeedBack";
 		drawingFeedBack.cacheAsBitmap = true;
+		addChild(drawingFeedBack);
+		
+		gfx = this.drawingFeedBack.graphics;
 
-		this.gfx = drawingFeedBack.graphics;
 		this.ayOfPathCmds = new Vector<Int>();
 		
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
-		// this.ayOfPathCmds.push(2);
-		// this.ayOfPathCmds.push(2);
-
-		this.container.create(1.0, drawingFeedBack);
-		this.addChild(drawingFeedBack);
 	}
 
 	private override function initializeEvent(): Void {
 		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-		// stage.addEventListener(MouseEvent.MOUSE_OUT, onMouseUp);
-		
 	}
 
 	private override function layoutComponent(): Void {

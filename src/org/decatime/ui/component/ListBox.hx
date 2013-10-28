@@ -303,6 +303,7 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 	private function onListMouseDown(e:MouseEvent): Void {
+		trace ("ListBox::onListMouseDown: START");
 		if (e.ctrlKey) {
 			this.selectedItemIndex = -1;
 			draw();
@@ -316,6 +317,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.addEventListener(MouseEvent.MOUSE_OUT, onListMouseOut);
 		this.selectItem(e);
 		draw();
+		trace ("ListBox::onListMouseDown: END");
 	}
 
 	private function onListMouseOut(e:MouseEvent): Void {

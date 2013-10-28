@@ -13,6 +13,8 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 
 	private override function buildClientArea(): Void {
 		this.canvas = new DrawingSurface('myCanvas');
+		this.canvas.setParentWindow(this);
+
 		this.clientArea.create(1.0, this.canvas);
 		this.addChild(this.canvas);
 	}
@@ -21,7 +23,7 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 		super(name, in_size, fontResPath);
 		this.windowState = WindowState.MAXIMIZED;
 		this.showStateButton = false;
-		this.showCloseButton = false;
+		//this.showCloseButton = false;
     }
 	// IObserver implementation BEGIN
 

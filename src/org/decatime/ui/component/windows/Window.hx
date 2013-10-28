@@ -28,6 +28,9 @@ import org.decatime.Facade;
 import org.decatime.ui.component.IDisposable;
 
 class Window extends BaseContainer implements IObserver {
+	inline private static var NAMESPACE:String = "org.decatime.ui.component.windows.BaseContainer";
+	inline public static var EVT_MOVING: String = NAMESPACE + "EVT_MOVING";
+
 	public var showStateButton(default, default): Bool;
 	public var showCloseButton(default, default): Bool;
 
@@ -108,6 +111,7 @@ class Window extends BaseContainer implements IObserver {
 	// IObserver implementation END
 
 	public function show(in_parent: BaseSpriteElement): Void {
+		trace ("window show medhod: BEGIN");
 		if (in_parent == null || in_parent.contains(this) == false) {
 			in_parent.addChild(this);
 			this.maxGeom = in_parent.getCurrSize();
@@ -119,14 +123,15 @@ class Window extends BaseContainer implements IObserver {
 		this.refresh(position);
 		this.visible = true;
 		in_parent.setChildIndex(this, in_parent.numChildren -1);
+		trace ("window show medhod: DONE");
 	}
 
 	public function remove(): Void {
-		if (parent == null) { 
+		if (this.parent == null) { 
 			return; 
 		}
 
-		if (! parent.contains(this)) {
+		if (! this.parent.contains(this)) {
 			return;
 		}
 
@@ -136,7 +141,7 @@ class Window extends BaseContainer implements IObserver {
 				dispObj.dispose();
 			} 
 		}
-		parent.removeChild(this);
+		this.parent.removeChild(this);
 		this.visible = false;
 	}
 
@@ -339,7 +344,15 @@ class Window extends BaseContainer implements IObserver {
 		} else {
 			this.x = this.stage.mouseX - startX;
 			this.y = this.stage.mouseY - startY;
+			handleWindowMove();
 		}
+	}
+
+	/**
+	* Implementation method to handle when the Window is moving (inherited members)
+	*/
+	private function handleWindowMove(): Void {
+		this.notify(EVT_MOVING, new Point(this.x, this.y));
 	}
 
 	private function onHeaderMouseUpEvt(e:MouseEvent): Void {

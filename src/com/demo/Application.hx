@@ -43,12 +43,13 @@ class Application extends BaseContainer implements IObserver {
 		switch (name) {
 			case ListBox.EVT_ITEM_SELECTED:
 				var w:Window = cast(data, Window);
-				if (activeWindow != null) {
-					activeWindow.remove();
-				}
+				// if (activeWindow != null) {
+				// 	activeWindow.remove();
+				// }
 
 				activeWindow = w;
 				w.show(appContainer);
+				trace ("the new window is on stage!!");
 		}
 	}
 
