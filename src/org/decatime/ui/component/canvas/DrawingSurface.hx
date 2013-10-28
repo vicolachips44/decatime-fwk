@@ -8,6 +8,7 @@ import flash.geom.Point;
 import flash.display.Graphics;
 import flash.Vector;
 import flash.events.FocusEvent;
+import flash.events.Event;
 import flash.display.Shape;
 
 
@@ -18,7 +19,7 @@ import org.decatime.event.IObservable;
 import org.decatime.ui.component.windows.Window;
 
 class DrawingSurface extends BaseContainer implements IDisposable implements IObserver {
-	inline private static var BUFFER_SIZE:Int = 5;
+	inline private static var BUFFER_SIZE:Int = 3;
 
 	private var parentWindow: Window;
 
@@ -70,10 +71,8 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	}
 
 	private function onMouseDown(e:MouseEvent): Void {
-		trace ("mouse down detected on DrawingSurface");
 		this.absRectangle = this.getBounds(this.stage);
 
-		this.stage.addChild(this.drawingFeedBack);
 		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
@@ -94,9 +93,17 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			flash.display.JointStyle.ROUND, 
 			3
 		);
-		// gfx.beginFill(0x202020);
 		this.ayOfPathPoints = new Vector<Float>();
 		this.ayOfPt = new Vector<Point>();
+	}
+
+	private function onEnterFrame(e:Event): Void {
+		var posx: Float = this.stage.mouseX;
+		var posy: Float = this.stage.mouseY;
+		if (! absRectangle.contains(posx, posy)) {
+			onMouseUp(null);
+		}
+		processMove(posx, posy);
 	}
 
 	private function onMouseMove(e:MouseEvent): Void {
@@ -111,68 +118,43 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		
 		if (swithTo) {
 			swithTo = false;
-			// var vint:Vector<Int> = new Vector<Int>();
-			// vint.push(1);
+			var vint:Vector<Int> = new Vector<Int>();
+			vint.push(1);
 
-			// var vfloat:Vector<Float> = new Vector<Float>();
-			// vfloat.push(pt.x);
-			// vfloat.push(pt.y);
+			var vfloat:Vector<Float> = new Vector<Float>();
+			vfloat.push(pt.x);
+			vfloat.push(pt.y);
 
-			// gfx.drawPath(vint, vfloat, flash.display.GraphicsPathWinding.NON_ZERO);
-			gfx.moveTo(xpos, ypos);
+			gfx.drawPath(vint, vfloat, flash.display.GraphicsPathWinding.NON_ZERO);
 		} else {
-			// this.ayOfPathPoints.push(pt.x);
-			// this.ayOfPathPoints.push(pt.y);
-			this.ayOfPt.push(pt);
-			// if (this.ayOfPathPoints.length >= BUFFER_SIZE) {
-			// 	drawPathBuffer();
-			// }
-			if (this.ayOfPt.length >= BUFFER_SIZE) {
+			this.ayOfPathPoints.push(pt.x);
+			this.ayOfPathPoints.push(pt.y);
+			if (this.ayOfPathPoints.length >= BUFFER_SIZE) {
 				drawPathBuffer();
 			}
-			
 		}
 	}
 
 	private function drawPathBuffer(): Void {
-		// gfx.drawPath(
-		// 	this.ayOfPathCmds,
-		// 	this.ayOfPathPoints,
-		// 	flash.display.GraphicsPathWinding.NON_ZERO
-		// );
-		var p:Point = null;
-		for (p in this.ayOfPt) {
-			gfx.lineTo(p.x, p.y);
-		}
-		// gfx.lineTo(this.ayOfPathPoints[0], this.ayOfPathPoints[1]);
-		// gfx.lineTo(this.ayOfPathPoints[2], this.ayOfPathPoints[3]);
-		// gfx.lineTo(this.ayOfPathPoints[4], this.ayOfPathPoints[5]);
+		gfx.drawPath(
+			this.ayOfPathCmds,
+			this.ayOfPathPoints,
+			flash.display.GraphicsPathWinding.NON_ZERO
+		);
 		this.ayOfPathPoints = new Vector<Float>();
-		this.ayOfPt = new Vector<Point>();
 	}
 	
 	private function onMouseUp(e:MouseEvent): Void {
 		trace ("mouse up detected on DrawingSurface");
-
+		stage.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		#if !flash
-		// if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
-		// 	drawPathBuffer();
-		// }
-		if (ayOfPt != null && ayOfPt.length > 0) {
+		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
 			drawPathBuffer();
 		}
 		#end
-
-		this.bmp.bitmapData.lock();
-		var m:flash.geom.Matrix = new flash.geom.Matrix(1, 0, 0, 1, - this.absRectangle.x, - this.absRectangle.y);
-		this.bmp.bitmapData.draw(drawingFeedBack, m);
-		this.bmp.bitmapData.unlock();
-
-		this.addChild(this.drawingFeedBack);
-		gfx.clear();
 	}
 
 
@@ -190,13 +172,12 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		drawingFeedBack = new Shape();
 		drawingFeedBack.name = "drawingFeedBack";
 		drawingFeedBack.cacheAsBitmap = true;
-		addChild(drawingFeedBack);
+		stage.addChild(drawingFeedBack);
 		
 		gfx = this.drawingFeedBack.graphics;
 
 		this.ayOfPathCmds = new Vector<Int>();
 		
-		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
 	}
