@@ -30,6 +30,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	private var absRectangle: Rectangle;
 	private var ayOfPathCmds:Vector<Int>;
 	private var ayOfPathPoints:Vector<Float>;
+	private var ayOfPt: Vector<Point>;
 	private var lastXPos: Int;
 	private var lastYPos: Int;
 
@@ -93,8 +94,9 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			flash.display.JointStyle.ROUND, 
 			3
 		);
-		gfx.beginFill(0x202020);
+		// gfx.beginFill(0x202020);
 		this.ayOfPathPoints = new Vector<Float>();
+		this.ayOfPt = new Vector<Point>();
 	}
 
 	private function onMouseMove(e:MouseEvent): Void {
@@ -109,18 +111,23 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		
 		if (swithTo) {
 			swithTo = false;
-			var vint:Vector<Int> = new Vector<Int>();
-			vint.push(1);
+			// var vint:Vector<Int> = new Vector<Int>();
+			// vint.push(1);
 
-			var vfloat:Vector<Float> = new Vector<Float>();
-			vfloat.push(pt.x);
-			vfloat.push(pt.y);
+			// var vfloat:Vector<Float> = new Vector<Float>();
+			// vfloat.push(pt.x);
+			// vfloat.push(pt.y);
 
-			gfx.drawPath(vint, vfloat, flash.display.GraphicsPathWinding.NON_ZERO);
+			// gfx.drawPath(vint, vfloat, flash.display.GraphicsPathWinding.NON_ZERO);
+			gfx.moveTo(xpos, ypos);
 		} else {
-			this.ayOfPathPoints.push(pt.x);
-			this.ayOfPathPoints.push(pt.y);
-			if (this.ayOfPathPoints.length >= BUFFER_SIZE) {
+			// this.ayOfPathPoints.push(pt.x);
+			// this.ayOfPathPoints.push(pt.y);
+			this.ayOfPt.push(pt);
+			// if (this.ayOfPathPoints.length >= BUFFER_SIZE) {
+			// 	drawPathBuffer();
+			// }
+			if (this.ayOfPt.length >= BUFFER_SIZE) {
 				drawPathBuffer();
 			}
 			
@@ -128,13 +135,20 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	}
 
 	private function drawPathBuffer(): Void {
-		gfx.drawPath(
-			this.ayOfPathCmds,
-			this.ayOfPathPoints,
-			flash.display.GraphicsPathWinding.NON_ZERO
-		);
-		
+		// gfx.drawPath(
+		// 	this.ayOfPathCmds,
+		// 	this.ayOfPathPoints,
+		// 	flash.display.GraphicsPathWinding.NON_ZERO
+		// );
+		var p:Point = null;
+		for (p in this.ayOfPt) {
+			gfx.lineTo(p.x, p.y);
+		}
+		// gfx.lineTo(this.ayOfPathPoints[0], this.ayOfPathPoints[1]);
+		// gfx.lineTo(this.ayOfPathPoints[2], this.ayOfPathPoints[3]);
+		// gfx.lineTo(this.ayOfPathPoints[4], this.ayOfPathPoints[5]);
 		this.ayOfPathPoints = new Vector<Float>();
+		this.ayOfPt = new Vector<Point>();
 	}
 	
 	private function onMouseUp(e:MouseEvent): Void {
@@ -144,7 +158,10 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		#if !flash
-		if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
+		// if (ayOfPathPoints != null && ayOfPathPoints.length > 0) {
+		// 	drawPathBuffer();
+		// }
+		if (ayOfPt != null && ayOfPt.length > 0) {
 			drawPathBuffer();
 		}
 		#end
