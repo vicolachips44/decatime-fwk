@@ -111,7 +111,6 @@ class Window extends BaseContainer implements IObserver {
 	// IObserver implementation END
 
 	public function show(in_parent: BaseSpriteElement): Void {
-		trace ("window show medhod: BEGIN");
 		if (in_parent == null || in_parent.contains(this) == false) {
 			in_parent.addChild(this);
 			this.maxGeom = in_parent.getCurrSize();
@@ -123,7 +122,6 @@ class Window extends BaseContainer implements IObserver {
 		this.refresh(position);
 		this.visible = true;
 		in_parent.setChildIndex(this, in_parent.numChildren -1);
-		trace ("window show medhod: DONE");
 	}
 
 	public function remove(): Void {
