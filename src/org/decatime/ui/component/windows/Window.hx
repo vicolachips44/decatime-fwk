@@ -45,7 +45,7 @@ class Window extends BaseContainer implements IObserver {
 	private var startX:Float;
 	private var startY:Float;
 	private var clientArea:VBox;
-	private var header:HBox;
+	private var header:Header;
 	private var footer:HBox;
 	private var lblTitle:TextLabel;
 	private var fontResPath:String;
@@ -109,6 +109,10 @@ class Window extends BaseContainer implements IObserver {
 			this.refresh(this.position);
 			this.layoutComponent();
 		}
+	}
+
+	public function minimize(): Void {
+		trace ("TODO minimize me somewhere !!");
 	}
 
 	// IObserver implementation END
@@ -176,6 +180,8 @@ class Window extends BaseContainer implements IObserver {
 		this.graphics.beginFill(0xdfdfdf, 1.0);
 		this.graphics.drawRect(0, 0, r.width, r.height);
 		this.graphics.endFill();
+
+		this.header.draw();
 	}
 
 	private function doMaximize(): Void {
@@ -208,9 +214,7 @@ class Window extends BaseContainer implements IObserver {
 		this.clientArea.setVerticalGap(0);
 		this.clientArea.setHorizontalGap(0);
 
-		this.header = new HBox(this);
-		this.header.setHorizontalGap(0);
-		this.header.setVerticalGap(0);
+		this.header = new Header(this, this.name, this.fontResPath);
 
 		this.footer = new HBox(this);
 		this.footer.setHorizontalGap(0);
@@ -223,49 +227,22 @@ class Window extends BaseContainer implements IObserver {
 		borders = new Shape();
 	    borders.name = "borders";
 
-	    btnSpriteClose = new Sprite();
-	    btnSpriteClose.addEventListener(MouseEvent.CLICK, onBtnCloseClick);
-        btnSpriteClose.name = "btnClose";
-
-        btnSpriteMaximize = new Sprite();
-    	btnSpriteMaximize.addEventListener(MouseEvent.CLICK, onBtnMaximizeClick);
-    	btnSpriteMaximize.name = 'btnSpriteMaximize';
-
-		initializeHeader();
 		initializeFooter();
 		buildClientArea();
 		
 	    addChild(borders);
-
-	    if (this.showCloseButton) { addChild(btnSpriteClose); }
-
-        if (this.showStateButton) {
-    		addChild(btnSpriteMaximize);
-        }
 	}
 
 	private override function initializeEvent(): Void {
-		this.headerContainer.addEventListener(MouseEvent.MOUSE_DOWN, onHeaderMouseDownEvt);
-		this.headerContainer.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
-		
+		this.addEventListener(MouseEvent.MOUSE_DOWN, onWindowMouseDown);
 	}
 
 	private override function layoutComponent(): Void {
-		// header 
-		var r:Rectangle = header.getCurrSize();
-		var box:Matrix = new Matrix();
-		headerContainer.graphics.clear();
-		headerContainer.graphics.lineStyle(1, 0x000000, 0.70);
-	    box.createGradientBox(r.width, r.height);
-	    headerContainer.graphics.beginGradientFill(GradientType.LINEAR, [0x444444, 0x999999], [1, 1], [1, 255], box);
-	    headerContainer.graphics.drawRect(1, 1, r.width, r.height);
-	    headerContainer.graphics.endFill();
 	    var f:Array<BitmapFilter> = new Array<BitmapFilter>();
 	    var blurFilter:BlurFilter = new BlurFilter(2, 2);
 	    f.push(blurFilter);
-	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 1, 4, 4, 1, 1, false, false, false);
+	    var shadowFilter:DropShadowFilter = new DropShadowFilter(1, 45, 0x000000, 1, 4, 4, 1, 1, false, false, false);
 	    f.push(shadowFilter);
-	    headerContainer.filters = f;
 
 		borders.graphics.clear();	    
 	    borders.graphics.lineStyle(2, 0x000000, 0.70);
@@ -275,40 +252,7 @@ class Window extends BaseContainer implements IObserver {
 	    } else {
 	    	borders.graphics.drawRect(0, 0, maxGeom.width, maxGeom.height);
 	    }
-	    
-	    if (this.showCloseButton) {
-	        box.createGradientBox(16, 16, 0, 0, 0);
-	        btnSpriteClose.graphics.clear();
-	        btnSpriteClose.graphics.beginGradientFill(GradientType.RADIAL, [0xffffff, 0xaaaaaa], [1, 1], [1, 255], box);
-	        btnSpriteClose.graphics.drawCircle(8, 8, 8);
-	        btnSpriteClose.graphics.endFill();
-	        btnSpriteClose.graphics.lineStyle(1, 0x000000);
-	        btnSpriteClose.graphics.moveTo(4, 4);
-	        btnSpriteClose.graphics.lineTo(12, 12);
-	        btnSpriteClose.graphics.moveTo(4, 12);
-	        btnSpriteClose.graphics.lineTo(12, 4);
-	        btnSpriteClose.x = r.width - 20;
-	        btnSpriteClose.y = 5;
-	    }
-
-	    if (this.showStateButton) {
-	    	btnSpriteMaximize.graphics.clear();
-	    	btnSpriteMaximize.graphics.lineStyle(1, 0x000000);
-	    	btnSpriteMaximize.graphics.beginFill(0xffffff, 1.0);
-	    	btnSpriteMaximize.graphics.drawRect(0, 0, 16, 16);
-	    	btnSpriteMaximize.graphics.endFill();
-	    	btnSpriteMaximize.graphics.beginFill(0x000000, 1.0);
-	    	btnSpriteMaximize.graphics.drawRect(0, 0, 16, 3);
-	    	btnSpriteMaximize.graphics.endFill();
-	    	if (this.windowState == WindowState.NORMAL) {
-	    		btnSpriteMaximize.graphics.lineStyle(1, 0x000000);
-	    		btnSpriteMaximize.graphics.drawRect(4, 6, 8, 8);
-	    	}
-
-	    	btnSpriteMaximize.x = r.width - 44;
-	    	btnSpriteMaximize.y = 5;
-	    }
-    	
+	   
 	    var dropShadow:DropShadowFilter = new DropShadowFilter( 
     		8 , 
     		34 , 
@@ -323,28 +267,16 @@ class Window extends BaseContainer implements IObserver {
     	f2.push(dropShadow);
 
 		this.filters = f2;
-		if (this.showCloseButton) {
-			btnSpriteClose.filters = f2;
-		}
 	}
 
-	private function onBtnMaximizeClick(e:MouseEvent): Void {
-		if (this.windowState == WindowState.NORMAL) {
-			this.setWindowState(WindowState.MAXIMIZED);
-		} else {
-			this.setWindowState(WindowState.NORMAL);
-		}
-	}
-
-	private function onBtnCloseClick(e:MouseEvent): Void {
-		this.remove();
-	}
-
-	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
-		startX = e.localX;
-		startY = e.localY;
-		this.manager.bringToFront(this);
-		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
+	private function onWindowMouseDown(e:MouseEvent): Void {
+		var headerBound: Rectangle = this.header.getBoundArea();
+		if (headerBound.containsPoint(new Point(e.stageX, e.stageY))) {
+			startX = e.localX;
+			startY = e.localY;
+			this.addEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
+			this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
+		} 
 	}
 
 	private function onEnterFrameEvt(e:Event): Void {
@@ -367,6 +299,7 @@ class Window extends BaseContainer implements IObserver {
 
 	private function onHeaderMouseUpEvt(e:MouseEvent): Void {
 		this.removeEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
+		this.removeEventListener(MouseEvent.MOUSE_UP, onHeaderMouseUpEvt);
 	}
 
 	private function draw(): Void {
@@ -396,21 +329,6 @@ class Window extends BaseContainer implements IObserver {
 			retValue = false;
 		}
 		return retValue;
-	}
-
-	private function initializeHeader(): Void {
-		this.headerContainer = new BaseSpriteElement('headerContainer');
-
-		lblTitle = new TextLabel(this.toString(), 0xffffff, 'center');
-		lblTitle.setFontRes(this.fontResPath);
-		lblTitle.setFontSize(16);
-		
-		var c:Content = this.header.create(1.0, this.lblTitle);
-		c.setVerticalGap(1);
-		c.setHorizontalGap(1);
-
-		this.addChild(this.headerContainer);
-		this.addChild(lblTitle);
 	}
 
 	private function initializeFooter(): Void {
