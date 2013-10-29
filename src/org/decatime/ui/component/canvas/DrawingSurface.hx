@@ -16,7 +16,7 @@ import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.canvas.style.FreeHand;
 
 class DrawingSurface extends BaseContainer implements IDisposable implements IObserver {
-	
+
 	private var parentWindow: Window;
 	private var drawingFeedBack: Shape;
 	private var absRectangle: Rectangle;
@@ -39,6 +39,10 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			    var pt:Point = cast(data, Point);
 				drawingFeedBack.x = pt.x + this.container.getCurrSize().x + 3;
 				drawingFeedBack.y = pt.y + this.container.getCurrSize().y;
+			case Window.EVT_DEACTIVATE:
+				drawingFeedBack.visible = false;
+			case Window.EVT_ACTIVATE:
+				drawingFeedBack.visible = true;
 		}
 	}
 
@@ -77,6 +81,9 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	private function onMouseUp(e:MouseEvent): Void {
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+
+		if (e == null) { return; }
+		
 		style.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 	}
 

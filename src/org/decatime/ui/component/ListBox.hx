@@ -227,7 +227,7 @@ class ListBox extends BaseContainer implements IObserver {
 		var shContour:Shape = new Shape();
 		g = shContour.graphics;
 		g.clear();
-		g.lineStyle(1, 0x000000);
+		g.lineStyle(2, 0x000000);
 		g.drawRect(0,  0, r.width - 1, r.height - 1);
 		g.endFill();
 		this.dataRenderer.draw(

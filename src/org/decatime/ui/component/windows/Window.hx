@@ -30,6 +30,8 @@ import org.decatime.ui.component.IDisposable;
 class Window extends BaseContainer implements IObserver {
 	inline private static var NAMESPACE:String = "org.decatime.ui.component.windows.BaseContainer";
 	inline public static var EVT_MOVING: String = NAMESPACE + "EVT_MOVING";
+	inline public static var EVT_DEACTIVATE: String = NAMESPACE + "EVT_DEACTIVATE";
+	inline public static var EVT_ACTIVATE: String = NAMESPACE + "EVT_ACTIVATE";
 
 	public var showStateButton(default, default): Bool;
 	public var showCloseButton(default, default): Bool;
@@ -51,6 +53,7 @@ class Window extends BaseContainer implements IObserver {
 	private var windowState:WindowState;
 	private var oldX:Float;
 	private var oldY:Float;
+	private var manager:Manager;
 
 	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name);
@@ -110,10 +113,11 @@ class Window extends BaseContainer implements IObserver {
 
 	// IObserver implementation END
 
-	public function show(in_parent: BaseSpriteElement): Void {
-		if (in_parent == null || in_parent.contains(this) == false) {
-			in_parent.addChild(this);
-			this.maxGeom = in_parent.getCurrSize();
+	public function show(in_manager: Manager): Void {
+		if (in_manager == null || in_manager.contains(this) == false) {
+			in_manager.addChild(this);
+			this.manager = in_manager;
+			this.maxGeom = in_manager.getCurrSize();
 			
 			if (this.windowState == WindowState.NORMAL) {
 				centerPopup();
@@ -121,7 +125,15 @@ class Window extends BaseContainer implements IObserver {
 		}
 		this.refresh(position);
 		this.visible = true;
-		in_parent.setChildIndex(this, in_parent.numChildren -1);
+		in_manager.bringToFront(this);
+	}
+
+	public function deactivate(): Void {
+		this.notify(EVT_DEACTIVATE, null);
+	}
+
+	public function activate(): Void {
+		this.notify(EVT_ACTIVATE, null);	
 	}
 
 	public function remove(): Void {
@@ -331,7 +343,7 @@ class Window extends BaseContainer implements IObserver {
 	private function onHeaderMouseDownEvt(e:MouseEvent): Void {
 		startX = e.localX;
 		startY = e.localY;
-		this.parent.setChildIndex(this, this.parent.numChildren -1);
+		this.manager.bringToFront(this);
 		this.addEventListener(Event.ENTER_FRAME, onEnterFrameEvt);
 	}
 

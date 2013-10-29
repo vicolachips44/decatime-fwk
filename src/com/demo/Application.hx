@@ -19,6 +19,7 @@ import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.WindowState;
+import org.decatime.ui.component.windows.Manager;
 import org.decatime.ui.component.canvas.DrawingSurface;
 
 import flash.text.TextFormat;
@@ -32,6 +33,7 @@ class Application extends BaseContainer implements IObserver {
 	private var txtTwo:TextBox;
 	private var appContainer: BaseSpriteElement;
 	private var activeWindow: Window;
+	private var windowManager: Manager;
 
 	public function new() {
 		super('DemoApplication');
@@ -48,7 +50,7 @@ class Application extends BaseContainer implements IObserver {
 				// }
 
 				activeWindow = w;
-				w.show(appContainer);
+				w.show(windowManager);
 				trace ("the new window is on stage!!");
 		}
 	}
@@ -65,9 +67,7 @@ class Application extends BaseContainer implements IObserver {
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
-		/*var canvas:DrawingSurface = new DrawingSurface('surface');
-		this.container.create(1.0, canvas);
-		this.addChild(canvas);*/
+		
 		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
 		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
 		this.lblAppTitle.setFontSize(24);
@@ -98,8 +98,12 @@ class Application extends BaseContainer implements IObserver {
 		hbox1.create(160, demoList);
 		this.addChild(demoList);
 
-		appContainer = new BaseSpriteElement('appContainer');
-		hbox1.create(1.0, appContainer);
-		this.addChild(appContainer);
+		windowManager = new Manager('applicationContainer');
+		hbox1.create(1.0, windowManager);
+		this.addChild(windowManager);
+
+		// appContainer = new BaseSpriteElement('appContainer');
+		// hbox1.create(1.0, appContainer);
+		// this.addChild(appContainer);
 	}
 }
