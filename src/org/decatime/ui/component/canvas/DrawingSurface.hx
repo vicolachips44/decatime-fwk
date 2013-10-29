@@ -74,6 +74,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	private function onMouseMove(e:MouseEvent): Void {
 		if (! absRectangle.contains(e.stageX, e.stageY)) {
 			onMouseUp(null);
+			return;
 		}
 		style.processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 	}

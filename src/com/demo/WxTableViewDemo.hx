@@ -47,7 +47,7 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 		var r:Int = 0;
 		var c: Int = 0;
 		var sw:Bool = false;
-		for (r in 0...5000) {
+		for (r in 0...500) {
 			for (c in 0...8) {
 				if (c != 3) {
 					this.myTable.addCell(r, c, 'r_' + r + "_c_" + c);		
