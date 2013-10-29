@@ -101,9 +101,5 @@ class Application extends BaseContainer implements IObserver {
 		windowManager = new Manager('applicationContainer');
 		hbox1.create(1.0, windowManager);
 		this.addChild(windowManager);
-
-		// appContainer = new BaseSpriteElement('appContainer');
-		// hbox1.create(1.0, appContainer);
-		// this.addChild(appContainer);
 	}
 }

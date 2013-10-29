@@ -13,12 +13,6 @@ class Manager extends BaseSpriteElement {
 		this.windows = new Array<Window>();
 	}
 
-	public override function refresh(r:Rectangle): Void {
-		super.refresh(r);
-		this.graphics.lineStyle(2);
-		this.graphics.drawRect(r.x, r.y, r.width, r.height);
-	}
-
 	public override function addChild(child : DisplayObject) : DisplayObject {
 		if (Std.is(child, Window)) {
 			var w:Window = cast(child, Window);

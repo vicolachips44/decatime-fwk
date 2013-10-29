@@ -39,14 +39,11 @@ class Window extends BaseContainer implements IObserver {
 	private var appRoot:BaseSpriteElement;
 	private var position: Rectangle;
 	private var maxGeom: Rectangle;
-	private var btnSpriteClose:Sprite;
-	private var btnSpriteMaximize:Sprite;
 	private var borders:Shape;
 	private var startX:Float;
 	private var startY:Float;
 	private var clientArea:VBox;
 	private var header:Header;
-	private var footer:HBox;
 	private var lblTitle:TextLabel;
 	private var fontResPath:String;
 	private var headerContainer:BaseSpriteElement;
@@ -137,7 +134,7 @@ class Window extends BaseContainer implements IObserver {
 	}
 
 	public function activate(): Void {
-		this.notify(EVT_ACTIVATE, null);	
+		this.notify(EVT_ACTIVATE, null);
 	}
 
 	public function remove(): Void {
@@ -176,8 +173,8 @@ class Window extends BaseContainer implements IObserver {
 		super.refresh(r);
 
 		draw();
-		this.graphics.clear();
-		this.graphics.beginFill(0xdfdfdf, 1.0);
+		
+		this.graphics.beginFill(0xffffff, 1.0);
 		this.graphics.drawRect(0, 0, r.width, r.height);
 		this.graphics.endFill();
 
@@ -216,18 +213,12 @@ class Window extends BaseContainer implements IObserver {
 
 		this.header = new Header(this, this.name, this.fontResPath);
 
-		this.footer = new HBox(this);
-		this.footer.setHorizontalGap(0);
-		this.footer.setVerticalGap(0);
-
 		this.container.create(24, this.header);
 		this.container.create(1.0, this.clientArea);
-		this.container.create(16, this.footer);
 
 		borders = new Shape();
 	    borders.name = "borders";
 
-		initializeFooter();
 		buildClientArea();
 		
 	    addChild(borders);
@@ -247,6 +238,7 @@ class Window extends BaseContainer implements IObserver {
 		borders.graphics.clear();	    
 	    borders.graphics.lineStyle(2, 0x000000, 0.70);
 	    borders.filters = f;
+
 	    if (this.windowState == WindowState.NORMAL) {
 	    	borders.graphics.drawRect(0, 0, position.width, position.height);
 	    } else {
@@ -263,13 +255,17 @@ class Window extends BaseContainer implements IObserver {
     		1 ,
     		6
     	);
+
     	var f2:Array<BitmapFilter> = new Array<BitmapFilter>();
     	f2.push(dropShadow);
 
 		this.filters = f2;
+		this.graphics.beginFill(0xffffff);
+		this.graphics.drawRect(this.clientArea.getCurrSize().x, this.clientArea.getCurrSize().y, this.clientArea.getCurrSize().width, this.clientArea.getCurrSize().height);
 	}
 
 	private function onWindowMouseDown(e:MouseEvent): Void {
+		this.manager.bringToFront(this);
 		var headerBound: Rectangle = this.header.getBoundArea();
 		if (headerBound.containsPoint(new Point(e.stageX, e.stageY))) {
 			startX = e.localX;
@@ -331,11 +327,6 @@ class Window extends BaseContainer implements IObserver {
 		return retValue;
 	}
 
-	private function initializeFooter(): Void {
-		// TODO initialize the footer HBox 
-	}
-
 	private function buildClientArea(): Void {
-
 	}
 }

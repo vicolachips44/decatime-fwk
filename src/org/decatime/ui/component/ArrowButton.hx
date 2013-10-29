@@ -34,7 +34,6 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	/** bottom orientation for this button */
 	public static inline var ORIENTATION_BOTTOM:String = "bottom";
 
-	private var initialized:Bool;
 	private var orientation:String;
 	private var evManager:EventManager;
 	private var blurFx:BlurFilter;
@@ -52,6 +51,7 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		this.addEventListener(MouseEvent.CLICK, onMouseClick);
 		this.blurFx = new BlurFilter(2, 2, 2);
 		this.filters = [blurFx];
+		this.cacheAsBitmap = true;
 	}
 
 	/**
@@ -59,10 +59,7 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 	*/
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
-		if (! this.initialized) {
-			this.drawArrow();
-		}
-		this.initialized = true;
+		this.drawArrow();
 	}
 
 	// IObservable implementation
@@ -84,12 +81,12 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		var g:Graphics = this.graphics;
 		g.clear();
 
-		g.beginFill(0xdfdfdf);
+		g.beginFill(0x000000, 0.0);
 		g.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		g.endFill();
 
-		var lx: Float = this.sizeInfo.x + 3;
-		var ly: Float = this.sizeInfo.y + 3;
+		var lx: Float = this.sizeInfo.x + 2;
+		var ly: Float = this.sizeInfo.y + 2;
 		var lw: Float = this.sizeInfo.width - 6;
 		var lh: Float = this.sizeInfo.height - 6;
 
@@ -101,28 +98,28 @@ class ArrowButton extends BaseSpriteElement  implements IObservable {
 		box.createGradientBox(this.sizeInfo.width, this.sizeInfo.height, 45, this.sizeInfo.x, this.sizeInfo.y);
 		
 		if (orientation == ORIENTATION_TOP) {	
-			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.beginGradientFill(GradientType.LINEAR, [0x000000, 0x808080], [1, 1], [1, 255], box);
 			g.moveTo(lx, ly + lw);
 			g.lineTo(lx + lw, ly + lh);
 			g.lineTo(lx + (lw / 2), ly);
 			g.lineTo(lx, ly + lw);
 		}		
 		if (orientation == ORIENTATION_BOTTOM) {
-			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.beginGradientFill(GradientType.LINEAR, [0x000000, 0x808080], [1, 1], [1, 255], box);
 			g.moveTo(lx, ly);
 			g.lineTo(lx + lw, ly);
 			g.lineTo(lx + (lw / 2), ly + lw);
 			g.lineTo(lx, ly);
 		}
 		if (orientation == ORIENTATION_LEFT) {
-			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.beginGradientFill(GradientType.LINEAR, [0x000000, 0x808080], [1, 1], [1, 255], box);
 			g.moveTo(lx + lw, ly);
 			g.lineTo(lx + lw, ly + lh);
 			g.lineTo(lx, ly + (lh / 2));
 			g.lineTo(lx + lw, ly);
 		}
 		if (orientation == ORIENTATION_RIGHT) {
-			g.beginGradientFill(GradientType.LINEAR, [0xc0c0c0, 0x808080], [1, 1], [1, 255], box);
+			g.beginGradientFill(GradientType.LINEAR, [0x000000, 0x808080], [1, 1], [1, 255], box);
 			g.moveTo(lx, ly);
 			g.lineTo(lx, ly + lh);
 			g.lineTo(lx + lw, ly + (lh / 2));

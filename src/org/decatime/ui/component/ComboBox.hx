@@ -40,7 +40,8 @@ class ComboBox extends BaseContainer implements IObserver {
 		this.tbox = new TextBox('textBoxValue', '');
 		this.tbox.setFontRes(this.fontRes);
 		this.tbox.setAsBorder(false);
-		
+		this.tbox.mouseEnabled = false;
+		this.tbox.selectable = false;
 
 		this.dropDownList = new ListBox('dropDownList', this.fontRes);
 		this.dropDownList.visible = false;
@@ -112,7 +113,7 @@ class ComboBox extends BaseContainer implements IObserver {
 			this.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
 
 			var r:Rectangle = this.getBounds(this.myStage);
-			r = new Rectangle(r.x + 1, r.y + this.sizeInfo.height, this.sizeInfo.width, this.dropDownList.getItemsHeight() * this.dropDownList.getListCount());
+			r = new Rectangle(r.x, r.y + this.sizeInfo.height, this.sizeInfo.width + 2, (this.dropDownList.getItemsHeight() * this.dropDownList.getListCount()) + 4);
 			this.dropDownList.refresh(r);
 
 			this.stage.addChild(this.dropDownList);

@@ -26,7 +26,7 @@ class BaseSelected extends BaseContainer {
 		if (useLabel) {
 			this.createLabel();
 		}
-		
+		this.cacheAsBitmap = true;
 		selected = false;
 	}
 
