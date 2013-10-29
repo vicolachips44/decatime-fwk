@@ -45,12 +45,15 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	public function setParentWindow(value: Window): Void {
 		this.parentWindow = value;
 		this.parentWindow.addListener(this);
+		this.parentWindow.addEventListener(flash.events.Event.DEACTIVATE, onWindowDeactivated);
 	}
 
 	public function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		switch (name) {
 			case Window.EVT_MOVING:
-			
+			var pt:Point = cast(data, Point);
+				drawingFeedBack.x = pt.x + this.container.getCurrSize().x + 3;
+				drawingFeedBack.y = pt.y + this.container.getCurrSize().y;
 		}
 	}
 
@@ -61,19 +64,25 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	}
 
 	public function dispose(): Void {
-		if (this.bmp != null && this.bmp.bitmapData != null) {
-			this.bmp.bitmapData.dispose();
-		}
+		trace ("drawingFeedBack disposing");
+		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
-		removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+		gfx.clear();
+		stage.removeChild(drawingFeedBack);
+		drawingFeedBack = null;
+		trace ("drawingFeedBack disposed");
+	}
+
+	private function onWindowDeactivated(e:Event): Void {
+		trace ("my window has been deactivated");
 	}
 
 	private function onMouseDown(e:MouseEvent): Void {
 		this.absRectangle = this.getBounds(this.stage);
 
-		processDown(e.stageX - this.absRectangle.x, e.stageY - this.absRectangle.y);
+		processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -110,7 +119,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		if (! absRectangle.contains(e.stageX, e.stageY)) {
 			onMouseUp(null);
 		}
-		processMove(e.stageX, e.stageY);
+		processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 	}
 
 	private function processMove(xpos:Float, ypos:Float): Void {
@@ -145,8 +154,6 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	}
 	
 	private function onMouseUp(e:MouseEvent): Void {
-		trace ("mouse up detected on DrawingSurface");
-		stage.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
@@ -157,39 +164,36 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		#end
 	}
 
-
-	public override function refresh(r: Rectangle): Void {
-		super.refresh(r);
-		if (this.bmp.width != this.container.getCurrSize().width || this.bmp.height != this.container.getCurrSize().height) {
-			this.bmp.bitmapData.dispose();
-			this.bmp.bitmapData = new BitmapData(Std.int(this.container.getCurrSize().width), Std.int(this.container.getCurrSize().height), true);
-		}
-	}
-
-	private override function initializeComponent() {
-		super.initializeComponent();
-
+	private function addFeedback(): Void {
+		if (drawingFeedBack != null) { return; }
+		trace ("adding feedback");
 		drawingFeedBack = new Shape();
 		drawingFeedBack.name = "drawingFeedBack";
 		drawingFeedBack.cacheAsBitmap = true;
 		stage.addChild(drawingFeedBack);
 		
 		gfx = this.drawingFeedBack.graphics;
+		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+	}
 
+
+	public override function refresh(r: Rectangle): Void {
+		super.refresh(r);
+
+		addFeedback();
+		if (gfx != null) { gfx.clear(); }
+		this.absRectangle = this.getBounds(this.stage);
+
+		drawingFeedBack.x = this.absRectangle.x + 3;
+		drawingFeedBack.y = this.absRectangle.y;
+	}
+
+	private override function initializeComponent() {
+		super.initializeComponent();
+		
 		this.ayOfPathCmds = new Vector<Int>();
 		
 		this.ayOfPathCmds.push(2);
 		this.ayOfPathCmds.push(2);
-	}
-
-	private override function initializeEvent(): Void {
-		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-	}
-
-	private override function layoutComponent(): Void {
-		this.bmp = new Bitmap(new BitmapData(Std.int(this.container.getCurrSize().width), Std.int(this.container.getCurrSize().height), true));
-		this.addChild(this.bmp);
-		this.bmp.x = this.container.getCurrSize().x;
-		this.bmp.y = this.container.getCurrSize().y;
 	}
 }

@@ -21,7 +21,7 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 
 	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name, in_size, fontResPath);
-		this.windowState = WindowState.MAXIMIZED;
+		// this.windowState = WindowState.MAXIMIZED;
 		this.showStateButton = false;
 		//this.showCloseButton = false;
     }
