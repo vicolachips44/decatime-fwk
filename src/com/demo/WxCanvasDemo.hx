@@ -35,6 +35,6 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 	}
 
 	public override function toString(): String {
-		return "4 - Canvas Demo";
+		return "5 - Canvas Demo";
 	}
 }

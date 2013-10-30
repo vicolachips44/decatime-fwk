@@ -84,6 +84,6 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 	}
 
 	public override function toString() : String {
-		return "1 - Listbox DEMO";
+		return "2 - Listbox DEMO";
 	}
 }

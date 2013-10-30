@@ -75,6 +75,7 @@ class Application extends BaseContainer implements IObserver {
 		this.container.create(32, this.lblAppTitle);
 		this.addChild(this.lblAppTitle);
 
+		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
@@ -88,6 +89,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var demoList: ListBox = new ListBox('demoList', 'assets/BepaOblique.ttf');
 		demoList.showScrollBar = false;
+		demoList.add(wxSimple);
 		demoList.add(wxList);
 		demoList.add(wxTable);
 		demoList.add(wxCombo);

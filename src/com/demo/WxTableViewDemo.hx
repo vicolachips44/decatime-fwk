@@ -84,6 +84,6 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 	// IObserver implementation END
 
 	public override function toString() : String {
-		return "2 - TableView DEMO";
+		return "3 - TableView DEMO";
 	}
 }

@@ -73,7 +73,7 @@ class WxComboBoxDemo extends Window implements IPrintable implements IObserver {
 	// IPrintable implementation BEGIN
 
 	public override function toString(): String {
-		return "3 - ComboBox Demo";
+		return "4 - ComboBox Demo";
 	}
 
 	// IPrintable implementation END
