@@ -131,10 +131,14 @@ class Window extends BaseContainer implements IObserver {
 
 	public function deactivate(): Void {
 		this.notify(EVT_DEACTIVATE, null);
+		this.setDisableState(this, true);
+		this.drawState(false);
 	}
 
 	public function activate(): Void {
 		this.notify(EVT_ACTIVATE, null);
+		this.setEnableState(this);
+		this.drawState(true);
 	}
 
 	public function remove(): Void {
@@ -179,6 +183,44 @@ class Window extends BaseContainer implements IObserver {
 		this.graphics.endFill();
 
 		this.header.draw();
+	}
+
+	private function setDisableState(obj: flash.display.DisplayObjectContainer, ?enabled: Bool = false): Void {
+		obj.mouseEnabled = enabled;
+
+		var dispObj:flash.display.DisplayObject;
+		var i:Int = 0;
+		for (i in 0...obj.numChildren) {
+			dispObj = obj.getChildAt(i);
+
+			if (Std.is(dispObj, flash.display.InteractiveObject)) {
+				cast (dispObj, flash.display.InteractiveObject).mouseEnabled = false;
+				if (Std.is(dispObj, flash.display.DisplayObjectContainer)) {
+					setDisableState(cast(dispObj, flash.display.DisplayObjectContainer));
+				}
+			}
+		}
+	}
+
+	private function setEnableState(obj: flash.display.DisplayObjectContainer): Void {
+		obj.mouseEnabled = true;
+
+		var dispObj:flash.display.DisplayObject;
+		var i:Int = 0;
+		for (i in 0...obj.numChildren) {
+			dispObj = obj.getChildAt(i);
+
+			if (Std.is(dispObj, flash.display.InteractiveObject)) {
+				cast (dispObj, flash.display.InteractiveObject).mouseEnabled = true;
+				if (Std.is(dispObj, flash.display.DisplayObjectContainer)) {
+					setEnableState(cast(dispObj, flash.display.DisplayObjectContainer));
+				}
+			}
+		}
+	}
+
+	private function drawState(value: Bool): Void {
+		this.header.drawState(value);
 	}
 
 	private function doMaximize(): Void {

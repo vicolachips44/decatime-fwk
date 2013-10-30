@@ -26,6 +26,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 
 	private var elBackColor:Int;
 	private var elBackColorVisibility:Float;
+	private var supportDisableState: Bool;
 
 	/**
 	* Default constructor.</br>
@@ -48,8 +49,34 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		// be set directly (it can in fact but will change the aspect ratio).
 		this.isContainer = true;
 
+		// If the component is part of a window its mouseEnable property
+		// can be modify. If supportDisableState is false then the property
+		// will not be call from thie instance
+		this.supportDisableState = true;
+
 		this.elBackColor = 0xffffff;
 		this.elBackColorVisibility = 0.0;
+	}
+
+	/**
+	* @Override of the InteractiveObject mouseEnabled property
+	*/
+	public override function set_mouseEnabled(value: Bool): Bool {
+		if (this.supportDisableState) {
+			return super.set_mouseEnabled(value);
+		}
+		return false;
+	}
+
+	/**
+	* if this instance support having the mouseEnable state toggle or not.
+	*
+	* @param value: Bool a boolean value true / false
+	*
+	* @return Void
+	*/
+	public function setSupportDisableState(value: Bool): Void {
+		this.supportDisableState = value;
 	}
 
 	/**

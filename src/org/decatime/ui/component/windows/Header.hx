@@ -48,15 +48,11 @@ class Header extends HBox {
 
 	public override function refresh(r: Rectangle): Void {
 		if (! this.initialized) {
-			this.titleText = new TextLabel(this.title, 0x000000, 'center');
-			this.titleText.setFontRes(this.fontRes);
-			this.titleText.setFontSize(14);
-			this.titleText.setIsBold(true);
-			this.create(1.0, this.titleText);
-			this.parentWindow.addChild(this.titleText);
+			initializeTitleText();
 
 			this.minimizeButton = new BaseSpriteElement('minimizeButton');
 			this.minimizeButton.isContainer = false;
+			this.minimizeButton.setSupportDisableState(false);
 			this.minimizeButton.cacheAsBitmap = true;
 			this.create(20, this.minimizeButton);
 			this.parentWindow.addChild(this.minimizeButton);
@@ -71,6 +67,7 @@ class Header extends HBox {
 
 			this.closeButton = new BaseSpriteElement('closeButton');
 			this.closeButton.isContainer = false;
+			this.minimizeButton.setSupportDisableState(false);
 			this.closeButton.cacheAsBitmap = true;
 			this.create(16, this.closeButton);
 			this.parentWindow.addChild(this.closeButton);
@@ -86,15 +83,32 @@ class Header extends HBox {
 		initialized = true;
 	}
 
+	private function initializeTitleText(): Void {
+		this.titleText = new TextLabel(this.title, 0xffffff, 'center');
+		this.titleText.setFontRes(this.fontRes);
+		this.titleText.setFontSize(12);
+		this.titleText.setIsBold(true);
+		this.create(1.0, this.titleText);
+		this.parentWindow.addChild(this.titleText);
+	}
+
 	public function draw(): Void {
+		drawState(true);
+	}
+
+	public function drawState(value: Bool): Void {
 		var box:Matrix = new Matrix();
 		box.createGradientBox(currSize.width, currSize.height);
-	    this.parentWindow.graphics.beginGradientFill(GradientType.RADIAL, [0xaaaaaa, 0x777777], [1, 1], [1, 255], box);
+		if (value) {
+			this.parentWindow.graphics.beginGradientFill(GradientType.RADIAL, [0x66B2FF, 0x004C99], [1, 1], [1, 255], box);
+		} else {
+	    	this.parentWindow.graphics.beginGradientFill(GradientType.RADIAL, [0xaaaaaa, 0x777777], [1, 1], [1, 255], box);
+		}
 	    this.parentWindow.graphics.drawRect(1, 1, this.currSize.width, this.currSize.height);
 	    this.parentWindow.graphics.endFill();
 	    this.parentWindow.graphics.lineStyle(1);
 	    this.parentWindow.graphics.moveTo(0, currSize.height);
-	    this.parentWindow.graphics.lineTo(currSize.width, currSize.height);
+	    this.parentWindow.graphics.lineTo(currSize.width, currSize.height);	
 	}
 
 	private function onBtnCloseClick(e:MouseEvent): Void {
