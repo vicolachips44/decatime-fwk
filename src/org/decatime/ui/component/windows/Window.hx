@@ -322,8 +322,9 @@ class Window extends BaseContainer implements IObserver {
 			onHeaderMouseUpEvt(null);
 			
 		} else {
-			this.x = this.stage.mouseX - startX;
-			this.y = this.stage.mouseY - startY;
+			this.x = this.stage.mouseX - startX - 5;
+			this.y = this.stage.mouseY - startY - 4;
+
 			handleWindowMove();
 		}
 	}

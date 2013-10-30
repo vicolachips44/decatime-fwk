@@ -58,6 +58,7 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		this.elBackColorVisibility = 0.0;
 	}
 
+	#if !flash
 	/**
 	* @Override of the InteractiveObject mouseEnabled property
 	*/
@@ -67,7 +68,8 @@ class BaseSpriteElement extends Sprite implements ILayoutElement implements IDra
 		}
 		return false;
 	}
-
+	#end
+	
 	/**
 	* if this instance support having the mouseEnable state toggle or not.
 	*
