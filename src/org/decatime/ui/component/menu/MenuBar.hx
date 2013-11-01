@@ -1,17 +1,22 @@
 package org.decatime.ui.component.menu;
 
+import flash.geom.Rectangle;
+
 import org.decatime.ui.component.BaseContainer;
 
 class MenuBar extends BaseContainer {
 	private var fontRes: String;
 	private var mnuItems: Array<MenuItem>;
+	private var subMenuActive: Bool;
+	private var activeMenuItem: MenuItem;
 
 	public function new(name:String, in_fontRes: String) {
 		super(name);
 		this.elBackColorVisibility = 1.0;
-		this.elBackColor = 0xaaaaaa;
+		this.elBackColor = 0xbbbbbb;
 		this.fontRes = in_fontRes;
 		this.mnuItems = new Array<MenuItem>();
+		this.subMenuActive = false;
 	}
 
 	public function addMenu(mnuItem: MenuItem): Void {
@@ -19,6 +24,67 @@ class MenuBar extends BaseContainer {
 		mnuItem.setFontRes(this.fontRes);
 		mnuItem.setIsRoot(true);
 		mnuItem.setParentBar(this);
+	}
+
+	public function toggleVisibility(mnuItem: MenuItem): Void {
+		this.subMenuActive = ! this.subMenuActive;
+		if (this.subMenuActive) {
+			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
+		}
+		this.activeMenuItem = mnuItem;
+	}
+
+	public function updateVisiblity(mnuItem: MenuItem): Void {
+		if (! this.subMenuActive) { 
+			// the toggleVisilibty method has not been called
+			return; 
+		}
+
+		if (mnuItem.name != this.activeMenuItem.name) {
+			this.activeMenuItem.getSubItemsContainer().close();
+			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));	
+		}
+		this.activeMenuItem = mnuItem;
+	}
+
+	public function resetVisibility(): Void {
+		this.subMenuActive = false;
+		this.activeMenuItem = null;
+	}
+
+	private function getBoundsFromMenu(mnuItem: MenuItem):  Rectangle {
+		var absBound: Rectangle = mnuItem.getBounds(this.stage);
+			
+		absBound.y = absBound.y + mnuItem.getCurrSize().height;
+		absBound.height = calculateHeight(absBound.height, mnuItem); //(absBound.height * mnuItem.getSubItems().length) + (2 * mnuItem.getSubItems().length);
+		absBound.width = getBigestMenuWidth(mnuItem);
+		return absBound;
+	}
+
+	private function calculateHeight(in_height: Float, mnuItem: MenuItem): Float {
+		var retValue: Float = 0;
+		var mnu: MenuItem = null;
+		for (mnu in mnuItem.getSubItems()) {
+			if (! mnu.getIsSeparator()) {
+				retValue += 2 + in_height;
+			} else {
+				retValue += 4;
+			}
+		}
+		return retValue;
+	}
+
+	private function getBigestMenuWidth(mnuItem: MenuItem): Float {
+		var item: MenuItem = null;
+		var retWidth: Float = 0;
+
+		for (item in mnuItem.getSubItems()) {
+			var lwidth: Float = item.textLabel.getNeededSize() + 44; // 20 = icon needed place // 20 = subItems arrow needed place
+			if (lwidth > retWidth) {
+				retWidth = lwidth;
+			}
+		}
+		return retWidth;
 	}
 
 	private override function initializeComponent(): Void {

@@ -90,7 +90,7 @@ class Application extends BaseContainer implements IObserver {
 			new MenuItem('Cut', 'assets/menuIcons/cut.png'),
 			new MenuItem('Copy', 'assets/menuIcons/copy.png'),
 			new MenuItem('Paste', 'assets/menuIcons/paste.png'),
-			new MenuItem('[separator]'),
+			new MenuItem(MenuItem.SEPARATOR),
 			new MenuItem('Undo'),
 			new MenuItem('Redo')
 		]);

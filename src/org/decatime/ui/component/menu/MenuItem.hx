@@ -1,16 +1,22 @@
 package org.decatime.ui.component.menu;
 
+import openfl.Assets;
+
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
+import flash.display.Bitmap;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseSpriteElement;
+import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.component.TextLabel;
 
 class MenuItem extends BaseContainer {
 	private static inline var NAMESPACE:String = "org.decatime.ui.component.menu.MenuItem : ";
 	public static inline var MENUITEM_CLICK: String = NAMESPACE + "MENUITEM_CLICK";
+
+	public static inline var SEPARATOR: String = "[separator]";
 
 	private var subItems:Array<MenuItem>;
 
@@ -33,14 +39,26 @@ class MenuItem extends BaseContainer {
 		this.textLabel = new TextLabel(label, 0x000000, 'left');
 	}
 
+	public override function refresh(r:Rectangle): Void {
+		super.refresh(r);
+		if (this.getIsSeparator()) {
+			this.graphics.lineStyle(1, 0x000000);
+			this.graphics.drawRect(r.x + 1, r.y + 1, r.width - 2, 0.5);
+		}
+	}
+
 	public function setSubItems(values: Array<MenuItem>): Void {
 		var item:MenuItem = null;
 		for (item in values) {
-			trace ("setting item " + item.name + " font res path to " + fontRes);
 			item.setFontRes(fontRes);
 			item.setParent(this);
+			item.setParentBar(this.parentMenuBar);
 		}
 		this.subItems = values;
+	}
+
+	public function getSubItems(): Array<MenuItem> {
+		return this.subItems;
 	}
 
 	public function setIsRoot(value: Bool): Void {
@@ -59,9 +77,17 @@ class MenuItem extends BaseContainer {
 		return this.isRoot;
 	}
 
+	public function getIsSeparator(): Bool {
+		return this.label == MenuItem.SEPARATOR;
+	}
+
 	public function asSubItems(): Bool {
 		if (this.subItems == null) { return false; }
 		return this.subItems.length > 0;
+	}
+
+	public function getSubItemsContainer(): MenuPanel {
+		return this.subItemsContainer;
 	}
 
 	public function setFontRes(value: String): Void {
@@ -75,34 +101,42 @@ class MenuItem extends BaseContainer {
 
 	private override function initializeComponent(): Void {
 		super.initializeComponent();
-		if (this.iconRes != null) {
-
+		if (this.iconRes.length > 0) {
+			var bmIcon: BaseBitmapElement = new BaseBitmapElement();
+			bmIcon.setResizable(false);
+			bmIcon.bitmapData = Assets.getBitmapData(this.iconRes);
+			this.container.create(16, bmIcon);
+			this.addChild(bmIcon);
 		}
-		this.textLabel.setFontRes(this.fontRes);
-		this.container.create(this.textLabel.getNeededSize(), this.textLabel);
-		this.addChild(this.textLabel);
+
+		if (this.label != MenuItem.SEPARATOR) {
+			this.textLabel.setFontRes(this.fontRes);
+			this.container.create(this.textLabel.getNeededSize(), this.textLabel);
+			this.addChild(this.textLabel);
+			this.addEventListener(MouseEvent.CLICK, onMnuItemClick);
+			this.addEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
+			this.addEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
+		}
 
 		if (this.asSubItems())  {
 			this.subItemsContainer = new MenuPanel('mnu' + this.label + 'SubItemsContainer');
-			
+
 			var item:MenuItem = null;
 
 			for (item in this.subItems) {
 				this.subItemsContainer.addMenuItem(item);
 			}
 		}
-		this.addEventListener(MouseEvent.CLICK, onMnuItemClick);
-		if (! this.isRoot) {
-			this.addEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
-			this.addEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
-		}
 	}
 
 	private function onMnuItemMouseOver(e:MouseEvent): Void {
 		this.graphics.clear();
-		this.graphics.beginFill(0xaaddcc);
+		this.graphics.beginFill(0x99ccff);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
+		if (this.asSubItems()) {
+			this.parentMenuBar.updateVisiblity(this);
+		}
 	}
 
 	private function onMnuItemMouseOut(e:MouseEvent): Void {
@@ -110,35 +144,16 @@ class MenuItem extends BaseContainer {
 		this.graphics.beginFill(0xbbbbbb);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
+		if (this.asSubItems()) {
+		}
 	}
 
 	private function onMnuItemClick(e:MouseEvent): Void {
-		if (this.asSubItems()) {
-			var absBound: Rectangle = this.getBounds(this.stage);
-			
-			absBound.y = absBound.y + this.sizeInfo.height;
-			absBound.height = absBound.height * this.subItems.length;
-			absBound.width = getBigestMenuWidth();
-
-			this.subItemsContainer.showHide(absBound);
-		} else {
+		if (! this.asSubItems()) {
 			this.notify(MENUITEM_CLICK, this);
-			if (this.parentPanel != null) {
-				this.parentPanel.close();
-			}
+			this.parentMenuBar.resetVisibility();
+		} else {
+			this.parentMenuBar.toggleVisibility(this);
 		}
-	}
-
-	private function getBigestMenuWidth(): Float {
-		var item: MenuItem = null;
-		var retWidth: Float = 0;
-
-		for (item in this.subItems) {
-			var lwidth: Float = item.textLabel.getNeededSize() + 40; // 20 = icon needed place // 20 = subItems arrow needed place
-			if (lwidth > retWidth) {
-				retWidth = lwidth;
-			}
-		}
-		return retWidth;
 	}
 }
