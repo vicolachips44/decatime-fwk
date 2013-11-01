@@ -28,13 +28,8 @@ import flash.text.TextFormat;
 
 class Application extends BaseContainer implements IObserver {
 
-	private var lblTitle:Label;
-	private var lblAppTitle: TextLabel;
 	private var mnuBar: MenuBar;
 
-	private var testCount:Int = 0;
-	private var txtTwo:TextBox;
-	private var appContainer: BaseSpriteElement;
 	private var activeWindow: Window;
 	private var windowManager: Manager;
 	private var wxCanvas:WxCanvasDemo;
@@ -49,13 +44,10 @@ class Application extends BaseContainer implements IObserver {
 		switch (name) {
 			case ListBox.EVT_ITEM_SELECTED:
 				var w:Window = cast(data, Window);
-				// if (activeWindow != null) {
-				// 	activeWindow.remove();
-				// }
-
+				
 				activeWindow = w;
 				w.show(windowManager);
-				trace ("the new window is on stage!!");
+
 			case MenuBar.MENUITEM_CLICK:
 				trace (data + " clicked!");
 				var mnuFileQuit: String = "File" + MenuItem.PATH_SEPARATOR + "Quit";
@@ -120,18 +112,16 @@ class Application extends BaseContainer implements IObserver {
 			new MenuItem('Redo', 'assets/menuIcons/redo.png')
 		]);
 
+		var mnuProj : MenuItem = new MenuItem('Project');
+		this.mnuBar.addMenu(mnuProj);
+
+		mnuProj.setSubItems ([
+			new MenuItem('New project'),
+			new MenuItem('Very long menu doing nothing'),
+		]);
 
 		this.container.create(20, this.mnuBar);
 		this.addChild(this.mnuBar);
-
-		// this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
-		// this.lblAppTitle.setFontRes('assets/1979rg.ttf');
-		// this.lblAppTitle.setFontSize(24);
-		// this.lblAppTitle.background = true;
-		// this.lblAppTitle.backgroundColor = 0xbbbbbb;
-		// this.lblAppTitle.border = true;
-		// this.container.create(32, this.lblAppTitle);
-		// this.addChild(this.lblAppTitle);
 
 		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');

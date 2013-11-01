@@ -153,7 +153,7 @@ class MenuItem extends BaseContainer {
 
 	private function onMnuItemMouseOver(e:MouseEvent): Void {
 		this.graphics.clear();
-		this.graphics.beginFill(0x99ccff);
+		this.graphics.beginFill(0xe0e0e0);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
 		if (this.asSubItems()) {
