@@ -14,6 +14,7 @@ import org.decatime.ui.layout.VBox;
 class MenuPanel extends BaseContainer {
 
 	private var menuItems: Array<MenuItem>;
+	private var parentMenuBar: MenuBar;
 
 	public function new(name:String) {
 		super(name);
@@ -42,6 +43,10 @@ class MenuPanel extends BaseContainer {
 		this.menuItems.push(item);
 		item.setParentPanel(this);
 	}
+
+	public function setMenuBar(value: MenuBar): Void {
+		this.parentMenuBar = value;
+	}
 	
 	public function show(r: Rectangle) : Void {
 		this.refresh(r);
@@ -67,6 +72,7 @@ class MenuPanel extends BaseContainer {
 			this.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
 		close();
+		this.parentMenuBar.resetVisibility();
 	}
 
 	public function getIsVisible(): Bool {

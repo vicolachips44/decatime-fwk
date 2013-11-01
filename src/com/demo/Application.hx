@@ -81,6 +81,12 @@ class Application extends BaseContainer implements IObserver {
 	// IObserver implementation END
 
 	private override function initializeComponent() {
+		// var fonts: Array<flash.text.Font> = flash.text.Font.enumerateFonts(true);
+		// for (fnt in fonts) {
+		// 	trace ("font is " + fnt.fontName);
+		// }
+		// trace ("font enumeration done");
+
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
@@ -128,6 +134,7 @@ class Application extends BaseContainer implements IObserver {
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		wxCanvas = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
+		var wxTextArea: WxTextAreaDemo = new WxTextAreaDemo('wxTextArea', new Point(600, 480), 'assets/Vera.ttf');
 		
 		var hbox1: HBox = new HBox(this.container);
 		hbox1.setVerticalGap(2);
@@ -142,7 +149,7 @@ class Application extends BaseContainer implements IObserver {
 		demoList.add(wxTable);
 		demoList.add(wxCombo);
 		demoList.add(wxCanvas);
-		
+		demoList.add(wxTextArea);
 		demoList.addListener(this);
 
 		hbox1.create(160, demoList);

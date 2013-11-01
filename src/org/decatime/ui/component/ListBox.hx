@@ -54,11 +54,11 @@ class ListBox extends BaseContainer implements IObserver {
 	private var visibleItemsCount:Int;
 	private var shpBackground:Shape;
 
-
 	public function new(name:String, fontRes:String) {
 		super(name);
 		this.buttonMode = true;
 		this.renderer = new BaseBitmapElement();
+		this.renderer.cacheAsBitmap = true;
 		this.renderer.setResizable(false);
 		this.listItems = new Array<IPrintable>();
 		this.itemsHeight = 16;
@@ -213,16 +213,12 @@ class ListBox extends BaseContainer implements IObserver {
 
 			this.dataRenderer.draw(
 				this.tfield,
-				m,
-				null,  
-				BlendMode.ADD,
-				null,
-				true
+				m
 			);
 
 			currItmIdx = currItmIdx + this.itemsHeight;
 		}
-
+		
 		r = this.listContainer.getCurrSize();
 		var shContour:Shape = new Shape();
 		g = shContour.graphics;
@@ -240,6 +236,7 @@ class ListBox extends BaseContainer implements IObserver {
 		);
 	}
 
+	
 	private function moveNext(): Void {
 		this.firstVisibleIndex++;
 		if (this.firstVisibleIndex > (this.itemsCount - this.visibleItemsCount)) { 

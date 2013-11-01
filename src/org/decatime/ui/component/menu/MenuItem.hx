@@ -142,7 +142,7 @@ class MenuItem extends BaseContainer {
 
 		if (this.asSubItems())  {
 			this.subItemsContainer = new MenuPanel('mnu' + this.label + 'SubItemsContainer');
-
+			this.subItemsContainer.setMenuBar(this.parentMenuBar);
 			var item:MenuItem = null;
 
 			for (item in this.subItems) {
