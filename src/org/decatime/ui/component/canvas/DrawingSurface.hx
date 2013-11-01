@@ -22,7 +22,6 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	private var parentWindow: Window;
 	private var drawingFeedBack: Shape;
 	private var layer1: Bitmap;
-	private var bmd:BitmapData;
 	private var absRectangle: Rectangle;
 	private var gfx:Graphics;
 	private var style: FreeHand;
@@ -77,8 +76,14 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		gfx.clear();
+		
 		stage.removeChild(drawingFeedBack);
+		stage.removeChild(this.layer1);
+		urManager.initialize();
+
 		drawingFeedBack = null;
+		layer1 = null;
+		urManager = null;
 	}
 
 	private function onMouseDown(e:MouseEvent): Void {
@@ -115,35 +120,39 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	}
 
 	private function drawCache(): Void {
-		this.bmd.draw(this.drawingFeedBack);
+		this.layer1.bitmapData.draw(this.drawingFeedBack);
 		urManager.update();
 	}
 
 	private function addFeedback(): Void {
-		if (drawingFeedBack != null) { return; }
+		if (urManager == null) {
+			urManager = new UndoRedoManager();
+			urManager.setUndoLevel(32);
+		}
 
-		urManager = new UndoRedoManager();
-		urManager.setUndoLevel(32);
 		urManager.initialize();
+		trace ("urManager has been initialized");
 
-		layer1 = new Bitmap();
+		if (layer1 == null) { layer1 = new Bitmap(); }
+
 		layer1.bitmapData = new BitmapData(Std.int(this.sizeInfo.width), Std.int(this.sizeInfo.height), true, 0x000000);
-		this.bmd = layer1.bitmapData;
-		urManager.setData(this.bmd);
+		urManager.setData(layer1.bitmapData);
 
 		urManager.update();
+		trace ("urManager has been updated");
 
-		drawingFeedBack = new Shape();
-		drawingFeedBack.name = "drawingFeedBack";
-		drawingFeedBack.cacheAsBitmap = true;
+		if (drawingFeedBack == null) {
+			drawingFeedBack = new Shape();
+			drawingFeedBack.name = "drawingFeedBack";
+			drawingFeedBack.cacheAsBitmap = true;
 
-		stage.addChild(drawingFeedBack);
-		stage.addChild(layer1);
+			stage.addChild(drawingFeedBack);
+			stage.addChild(layer1);
 
-		gfx = this.drawingFeedBack.graphics;
-		this.style = new FreeHand(gfx);
-
-		stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			gfx = this.drawingFeedBack.graphics;
+			this.style = new FreeHand(gfx);
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+		}
 	}
 
 
