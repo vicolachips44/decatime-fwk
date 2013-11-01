@@ -15,6 +15,7 @@ import org.decatime.ui.layout.HBox;
 
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
+import org.decatime.ui.primitive.Arrow;
 
 // TODO enable client color settings
 class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
@@ -154,7 +155,7 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 		this.container.setHorizontalGap(0);
 		this.container.setVerticalGap(0);
 
-		this.btnScrollLeft = new ArrowButton('btnLeft', ArrowButton.ORIENTATION_LEFT);
+		this.btnScrollLeft = new ArrowButton('btnLeft', Arrow.ORIENTATION_LEFT);
 		this.btnScrollLeft.addListener(this);
 		var c1:Content = this.container.create(this.sizeInfo.height, this.btnScrollLeft);
 		c1.setVerticalGap(4);
@@ -167,7 +168,7 @@ class HorizontalScrollBar extends BaseScrollBar implements IObserver  {
 		this.addChild(this.thumb);
 
 		
-		this.btnScrollRight = new ArrowButton('btnRight',ArrowButton.ORIENTATION_RIGHT);
+		this.btnScrollRight = new ArrowButton('btnRight',Arrow.ORIENTATION_RIGHT);
 		this.btnScrollRight.addListener(this);
 		var c1:Content = this.container.create(this.sizeInfo.height, this.btnScrollRight);
 		

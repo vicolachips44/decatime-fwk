@@ -23,6 +23,7 @@ import org.decatime.ui.layout.Content;
 
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
+import org.decatime.ui.primitive.Arrow;
 
 class ComboBox extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.ComboBox :";
@@ -71,7 +72,7 @@ class ComboBox extends BaseContainer implements IObserver {
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
 
-		var btnDropDown: ArrowButton = new ArrowButton('dpDownButton', ArrowButton.ORIENTATION_BOTTOM);
+		var btnDropDown: ArrowButton = new ArrowButton('dpDownButton', Arrow.ORIENTATION_BOTTOM);
 		btnDropDown.addListener(this);
 
 		this.addChild(btnDropDown);
