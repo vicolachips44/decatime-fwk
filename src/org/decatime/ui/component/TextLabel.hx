@@ -23,6 +23,7 @@ class TextLabel extends TextField implements ILayoutElement {
 	public static inline var RIGHT:String = 'right';
 
 	private var fontRes:Font;
+	private var fontResPath: String;
 	private var sizeInfo: Rectangle;
 	private var fontSize: Int;
 	private var color: Int;
@@ -62,8 +63,12 @@ class TextLabel extends TextField implements ILayoutElement {
 		return this.tagRef;
 	}
 
+	public function getFontResPath(): String {
+		return this.fontResPath;
+	}
 
 	public function setFontRes(fontRes:String): Void {
+		this.fontResPath = fontRes;
 		this.fontRes = Assets.getFont(fontRes);
 	}
 
@@ -113,7 +118,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		if (this.fontRes != null) {
 			createEmbeddedFontTextFormat();
 		} else {
-			throw new Error("this component needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
+			throw new Error("this component labeled " + this.text + " needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
 		}
 
 		this.sizeInfo = r;

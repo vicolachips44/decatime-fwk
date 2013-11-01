@@ -21,6 +21,8 @@ import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.WindowState;
 import org.decatime.ui.component.windows.Manager;
 import org.decatime.ui.component.canvas.DrawingSurface;
+import org.decatime.ui.component.menu.MenuBar;
+import org.decatime.ui.component.menu.MenuItem;
 
 import flash.text.TextFormat;
 
@@ -28,6 +30,7 @@ class Application extends BaseContainer implements IObserver {
 
 	private var lblTitle:Label;
 	private var lblAppTitle: TextLabel;
+	private var mnuBar: MenuBar;
 
 	private var testCount:Int = 0;
 	private var txtTwo:TextBox;
@@ -67,15 +70,43 @@ class Application extends BaseContainer implements IObserver {
 		this.container = new VBox(this);
 		this.container.setVerticalGap(0);
 		this.container.setHorizontalGap(0);
+
+		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
+		var mnuFile : MenuItem = new MenuItem('File');
+		this.mnuBar.addMenu(mnuFile);
 		
-		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
-		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
-		this.lblAppTitle.setFontSize(24);
-		this.lblAppTitle.background = true;
-		this.lblAppTitle.backgroundColor = 0xbbbbbb;
-		this.lblAppTitle.border = true;
-		this.container.create(32, this.lblAppTitle);
-		this.addChild(this.lblAppTitle);
+		mnuFile.setSubItems([
+			new MenuItem('New', 'assets/menuIcons/new.png'),
+			new MenuItem('Open...', 'assets/menuIcons/open.png'),
+			new MenuItem('Save', 'assets/menuIcons/save.png'),
+			new MenuItem('Save As...'),
+		]);
+
+
+		var mnuEdit : MenuItem = new MenuItem('Edit');
+		this.mnuBar.addMenu(mnuEdit);
+		
+		mnuEdit.setSubItems ([
+			new MenuItem('Cut', 'assets/menuIcons/cut.png'),
+			new MenuItem('Copy', 'assets/menuIcons/copy.png'),
+			new MenuItem('Paste', 'assets/menuIcons/paste.png'),
+			new MenuItem('[separator]'),
+			new MenuItem('Undo'),
+			new MenuItem('Redo')
+		]);
+
+
+		this.container.create(20, this.mnuBar);
+		this.addChild(this.mnuBar);
+
+		// this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
+		// this.lblAppTitle.setFontRes('assets/1979rg.ttf');
+		// this.lblAppTitle.setFontSize(24);
+		// this.lblAppTitle.background = true;
+		// this.lblAppTitle.backgroundColor = 0xbbbbbb;
+		// this.lblAppTitle.border = true;
+		// this.container.create(32, this.lblAppTitle);
+		// this.addChild(this.lblAppTitle);
 
 		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
@@ -84,7 +115,7 @@ class Application extends BaseContainer implements IObserver {
 		var wxCanvas:WxCanvasDemo = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
 		
 		var hbox1: HBox = new HBox(this.container);
-		hbox1.setVerticalGap(0);
+		hbox1.setVerticalGap(2);
 		hbox1.setHorizontalGap(2);
 
 		this.container.create(1.0, hbox1);
