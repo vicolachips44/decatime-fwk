@@ -37,6 +37,7 @@ class Application extends BaseContainer implements IObserver {
 	private var appContainer: BaseSpriteElement;
 	private var activeWindow: Window;
 	private var windowManager: Manager;
+	private var wxCanvas:WxCanvasDemo;
 
 	public function new() {
 		super('DemoApplication');
@@ -55,12 +56,33 @@ class Application extends BaseContainer implements IObserver {
 				activeWindow = w;
 				w.show(windowManager);
 				trace ("the new window is on stage!!");
+			case MenuBar.MENUITEM_CLICK:
+				trace (data + " clicked!");
+				var mnuFileQuit: String = "File" + MenuItem.PATH_SEPARATOR + "Quit";
+				var mnuEditUndo: String = "Edit" + MenuItem.PATH_SEPARATOR + "Undo";
+				var mnuEditRedo: String = "Edit" + MenuItem.PATH_SEPARATOR + "Redo";
+
+				if (data == mnuFileQuit) {
+					flash.system.System.exit(0);
+				}
+
+				if (wxCanvas.getIsActiveAndVisible()) {
+					if (data == mnuEditUndo) {
+						wxCanvas.callUndo();
+					}
+					if (data == mnuEditRedo) {
+						wxCanvas.callRedo();
+					}
+					this.mnuBar.setMenuItemState(mnuEditUndo, wxCanvas.canUndo());
+					this.mnuBar.setMenuItemState(mnuEditRedo, wxCanvas.canRedo());
+				}
 		}
 	}
 
 	public function getEventCollection(): Array<String> {
 		return [
-			ListBox.EVT_ITEM_SELECTED
+			ListBox.EVT_ITEM_SELECTED,
+			MenuBar.MENUITEM_CLICK
 		];
 	}
 
@@ -72,6 +94,7 @@ class Application extends BaseContainer implements IObserver {
 		this.container.setHorizontalGap(0);
 
 		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
+		this.mnuBar.addListener(this);
 		var mnuFile : MenuItem = new MenuItem('File');
 		this.mnuBar.addMenu(mnuFile);
 		
@@ -80,6 +103,8 @@ class Application extends BaseContainer implements IObserver {
 			new MenuItem('Open...', 'assets/menuIcons/open.png'),
 			new MenuItem('Save', 'assets/menuIcons/save.png'),
 			new MenuItem('Save As...'),
+			new MenuItem(MenuItem.SEPARATOR),
+			new MenuItem('Quit', 'assets/menuIcons/quit.png')
 		]);
 
 
@@ -91,8 +116,8 @@ class Application extends BaseContainer implements IObserver {
 			new MenuItem('Copy', 'assets/menuIcons/copy.png'),
 			new MenuItem('Paste', 'assets/menuIcons/paste.png'),
 			new MenuItem(MenuItem.SEPARATOR),
-			new MenuItem('Undo'),
-			new MenuItem('Redo')
+			new MenuItem('Undo', 'assets/menuIcons/undo.png'),
+			new MenuItem('Redo', 'assets/menuIcons/redo.png')
 		]);
 
 
@@ -112,7 +137,7 @@ class Application extends BaseContainer implements IObserver {
 		var wxList:WxListBoxDemo = new WxListBoxDemo('ListBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
-		var wxCanvas:WxCanvasDemo = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
+		wxCanvas = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
 		
 		var hbox1: HBox = new HBox(this.container);
 		hbox1.setVerticalGap(2);

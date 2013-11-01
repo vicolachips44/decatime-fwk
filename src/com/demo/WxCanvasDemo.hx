@@ -59,6 +59,22 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 		}
 	}
 
+	public function callUndo(): Void {
+		canvas.undo();
+	}
+
+	public function canUndo(): Bool {
+		return canvas.canUndo();
+	}
+
+	public function callRedo(): Void {
+		canvas.redo();
+	}
+
+	public function canRedo(): Bool {
+		return canvas.canRedo();
+	}
+
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
 		parentAy.push(Button.EVT_CLICK);

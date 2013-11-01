@@ -5,6 +5,9 @@ import flash.geom.Rectangle;
 import org.decatime.ui.component.BaseContainer;
 
 class MenuBar extends BaseContainer {
+	private static inline var NAMESPACE:String = "org.decatime.ui.component.menu.MenuItem : ";
+	public static inline var MENUITEM_CLICK: String = NAMESPACE + "MENUITEM_CLICK";
+
 	private var fontRes: String;
 	private var mnuItems: Array<MenuItem>;
 	private var subMenuActive: Bool;
@@ -17,6 +20,10 @@ class MenuBar extends BaseContainer {
 		this.fontRes = in_fontRes;
 		this.mnuItems = new Array<MenuItem>();
 		this.subMenuActive = false;
+	}
+
+	public function relayClick(mnuItem: MenuItem): Void {
+		this.notify(MENUITEM_CLICK, mnuItem.getMenuPath());
 	}
 
 	public function addMenu(mnuItem: MenuItem): Void {
@@ -32,6 +39,16 @@ class MenuBar extends BaseContainer {
 			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
 		}
 		this.activeMenuItem = mnuItem;
+	}
+
+	public function getMenuItem(menuName: String): MenuItem {
+		var mnuItem: MenuItem = null;
+		for (mnuItem in this.mnuItems) {
+			if (mnuItem.name == menuName) {
+				return mnuItem;
+			}
+		}
+		return null;
 	}
 
 	public function updateVisiblity(mnuItem: MenuItem): Void {
@@ -50,6 +67,18 @@ class MenuBar extends BaseContainer {
 	public function resetVisibility(): Void {
 		this.subMenuActive = false;
 		this.activeMenuItem = null;
+	}
+
+	public function setMenuItemState(mnuPath: String, disabled: Bool): Void {
+		var tokens:Array<String> = mnuPath.split(MenuItem.PATH_SEPARATOR);
+		var rootItem: MenuItem = this.getMenuItem(tokens[0]);
+		var mnuItem: MenuItem = null;
+		for (mnuItem in rootItem.getSubItems()) {
+			if (mnuItem.name == tokens [1]) {
+				mnuItem.setState(disabled);
+				break;
+			}
+		}
 	}
 
 	private function getBoundsFromMenu(mnuItem: MenuItem):  Rectangle {

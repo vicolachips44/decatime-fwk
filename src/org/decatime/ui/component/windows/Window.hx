@@ -51,6 +51,7 @@ class Window extends BaseContainer implements IObserver {
 	private var oldX:Float;
 	private var oldY:Float;
 	private var manager:Manager;
+	private var isActive: Bool;
 
 	public function new(name:String, in_size:Point, fontResPath:String) {
 		super(name);
@@ -108,6 +109,10 @@ class Window extends BaseContainer implements IObserver {
 		}
 	}
 
+	public function getIsActiveAndVisible(): Bool {
+		return this.visible && this.isActive;
+	}
+
 	public function minimize(): Void {
 		trace ("TODO minimize me somewhere !!");
 	}
@@ -122,10 +127,11 @@ class Window extends BaseContainer implements IObserver {
 			
 			if (this.windowState == WindowState.NORMAL) {
 				centerPopup();
-			} 
+			}
 		}
 		this.refresh(position);
 		this.visible = true;
+		this.isActive = true;
 		in_manager.bringToFront(this);
 	}
 
@@ -158,6 +164,7 @@ class Window extends BaseContainer implements IObserver {
 		}
 		this.parent.removeChild(this);
 		this.visible = false;
+		this.isActive = false;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -221,6 +228,7 @@ class Window extends BaseContainer implements IObserver {
 
 	private function drawState(value: Bool): Void {
 		this.header.drawState(value);
+		this.isActive = value;
 	}
 
 	private function doMaximize(): Void {

@@ -60,8 +60,16 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		return this.urManager.undo();
 	}
 
+	public function canUndo(): Bool {
+		return this.urManager.canUndo();
+	}
+
 	public function redo(): Bool {
 		return this.urManager.redo();
+	}
+
+	public function canRedo(): Bool {
+		return this.urManager.canRedo();
 	}
 
 	public function getEventCollection(): Array<String> {

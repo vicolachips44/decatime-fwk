@@ -13,10 +13,9 @@ import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.component.TextLabel;
 
 class MenuItem extends BaseContainer {
-	private static inline var NAMESPACE:String = "org.decatime.ui.component.menu.MenuItem : ";
-	public static inline var MENUITEM_CLICK: String = NAMESPACE + "MENUITEM_CLICK";
-
+	
 	public static inline var SEPARATOR: String = "[separator]";
+	public static inline var PATH_SEPARATOR: String = "|";
 
 	private var subItems:Array<MenuItem>;
 
@@ -29,6 +28,7 @@ class MenuItem extends BaseContainer {
 	private var parentMenuItem: MenuItem;
 	private var parentPanel: MenuPanel;
 	private var parentMenuBar: MenuBar;
+	private var itemState: Bool;
 
 	private var isRoot: Bool;
 
@@ -37,6 +37,7 @@ class MenuItem extends BaseContainer {
 		this.label = in_label;
 		this.iconRes = in_iconRes;
 		this.textLabel = new TextLabel(label, 0x000000, 'left');
+		this.itemState = false;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -55,6 +56,29 @@ class MenuItem extends BaseContainer {
 			item.setParentBar(this.parentMenuBar);
 		}
 		this.subItems = values;
+	}
+
+	public function setState(value: Bool): Void {
+		if (value && value != this.itemState) {
+			this.addEventListener(MouseEvent.CLICK, onMnuItemClick);
+			this.addEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
+			this.addEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
+			this.textLabel.setColor(0x000000);
+			this.itemState = true;
+		} else if (! value && value != this.itemState) {
+			this.removeEventListener(MouseEvent.CLICK, onMnuItemClick);
+			this.removeEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
+			this.removeEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
+			this.textLabel.setColor(0x808080);
+			this.itemState = false;
+		}
+	}
+
+	public function getMenuPath(): String {
+		if (this.parentMenuItem != null) {
+			return this.parentMenuItem.getMenuPath() + MenuItem.PATH_SEPARATOR + this.label;
+		}
+		return this.label;
 	}
 
 	public function getSubItems(): Array<MenuItem> {
@@ -113,9 +137,7 @@ class MenuItem extends BaseContainer {
 			this.textLabel.setFontRes(this.fontRes);
 			this.container.create(this.textLabel.getNeededSize(), this.textLabel);
 			this.addChild(this.textLabel);
-			this.addEventListener(MouseEvent.CLICK, onMnuItemClick);
-			this.addEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
-			this.addEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
+			setState(true);
 		}
 
 		if (this.asSubItems())  {
@@ -150,7 +172,7 @@ class MenuItem extends BaseContainer {
 
 	private function onMnuItemClick(e:MouseEvent): Void {
 		if (! this.asSubItems()) {
-			this.notify(MENUITEM_CLICK, this);
+			this.parentMenuBar.relayClick(this);
 			this.parentMenuBar.resetVisibility();
 		} else {
 			this.parentMenuBar.toggleVisibility(this);
