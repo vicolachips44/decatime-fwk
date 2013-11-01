@@ -76,7 +76,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		gfx.clear();
-		
+
 		stage.removeChild(drawingFeedBack);
 		stage.removeChild(this.layer1);
 		urManager.initialize();
@@ -111,9 +111,10 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
-		if (e == null) { return; }
+		if (e != null) { 
+			style.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		}
 		
-		style.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 		drawCache();
 		this.gfx.clear();
 		stage.setChildIndex(this.layer1, stage.numChildren - 1);
@@ -124,14 +125,15 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		urManager.update();
 	}
 
-	private function addFeedback(): Void {
+	private function initialize(): Void {
+		if (gfx != null) { gfx.clear(); }
+
 		if (urManager == null) {
 			urManager = new UndoRedoManager();
 			urManager.setUndoLevel(32);
 		}
 
 		urManager.initialize();
-		trace ("urManager has been initialized");
 
 		if (layer1 == null) { layer1 = new Bitmap(); }
 
@@ -139,7 +141,6 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		urManager.setData(layer1.bitmapData);
 
 		urManager.update();
-		trace ("urManager has been updated");
 
 		if (drawingFeedBack == null) {
 			drawingFeedBack = new Shape();
@@ -160,9 +161,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		super.refresh(r);
 
 		this.absRectangle = this.getBounds(this.stage);
-
-		if (gfx != null) { gfx.clear(); }
-		addFeedback();
+		initialize();
 
 		drawingFeedBack.x = this.absRectangle.x; // FIXME does not take care of gapping
 		drawingFeedBack.y = this.absRectangle.y;

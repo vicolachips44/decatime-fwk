@@ -40,7 +40,6 @@ class UndoRedoManager {
 		
 		bmdCacheHistory = new IntMap<BitmapData>();
 		undoPosition = 1;
-		trace ("UndoRedoManager initialize done...");
 	}
 
 	public function setUndoLevel(value:Int): Void {
@@ -71,7 +70,6 @@ class UndoRedoManager {
 			bmCache.rect, 
 			new Point(0, 0)
 		);
-		trace ("the position in the cache has been setted to " + newPos);
 	}
 
 	
@@ -102,7 +100,6 @@ class UndoRedoManager {
 		initUndoCache(undoPosition);
 
 		var cacheHisto:BitmapData = bmdCacheHistory.get(undoPosition);
-		trace ("bitmap data has been retrieved from the cache at position " + undoPosition);
 		
 		cacheHisto.copyPixels(
 			data, 
@@ -111,11 +108,9 @@ class UndoRedoManager {
 		);
 		
 		undoPosition++;
-		trace ("update has been fired");
 	}
 
 	private function initUndoCache(pos:Int): Void {
-		trace ("initializing undo cache for position " + pos);
 		bmdCacheHistory.set(
 			pos, 
 			new BitmapData(
