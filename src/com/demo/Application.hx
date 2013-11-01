@@ -71,7 +71,9 @@ class Application extends BaseContainer implements IObserver {
 		this.lblAppTitle = new TextLabel('DECATIME FRAMEWORK DEMO V1');
 		this.lblAppTitle.setFontRes('assets/1979rg.ttf');
 		this.lblAppTitle.setFontSize(24);
-		this.lblAppTitle.setColor(0x0000ff);
+		this.lblAppTitle.background = true;
+		this.lblAppTitle.backgroundColor = 0xbbbbbb;
+		this.lblAppTitle.border = true;
 		this.container.create(32, this.lblAppTitle);
 		this.addChild(this.lblAppTitle);
 

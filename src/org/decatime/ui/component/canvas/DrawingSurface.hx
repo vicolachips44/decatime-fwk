@@ -6,6 +6,8 @@ import flash.geom.Point;
 import flash.display.Graphics;
 import flash.events.Event;
 import flash.display.Shape;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 
 
 import org.decatime.ui.component.IDisposable;
@@ -19,9 +21,12 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 
 	private var parentWindow: Window;
 	private var drawingFeedBack: Shape;
+	private var layer1: Bitmap;
+	private var bmd:BitmapData;
 	private var absRectangle: Rectangle;
 	private var gfx:Graphics;
 	private var style: FreeHand;
+	private var urManager: UndoRedoManager;
 
 	public function new(name:String) {
 		super(name);
@@ -39,11 +44,25 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			    var pt:Point = cast(data, Point);
 				drawingFeedBack.x = pt.x + this.container.getCurrSize().x + 3;
 				drawingFeedBack.y = pt.y + this.container.getCurrSize().y;
+
+				layer1.x = pt.x + this.container.getCurrSize().x + 3;
+				layer1.y = pt.y + this.container.getCurrSize().y;
+
 			case Window.EVT_DEACTIVATE:
 				drawingFeedBack.visible = false;
+				layer1.visible = false;
 			case Window.EVT_ACTIVATE:
 				drawingFeedBack.visible = true;
+				layer1.visible = true;
 		}
+	}
+
+	public function undo(): Bool {
+		return this.urManager.undo();
+	}
+
+	public function redo(): Bool {
+		return this.urManager.redo();
 	}
 
 	public function getEventCollection(): Array<String> {
@@ -64,7 +83,11 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 
 	private function onMouseDown(e:MouseEvent): Void {
 		this.absRectangle = this.getBounds(this.stage);
+		if (! this.absRectangle.containsPoint(new Point(e.stageX, e.stageY))) {
+			return;
+		}
 
+		stage.setChildIndex(drawingFeedBack, stage.numChildren - 1);
 		style.processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
@@ -86,17 +109,37 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		if (e == null) { return; }
 		
 		style.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		drawCache();
+		this.gfx.clear();
+		stage.setChildIndex(this.layer1, stage.numChildren - 1);
+	}
+
+	private function drawCache(): Void {
+		this.bmd.draw(this.drawingFeedBack);
+		urManager.update();
 	}
 
 	private function addFeedback(): Void {
 		if (drawingFeedBack != null) { return; }
+
+		urManager = new UndoRedoManager();
+		urManager.setUndoLevel(32);
+		urManager.initialize();
+
+		layer1 = new Bitmap();
+		layer1.bitmapData = new BitmapData(Std.int(this.sizeInfo.width), Std.int(this.sizeInfo.height), true, 0x000000);
+		this.bmd = layer1.bitmapData;
+		urManager.setData(this.bmd);
+
+		urManager.update();
 
 		drawingFeedBack = new Shape();
 		drawingFeedBack.name = "drawingFeedBack";
 		drawingFeedBack.cacheAsBitmap = true;
 
 		stage.addChild(drawingFeedBack);
-		
+		stage.addChild(layer1);
+
 		gfx = this.drawingFeedBack.graphics;
 		this.style = new FreeHand(gfx);
 
@@ -107,11 +150,15 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	public override function refresh(r: Rectangle): Void {
 		super.refresh(r);
 
-		addFeedback();
-		if (gfx != null) { gfx.clear(); }
 		this.absRectangle = this.getBounds(this.stage);
+
+		if (gfx != null) { gfx.clear(); }
+		addFeedback();
 
 		drawingFeedBack.x = this.absRectangle.x; // FIXME does not take care of gapping
 		drawingFeedBack.y = this.absRectangle.y;
+
+		layer1.x = this.absRectangle.x; // FIXME does not take care of gapping
+		layer1.y = this.absRectangle.y;
 	}
 }
