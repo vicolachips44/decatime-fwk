@@ -8,14 +8,18 @@ import flash.events.Event;
 import flash.display.Shape;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-
+import flash.filters.BlurFilter;
+import flash.filters.BitmapFilter;
+import flash.display.GradientType;
+import flash.filters.DropShadowFilter;
+import flash.geom.Matrix;
 
 import org.decatime.ui.component.IDisposable;
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
 
 import org.decatime.ui.component.windows.Window;
-import org.decatime.ui.component.canvas.style.FreeHand;
+import org.decatime.ui.component.canvas.style.StyleManager;
 
 class DrawingSurface extends BaseContainer implements IDisposable implements IObserver {
 
@@ -24,7 +28,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 	private var layer1: Bitmap;
 	private var absRectangle: Rectangle;
 	private var gfx:Graphics;
-	private var style: FreeHand;
+	private var styManager: StyleManager;
 	private var urManager: UndoRedoManager;
 
 	public function new(name:String) {
@@ -101,7 +105,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		}
 
 		stage.setChildIndex(drawingFeedBack, stage.numChildren - 1);
-		style.processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		this.styManager.activeStyle.processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -112,7 +116,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			onMouseUp(null);
 			return;
 		}
-		style.processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		this.styManager.activeStyle.processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 	}
 	
 	private function onMouseUp(e:MouseEvent): Void {
@@ -120,7 +124,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		if (e != null) { 
-			style.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+			this.styManager.activeStyle.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 		}
 		
 		drawCache();
@@ -155,11 +159,14 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			drawingFeedBack.name = "drawingFeedBack";
 			drawingFeedBack.cacheAsBitmap = true;
 
+
 			stage.addChild(drawingFeedBack);
 			stage.addChild(layer1);
+			
+			this.styManager = new StyleManager(this.drawingFeedBack);
 
 			gfx = this.drawingFeedBack.graphics;
-			this.style = new FreeHand(gfx);
+
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		}
 	}

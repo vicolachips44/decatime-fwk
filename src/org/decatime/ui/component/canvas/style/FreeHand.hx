@@ -4,7 +4,7 @@ import flash.display.Graphics;
 import flash.Vector;
 import flash.geom.Point;
 
-class FreeHand implements IStyleProvider {
+class FreeHand implements IFeedbackProvider {
 	inline private static var BUFFER_SIZE:Int = 3;
 
 	private var swithTo: Bool;
@@ -16,27 +16,29 @@ class FreeHand implements IStyleProvider {
 		this.gfx = gfx;
 		this.ayOfPathCmds = new Vector<Int>();
 		
-		this.ayOfPathCmds.push(2);
-		this.ayOfPathCmds.push(2);
+		var i: Int = 0;
+		for (i in 0...BUFFER_SIZE - 1) {
+			this.ayOfPathCmds.push(2);
+		}
 	}
 	
     public function processDown(xpos: Float, ypos: Float) : Void {
     	swithTo = true;
 		gfx.lineStyle(
-			3, 
+			4, 
 			0x000000, 
 			1.0, 
-			true, // pixelHinting 
-			flash.display.LineScaleMode.NONE, 
-			flash.display.CapsStyle.NONE, 
+			false, // pixelHinting 
+			flash.display.LineScaleMode.NORMAL, 
+			flash.display.CapsStyle.ROUND, 
 			flash.display.JointStyle.ROUND, 
-			3
+			2
 		);
 		this.ayOfPathPoints = new Vector<Float>();
     }
 
 
-    public function processMove(xpos: Float, ypos: Float): Void {
+    public function processMove(xpos: Float, ypos: Float): Bool {
     	var pt:Point = new Point(xpos, ypos);
 		
 		if (swithTo) {
@@ -56,6 +58,7 @@ class FreeHand implements IStyleProvider {
 				drawPathBuffer();
 			}
 		}
+		return true;
     }
 
     private function drawPathBuffer(): Void {

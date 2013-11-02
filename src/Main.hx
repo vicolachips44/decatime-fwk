@@ -1,5 +1,8 @@
 import org.decatime.Facade;
-import com.demo.Application;
+
+
+import com.androiddemo.AndroidApplication;
+// import com.demo.Application;
 
 class Main {
 	
@@ -12,7 +15,7 @@ class Main {
 	}
 
 	private function runApp(): Void {
-		var app:Application = new Application();
+		var app:AndroidApplication = new AndroidApplication();
 		Facade.getInstance().run(app);
 	}
 
