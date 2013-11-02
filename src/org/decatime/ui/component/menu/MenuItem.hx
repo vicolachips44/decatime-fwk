@@ -175,6 +175,7 @@ class MenuItem extends BaseContainer {
 			this.parentMenuBar.relayClick(this);
 			this.parentMenuBar.resetVisibility();
 		} else {
+			trace ("toggling visibility from item " + this.name);
 			this.parentMenuBar.toggleVisibility(this);
 		}
 	}

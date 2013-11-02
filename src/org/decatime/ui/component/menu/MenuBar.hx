@@ -34,9 +34,12 @@ class MenuBar extends BaseContainer {
 	}
 
 	public function toggleVisibility(mnuItem: MenuItem): Void {
-		this.subMenuActive = ! this.subMenuActive;
+		this.subMenuActive = !this.subMenuActive;
 		if (this.subMenuActive) {
 			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
+			trace ("sub items container is now visible");
+		} else {
+			mnuItem.getSubItemsContainer().close();
 		}
 		this.activeMenuItem = mnuItem;
 	}
@@ -65,6 +68,7 @@ class MenuBar extends BaseContainer {
 	}
 
 	public function resetVisibility(): Void {
+		trace ("reset visibility has been call");
 		this.subMenuActive = false;
 		this.activeMenuItem = null;
 	}

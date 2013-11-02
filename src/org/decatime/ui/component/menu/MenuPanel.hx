@@ -72,7 +72,6 @@ class MenuPanel extends BaseContainer {
 			this.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
 		close();
-		this.parentMenuBar.resetVisibility();
 	}
 
 	public function getIsVisible(): Bool {
