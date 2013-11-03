@@ -1,14 +1,43 @@
 package org.decatime.ui.component.canvas.style;
 
 import flash.display.Shape;
+import flash.filters.BitmapFilter;
 
 class StyleManager {
+	public static inline var FREEHAND: String = "Free hand";
+	public static inline var LINE: String = "Line";
+	public static inline var SQUARE: String = "Square";
+	public static inline var CIRCLE: String = "Circle";
+
+	private static var instance: StyleManager;
 
 	private var layer: Shape;
-	public var activeStyle(default, default): IFeedbackProvider;
+	private var activeFilters: Array<BitmapFilter>;
 
-	public function new(in_layer: Shape) {
+	public var activeFeedback(default, null): IFeedbackProvider;
+
+	private function new(in_layer: Shape) {
 		this.layer = in_layer;
-		this.activeStyle = new FreeHand(this.layer.graphics);
+		this.activeFeedback = new FreeHand(this.layer.graphics);
+	}
+
+	public static function getInstance(?in_layer: Shape): StyleManager {
+		if (in_layer != null) {
+			instance = new StyleManager(in_layer);
+		}
+		return instance;
+	}
+
+	public function setActiveStyle(style: String): Void {
+		switch (style) {
+			case FREEHAND:
+				this.activeFeedback = new FreeHand(this.layer.graphics);
+			case LINE:
+				this.activeFeedback = new Line(this.layer.graphics);
+			case SQUARE:
+				this.activeFeedback = new Square(this.layer.graphics);
+			case CIRCLE:
+				this.activeFeedback = new Circle(this.layer.graphics);
+		}
 	}
 }

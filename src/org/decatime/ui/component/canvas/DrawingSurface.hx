@@ -105,7 +105,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		}
 
 		stage.setChildIndex(drawingFeedBack, stage.numChildren - 1);
-		this.styManager.activeStyle.processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		this.styManager.activeFeedback.processDown(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -116,7 +116,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			onMouseUp(null);
 			return;
 		}
-		this.styManager.activeStyle.processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+		this.styManager.activeFeedback.processMove(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 	}
 	
 	private function onMouseUp(e:MouseEvent): Void {
@@ -124,7 +124,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 		stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 
 		if (e != null) { 
-			this.styManager.activeStyle.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
+			this.styManager.activeFeedback.processUp(e.stageX - absRectangle.x, e.stageY - absRectangle.y);
 		}
 		
 		drawCache();
@@ -163,7 +163,7 @@ class DrawingSurface extends BaseContainer implements IDisposable implements IOb
 			stage.addChild(drawingFeedBack);
 			stage.addChild(layer1);
 			
-			this.styManager = new StyleManager(this.drawingFeedBack);
+			this.styManager = StyleManager.getInstance(this.drawingFeedBack);
 
 			gfx = this.drawingFeedBack.graphics;
 
