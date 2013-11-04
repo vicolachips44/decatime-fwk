@@ -22,14 +22,12 @@ class RadioButton extends CheckBox {
 		g.clear();
 
 		g.lineStyle(1 ,0x000000, 1.0);
-		g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, 6);
+		g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, this.shp.getCurrSize().width / 2);
 
 		if (selected) {
 			g.beginFill(0x000000, 1);
-			g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, 3);
+			g.drawCircle(this.shp.getCurrSize().width / 2, this.shp.getCurrSize().height / 2, this.shp.getCurrSize().width / 3);
 			g.endFill();
 		}
-
-		this.shp.y = this.sizeInfo.y - 4;
 	}
 }

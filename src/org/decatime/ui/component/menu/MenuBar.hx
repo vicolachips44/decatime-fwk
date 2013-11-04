@@ -89,7 +89,7 @@ class MenuBar extends BaseContainer {
 		var absBound: Rectangle = mnuItem.getBounds(this.stage);
 			
 		absBound.y = absBound.y + mnuItem.getCurrSize().height;
-		absBound.height = calculateHeight(absBound.height, mnuItem); //(absBound.height * mnuItem.getSubItems().length) + (2 * mnuItem.getSubItems().length);
+		absBound.height = calculateHeight(absBound.height, mnuItem);
 		absBound.width = getBigestMenuWidth(mnuItem);
 		return absBound;
 	}

@@ -1,9 +1,9 @@
 import org.decatime.Facade;
 
 
-import com.androiddemo.AndroidApplication;
-// import com.demo.Application;
-
+//import com.androiddemo.AndroidApplication;
+import com.demo.Application;
+// import com.Testin;
 class Main {
 	
 	public function new () {
@@ -15,7 +15,9 @@ class Main {
 	}
 
 	private function runApp(): Void {
-		var app:AndroidApplication = new AndroidApplication();
+		trace ("begin");
+		var app:Application = new Application();
+		// var app: Testin = new Testin();
 		Facade.getInstance().run(app);
 	}
 

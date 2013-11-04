@@ -24,16 +24,7 @@ class FreeHand implements IFeedbackProvider {
 	
     public function processDown(xpos: Float, ypos: Float) : Void {
     	swithTo = true;
-		gfx.lineStyle(
-			4, 
-			0x000000, 
-			1.0, 
-			false, // pixelHinting 
-			flash.display.LineScaleMode.NORMAL, 
-			flash.display.CapsStyle.ROUND, 
-			flash.display.JointStyle.ROUND, 
-			2
-		);
+		StyleManager.getInstance().prepareActiveStyle();
 		this.ayOfPathPoints = new Vector<Float>();
     }
 

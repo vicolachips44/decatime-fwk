@@ -26,7 +26,7 @@ class Shape implements IFeedbackProvider {
 
     	this.gfx.clear();
 
-    	this.gfx.lineStyle(1);
+    	StyleManager.getInstance().prepareActiveStyle();
     	
 		lastYPos = ypos;
 		lastXPos = xpos;

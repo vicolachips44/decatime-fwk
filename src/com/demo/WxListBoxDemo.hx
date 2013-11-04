@@ -29,10 +29,12 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 		var rdbGroup:RadioButtonGroup = new RadioButtonGroup('rdbGroup1');
 		var rdb1:RadioButton = new RadioButton('rdb1');
 		rdb1.label.setText('Check me!');
+		rdb1.setSelItemSize(12);
 		rdb1.label.setFontRes('assets/Vera.ttf');
 
 		var rdb2:RadioButton = new RadioButton('rdb2');
 		rdb2.label.setText('Check me 2!');
+		rdb2.setSelItemSize(12);
 		rdb2.label.setFontRes('assets/Vera.ttf');
 
 		var boxRdb:HBox = new HBox(this.clientArea);
@@ -42,7 +44,7 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 		boxRdb.create(0.5, rdb1);
 		boxRdb.create(0.5, rdb2);
 
-		this.clientArea.create(24, boxRdb);
+		this.clientArea.create(40, boxRdb);
 
 		this.addChild(rdb1);
 		this.addChild(rdb2);
@@ -50,9 +52,10 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 		rdbGroup.add(rdb2);
 
 		var chk1:CheckBox = new CheckBox('chk1');
+		chk1.setSelItemSize(12);
 		chk1.label.setText('Check me 2!');
 		chk1.label.setFontRes('assets/Vera.ttf');
-		this.clientArea.create(32, chk1);
+		this.clientArea.create(40, chk1);
 		this.addChild(chk1);
 
 		var lbox:ListBox = new ListBox('list1', 'assets/Vera.ttf');
@@ -62,7 +65,6 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 		var i:Int;
 
 		for (i in 0...10000) {
-			// lbox.add('list item ' + i);
 			lbox.add(new MyListboxObj(i));
 		}
 	}

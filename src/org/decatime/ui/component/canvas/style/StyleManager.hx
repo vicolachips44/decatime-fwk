@@ -1,6 +1,7 @@
 package org.decatime.ui.component.canvas.style;
 
 import flash.display.Shape;
+import flash.display.Graphics;
 import flash.filters.BitmapFilter;
 
 class StyleManager {
@@ -39,5 +40,19 @@ class StyleManager {
 			case CIRCLE:
 				this.activeFeedback = new Circle(this.layer.graphics);
 		}
+	}
+
+	public function prepareActiveStyle(): Void {
+		var gfx: Graphics = this.layer.graphics;
+		gfx.lineStyle(
+			4, 
+			0x000000, 
+			1.0, 
+			false, // pixelHinting 
+			flash.display.LineScaleMode.NORMAL, 
+			flash.display.CapsStyle.ROUND, 
+			flash.display.JointStyle.ROUND, 
+			2
+		);
 	}
 }
