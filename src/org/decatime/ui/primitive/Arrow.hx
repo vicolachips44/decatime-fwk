@@ -5,6 +5,11 @@ import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import flash.display.GradientType;
 
+/**
+* This object will draw an arrow on the specified graphics instance.
+* The consumer can set the orientation of the arrow and the size is
+* setted when the draw method is called via a Rectangle constraint.
+*/
 class Arrow {
 	/** left orientation for this button */
 	public static inline var ORIENTATION_LEFT:String = "left";
@@ -21,11 +26,24 @@ class Arrow {
 	private var gfx: Graphics;
 	private var orientation: String;
 
+	/**
+	* Default constructor.
+	*
+	* @param in_gfx: Graphics The graphics to draw on
+	* @param in_orientation: String a value (use static values from this class)
+	*/
 	public function new (in_gfx: Graphics, in_orientation: String) {
 		this.gfx = in_gfx;
 		this.orientation = in_orientation;
 	}
 
+	/**
+	* Actually draws the arrow within the provided Rectangle geometry
+	*
+	* @param r: Rectangle the geometry constraint
+	*
+	* @return Void
+	*/
 	public function draw(r:Rectangle): Void {
 		var box:Matrix = new Matrix();
 		gfx.clear();

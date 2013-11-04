@@ -8,6 +8,11 @@ import flash.errors.Error;
 
 import org.decatime.ui.layout.ILayoutElement;
 
+/**
+* This object is a Bitmap that implements the ILayoutElement
+* so that it can be added to a Content object.
+*
+*/
 class BaseBitmapElement extends Bitmap implements ILayoutElement {
 	private var sizeInfo:Rectangle;
 
@@ -30,6 +35,12 @@ class BaseBitmapElement extends Bitmap implements ILayoutElement {
 		resizable = true;
 	}
 
+	/**
+	* When true the BitmapData property of this Bitmap will be
+	* recreated when refresh method is call
+	*
+	* @param value: Bool 
+	*/
 	public function setResizable(value:Bool): Void {
 		this.resizable = value;
 	}
