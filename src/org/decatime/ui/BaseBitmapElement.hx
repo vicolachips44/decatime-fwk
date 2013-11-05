@@ -2,7 +2,6 @@ package org.decatime.ui;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.PixelSnapping;
 import flash.geom.Rectangle;
 import flash.errors.Error;
 

@@ -25,7 +25,6 @@ package org.decatime.ui.component;
 import flash.events.MouseEvent;
 
 import org.decatime.ui.component.RadioButton;
-import org.decatime.Facade;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.event.EventManager;

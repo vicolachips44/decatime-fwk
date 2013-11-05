@@ -2,12 +2,10 @@ package org.decatime.ui.component.menu;
 import flash.Lib;
 
 import flash.geom.Rectangle;
-import flash.filters.BlurFilter;
 import flash.filters.BitmapFilter;
-import flash.display.GradientType;
 import flash.filters.DropShadowFilter;
-import flash.geom.Matrix;
-
+import flash.events.Event;
+import flash.events.MouseEvent;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.layout.VBox;
 
@@ -56,8 +54,8 @@ class MenuPanel extends BaseContainer {
 	}
 
 	private function onPanelAddedToStage(e:flash.events.Event): Void {
-		this.removeEventListener(flash.events.Event.ADDED_TO_STAGE, onPanelAddedToStage);
-		this.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
+		this.removeEventListener(Event.ADDED_TO_STAGE, onPanelAddedToStage);
+		this.stage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 	}
 	
 	public function close(): Void {
@@ -69,7 +67,7 @@ class MenuPanel extends BaseContainer {
 
 	private function onStageMouseUp(e:flash.events.MouseEvent): Void {
 		if (this.stage != null) {
-			this.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onStageMouseUp);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
 		close();
 	}
@@ -86,7 +84,7 @@ class MenuPanel extends BaseContainer {
 		var item:MenuItem = null;
 
 		for (item in this.menuItems) {
-			var lsize: Float = item.getIsSeparator() ? 2 : 20;
+			var lsize: Float = item.getIsSeparator() ? 2 : item.textLabel.getTextHeight();
 			this.container.create(lsize, item);
 			this.addChild(item);
 		}

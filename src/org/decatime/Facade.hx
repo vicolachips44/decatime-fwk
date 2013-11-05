@@ -8,7 +8,7 @@ import flash.events.Event;
 import flash.utils.Timer;
 import flash.events.TimerEvent;
 import flash.geom.Rectangle;
-
+import flash.ui.Mouse;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.EventManager;
 
@@ -83,7 +83,7 @@ class Facade extends EventManager {
 	public function run(root:BaseContainer, ?bFullScreen:Bool = false): Void {
 		if (bFullScreen) {
 			Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN;
-			flash.ui.Mouse.hide();
+			Mouse.hide();
 		}
 
 		this.root = root;
@@ -91,6 +91,9 @@ class Facade extends EventManager {
 		Lib.current.stage.addChild(root);
 	}
 
+	/**
+    * The root has been added to stage
+    **/
 	private function onRootAddedToStage(e:Event): Void {
 		root.removeEventListener(Event.ADDED_TO_STAGE, onRootAddedToStage);
 		initialize();

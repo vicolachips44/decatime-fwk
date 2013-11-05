@@ -6,6 +6,8 @@ bin-release/
 # Other files and folders
 .settings/
 .hash
+.idea
+decatime-neko.iml
 output.xml
 template.xml
 index.html

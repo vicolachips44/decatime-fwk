@@ -2,10 +2,7 @@ package org.decatime.ui.component.windows;
 
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
-import flash.filters.BlurFilter;
-import flash.filters.BitmapFilter;
 import flash.display.GradientType;
-import flash.filters.DropShadowFilter;
 import flash.events.MouseEvent;
 
 import org.decatime.ui.layout.HBox;

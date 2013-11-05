@@ -2,11 +2,8 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
-import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.events.TouchEvent;
 import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.geom.Rectangle;
 
 import org.decatime.ui.BaseSpriteElement;

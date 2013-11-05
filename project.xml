@@ -15,7 +15,7 @@
 	<haxelib name="actuate" />
 	<haxelib name="svg" />
 
-	<!-- <haxedef name="dotest"></haxedef> -->
+	<!--<haxedef name="dotest"></haxedef>-->
 
 	<haxeflag name="-xml" value="output.xml" />
 

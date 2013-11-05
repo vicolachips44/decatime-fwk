@@ -1,22 +1,17 @@
 package org.decatime.ui.component.table;
 
-import haxe.ds.IntMap;
-
 import flash.geom.Rectangle;
 import flash.display.Graphics;
-import flash.display.Bitmap;
 import flash.events.MouseEvent;
 
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.component.VerticalScrollBar;
-import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.Content;
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
-import org.decatime.ui.component.ScrollPanel;
 
 class TableView extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.TableView :";

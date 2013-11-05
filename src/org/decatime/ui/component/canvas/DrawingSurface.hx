@@ -4,15 +4,9 @@ import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Graphics;
-import flash.events.Event;
 import flash.display.Shape;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.filters.BlurFilter;
-import flash.filters.BitmapFilter;
-import flash.display.GradientType;
-import flash.filters.DropShadowFilter;
-import flash.geom.Matrix;
 
 import org.decatime.ui.component.IDisposable;
 import org.decatime.event.IObserver;
@@ -21,6 +15,9 @@ import org.decatime.event.IObservable;
 import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.canvas.style.StyleManager;
 
+/**
+* Drawing surface element
+**/
 class DrawingSurface extends BaseContainer implements IDisposable implements IObserver {
 
 	private var parentWindow: Window;

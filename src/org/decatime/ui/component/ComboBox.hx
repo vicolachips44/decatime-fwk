@@ -5,20 +5,10 @@ import flash.display.Graphics;
 import flash.display.DisplayObject;
 
 import flash.geom.Rectangle;
-import flash.geom.Point;
-
-import flash.text.TextField;
-import flash.text.TextFormat;
-import flash.text.TextFieldType;
-import flash.text.TextFieldAutoSize;
-import flash.text.TextFormatAlign;
-import flash.text.Font;
-import flash.text.AntiAliasType;
 
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.HBox;
-import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.Content;
 
 import org.decatime.event.IObserver;

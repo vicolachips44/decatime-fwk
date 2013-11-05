@@ -1,7 +1,5 @@
 package org.decatime.ui.component.table;
 
-import flash.events.MouseEvent;
-
 import org.decatime.ui.component.ComboBox;
 
 class ComboBoxRenderer extends ComboBox implements ICellRenderer {

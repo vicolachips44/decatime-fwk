@@ -2,13 +2,10 @@ package org.decatime.ui.component.menu;
 
 import openfl.Assets;
 
-import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
-import flash.display.Bitmap;
 
 import org.decatime.ui.component.BaseContainer;
-import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.component.TextLabel;
 
@@ -23,6 +20,7 @@ class MenuItem extends BaseContainer {
 
 	private var label: String;
 	private var fontRes: String;
+    private var fontSize: Int;
 	private var iconRes: String;
 	private var subItemsContainer: MenuPanel;
 	private var parentMenuItem: MenuItem;
@@ -38,6 +36,7 @@ class MenuItem extends BaseContainer {
 		this.iconRes = in_iconRes;
 		this.textLabel = new TextLabel(label, 0x000000, 'left');
 		this.itemState = false;
+        this.fontSize = 12;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -52,6 +51,7 @@ class MenuItem extends BaseContainer {
 		var item:MenuItem = null;
 		for (item in values) {
 			item.setFontRes(fontRes);
+            item.setFontSize(this.fontSize);
 			item.setParent(this);
 			item.setParentBar(this.parentMenuBar);
 		}
@@ -116,8 +116,13 @@ class MenuItem extends BaseContainer {
 
 	public function setFontRes(value: String): Void {
 		this.fontRes = value;
-		
+        this.textLabel.setFontRes(value);
 	}
+
+    public function setFontSize(value: Int): Void {
+        this.fontSize = value;
+        this.textLabel.setFontSize(value);
+    }
 
 	public function setParent(item:MenuItem): Void {
 		this.parentMenuItem = item;
@@ -135,7 +140,7 @@ class MenuItem extends BaseContainer {
 
 		if (this.label != MenuItem.SEPARATOR) {
 			this.textLabel.setFontRes(this.fontRes);
-			this.container.create(this.textLabel.getNeededSize(), this.textLabel);
+			this.container.create(this.textLabel.getTextWidth(), this.textLabel);
 			this.addChild(this.textLabel);
 			setState(true);
 		}
@@ -175,7 +180,6 @@ class MenuItem extends BaseContainer {
 			this.parentMenuBar.relayClick(this);
 			this.parentMenuBar.resetVisibility();
 		} else {
-			trace ("toggling visibility from item " + this.name);
 			this.parentMenuBar.toggleVisibility(this);
 		}
 	}

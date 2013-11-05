@@ -2,17 +2,14 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
-import flash.display.BitmapData;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
-import flash.text.TextFormatAlign;
 import flash.text.Font;
 import flash.geom.Rectangle;
-import flash.display.PixelSnapping;
 import flash.geom.Matrix;
 import flash.errors.Error;
+import flash.text.AntiAliasType;
 
 import org.decatime.ui.BaseBitmapElement;
 
@@ -45,7 +42,7 @@ class Label extends BaseBitmapElement {
 		this.tfield.mouseEnabled = false;
 		this.tfield.text = text;
 		
-		this.tfield.antiAliasType = flash.text.AntiAliasType.NORMAL;
+		this.tfield.antiAliasType = AntiAliasType.NORMAL;
 		this.initialized = false;
 
 	}

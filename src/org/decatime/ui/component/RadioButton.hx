@@ -4,7 +4,6 @@ import flash.display.Graphics;
 import flash.events.MouseEvent;
 
 import org.decatime.ui.BaseShapeElement;
-import org.decatime.ui.layout.HBox;
 
 class RadioButton extends CheckBox {
 

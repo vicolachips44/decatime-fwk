@@ -1,3 +1,4 @@
+import com.test.TestGetWidthOfText;
 import org.decatime.Facade;
 
 
@@ -22,10 +23,11 @@ class Main {
 	}
 
 	private function runTest(): Void {
-		var runner:haxe.unit.TestRunner = new haxe.unit.TestRunner();
-		runner.add (new com.test.TestLayout());
-
-		runner.run();
+//		var runner:haxe.unit.TestRunner = new haxe.unit.TestRunner();
+//		runner.add (new com.test.TestLayout());
+//
+//		runner.run();
+        var test: TestGetWidthOfText = new TestGetWidthOfText();
 	}
 }
 	

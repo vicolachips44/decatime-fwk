@@ -2,24 +2,18 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
-import flash.errors.Error;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
-import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
-import flash.events.TimerEvent;
 import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.display.Stage;
 import flash.display.DisplayObject;
 import flash.geom.Rectangle;
-import flash.display.Sprite;
-import flash.display.Graphics;
-import flash.utils.Timer;
 
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.event.IObservable;

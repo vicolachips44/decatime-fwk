@@ -2,17 +2,14 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
-import flash.display.BitmapData;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormatAlign;
 import flash.text.Font;
 import flash.geom.Rectangle;
-import flash.display.PixelSnapping;
-import flash.geom.Matrix;
 import flash.errors.Error;
+import flash.text.AntiAliasType;
 
 import org.decatime.ui.layout.ILayoutElement;
 
@@ -21,6 +18,8 @@ class TextLabel extends TextField implements ILayoutElement {
 	public static inline var LEFT:String = 'left';
 	public static inline var CENTER:String = 'center';
 	public static inline var RIGHT:String = 'right';
+    private static inline var HSPACE: Int = 4;
+    private static inline var VSPACE: Int = 2;
 
 	private var fontRes:Font;
 	private var fontResPath: String;
@@ -44,16 +43,44 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.color = color;
 		this.isBold = false;
 
-		this.antiAliasType = flash.text.AntiAliasType.NORMAL;
+		this.antiAliasType = AntiAliasType.NORMAL;
 	}
 
-	public function getNeededSize(): Float {
-		if (this.fontRes != null) { createEmbeddedFontTextFormat(); }
-		var ltext: String = this.text;
-		this.text = '';
-		this.text = ltext;
-		return this.textWidth + 10;
-	}
+    #if !flash
+    public override function set_text(value: String): String {
+        // just here to demonstrate the override on that kind of property...
+        super.set_text(value);
+        return value;
+    }
+    #end
+
+    public function getTextWidth(): Float {
+        checkFontRes();
+        // refresh the font properties
+        createEmbeddedFontTextFormat();
+        // refreshing the text content
+        var ltext: String = this.text;
+        this.text = '';
+        this.text = ltext;
+        return this.textWidth + HSPACE;
+    }
+
+    private function checkFontRes(): Void {
+        if (this.fontRes == null) {
+            throw new Error("Font resource must be specified before calling this method");
+        }
+    }
+
+    public function getTextHeight(): Float {
+        checkFontRes();
+        // refresh the font properties
+        createEmbeddedFontTextFormat();
+        // refreshing the text content
+        var ltext: String = this.text;
+        this.text = '';
+        this.text = ltext;
+        return this.textHeight + VSPACE;
+    }
 
 	public function setTagRef(value: Dynamic) : Void {
 		this.tagRef = value;
@@ -74,9 +101,10 @@ class TextLabel extends TextField implements ILayoutElement {
 
 	public function setFontSize(size:Int): Void {
 		this.fontSize = size;
-		if (this.defaultTextFormat != null) {
-			this.defaultTextFormat.size = this.fontSize;
-		}
+        if (this.fontRes == null) {
+            throw new Error("You must set the fontRes property before setting the font size");
+        }
+        createEmbeddedFontTextFormat();
 	}
 
 	public function getFontSize(): Int {
@@ -138,6 +166,7 @@ class TextLabel extends TextField implements ILayoutElement {
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {
+        if (this.fontRes == null) { return; } // FIXME: should be removed
 		var format:TextFormat = new TextFormat(
 			this.fontRes.fontName, 
 			this.fontSize, 

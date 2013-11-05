@@ -2,10 +2,7 @@ package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
 import flash.events.MouseEvent;
-import flash.display.Graphics;
-import flash.display.GradientType;
 import flash.filters.BlurFilter;
-import flash.geom.Matrix;
 
 import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObserver;

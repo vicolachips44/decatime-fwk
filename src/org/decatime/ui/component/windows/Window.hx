@@ -2,28 +2,22 @@ package org.decatime.ui.component.windows;
 
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import flash.display.Graphics;
 import flash.display.Shape;
 import flash.events.MouseEvent;
 import flash.events.Event;
-import flash.display.Sprite;
 
 import flash.filters.BlurFilter;
 import flash.filters.BitmapFilter;
-import flash.display.GradientType;
 import flash.filters.DropShadowFilter;
-import flash.geom.Matrix;
 
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 
 import org.decatime.ui.layout.VBox;
-import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
 
 import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.BaseSpriteElement;
-import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.Facade;
 import org.decatime.ui.component.IDisposable;
 

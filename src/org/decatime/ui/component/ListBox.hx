@@ -2,9 +2,7 @@ package org.decatime.ui.component;
 
 import openfl.Assets;
 
-import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.PixelSnapping;
 import flash.display.BlendMode;
 import flash.display.Shape;
 import flash.display.Graphics;
@@ -18,9 +16,7 @@ import flash.geom.Matrix;
 
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextFieldType;
 import flash.text.TextFieldAutoSize;
-import flash.text.TextFormatAlign;
 import flash.text.Font;
 import flash.text.AntiAliasType;
 

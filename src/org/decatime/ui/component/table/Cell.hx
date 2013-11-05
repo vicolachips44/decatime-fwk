@@ -5,9 +5,7 @@ import flash.display.Graphics;
 import flash.display.Bitmap;
 import flash.display.Shape;
 
-import org.decatime.ui.component.Label;
 import org.decatime.ui.component.TextLabel;
-import org.decatime.ui.component.CheckBox;
 
 class Cell {
 	public var table(default, default): TableView;

@@ -1,7 +1,6 @@
 package org.decatime.ui.component.windows;
 
 import flash.display.DisplayObject;
-import flash.geom.Rectangle;
 
 import org.decatime.ui.BaseSpriteElement;
 

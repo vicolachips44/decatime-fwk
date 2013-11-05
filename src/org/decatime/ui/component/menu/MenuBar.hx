@@ -112,7 +112,7 @@ class MenuBar extends BaseContainer {
 		var retWidth: Float = 0;
 
 		for (item in mnuItem.getSubItems()) {
-			var lwidth: Float = item.textLabel.getNeededSize() + 44; // 20 = icon needed place // 20 = subItems arrow needed place
+			var lwidth: Float = item.textLabel.getTextWidth() + 44; // 20 = icon needed place // 20 = subItems arrow needed place
 			if (lwidth > retWidth) {
 				retWidth = lwidth;
 			}
@@ -126,7 +126,7 @@ class MenuBar extends BaseContainer {
 		var item: MenuItem = null;
 
 		for (item in mnuItems) {
-			this.container.create(item.textLabel.getNeededSize(), item);
+			this.container.create(item.textLabel.getTextWidth(), item);
 			this.addChild(item);
 		}
 	}

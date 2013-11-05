@@ -6,8 +6,6 @@ import flash.display.Graphics;
 import flash.display.GradientType;
 import flash.geom.Matrix;
 import flash.events.MouseEvent;
-import flash.events.Event;
-import flash.display.DisplayObject;
 
 import org.decatime.ui.layout.Content;
 import org.decatime.ui.component.BaseContainer;

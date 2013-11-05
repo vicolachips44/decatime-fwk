@@ -4,7 +4,6 @@ import flash.geom.Rectangle;
 import flash.display.Graphics;
 import flash.events.MouseEvent;
 
-import flash.filters.BlurFilter;
 import flash.filters.GlowFilter;
 import flash.filters.BitmapFilter;
 import flash.display.GradientType;

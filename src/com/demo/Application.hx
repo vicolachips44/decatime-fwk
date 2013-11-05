@@ -1,30 +1,18 @@
 package com.demo;
 
-import flash.geom.Rectangle;
 import flash.geom.Point;
-
-import org.decatime.ui.BaseSpriteElement;
+import flash.system.System;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
-import org.decatime.Facade;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
-import org.decatime.ui.component.Label;
-import org.decatime.ui.component.TextLabel;
-import org.decatime.ui.component.PngButton;
-import org.decatime.ui.component.TextBox;
-import org.decatime.ui.component.TextArea;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.windows.Window;
-import org.decatime.ui.component.windows.WindowState;
 import org.decatime.ui.component.windows.Manager;
-import org.decatime.ui.component.canvas.DrawingSurface;
 import org.decatime.ui.component.menu.MenuBar;
 import org.decatime.ui.component.menu.MenuItem;
-
-import flash.text.TextFormat;
 
 class Application extends BaseContainer implements IObserver {
 
@@ -94,6 +82,8 @@ class Application extends BaseContainer implements IObserver {
 		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
 		this.mnuBar.addListener(this);
 		var mnuFile : MenuItem = new MenuItem('File');
+        mnuFile.setFontRes('assets/Vera.ttf');
+        mnuFile.setFontSize(24);
 		this.mnuBar.addMenu(mnuFile);
 		
 		mnuFile.setSubItems([
@@ -107,6 +97,8 @@ class Application extends BaseContainer implements IObserver {
 
 
 		var mnuEdit : MenuItem = new MenuItem('Edit');
+        mnuEdit.setFontRes('assets/Vera.ttf');
+        mnuEdit.setFontSize(24);
 		this.mnuBar.addMenu(mnuEdit);
 		
 		mnuEdit.setSubItems ([
@@ -119,14 +111,16 @@ class Application extends BaseContainer implements IObserver {
 		]);
 
 		var mnuProj : MenuItem = new MenuItem('Project');
+        mnuProj.setFontRes('assets/Vera.ttf');
+        mnuProj.setFontSize(24);
 		this.mnuBar.addMenu(mnuProj);
 
 		mnuProj.setSubItems ([
 			new MenuItem('New project'),
-			new MenuItem('Very long menu doing nothing'),
+			new MenuItem('Very long menu doing nothing')
 		]);
 
-		this.container.create(20, this.mnuBar);
+		this.container.create(30, this.mnuBar);
 		this.addChild(this.mnuBar);
 
 		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');

@@ -1,11 +1,8 @@
 package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
-import flash.geom.Point;
 import flash.display.Graphics;
-import flash.display.Shape;
 import flash.events.MouseEvent;
-import flash.events.Event;
 import flash.display.DisplayObject;
 import flash.display.GradientType;
 import flash.geom.Matrix;

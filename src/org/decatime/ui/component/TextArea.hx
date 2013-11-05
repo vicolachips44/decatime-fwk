@@ -1,7 +1,6 @@
 package org.decatime.ui.component;
 
 import flash.geom.Rectangle;
-import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 

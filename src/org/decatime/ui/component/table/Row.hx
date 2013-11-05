@@ -6,13 +6,10 @@ import flash.events.MouseEvent;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 
-import org.decatime.ui.BaseSpriteElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.ui.component.BaseContainer;
-import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.component.Label;
-import org.decatime.ui.component.TextBox;
 
 class Row extends BaseContainer {
 	private static var NAMESPACE:String = "org.decatime.ui.component.table.Row :";
