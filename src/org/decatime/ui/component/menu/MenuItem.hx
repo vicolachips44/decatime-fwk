@@ -1,5 +1,6 @@
 package org.decatime.ui.component.menu;
 
+import org.decatime.ui.layout.EmptyLayout;
 import openfl.Assets;
 
 import flash.events.MouseEvent;
@@ -136,7 +137,12 @@ class MenuItem extends BaseContainer {
 			bmIcon.bitmapData = Assets.getBitmapData(this.iconRes);
 			this.container.create(16, bmIcon);
 			this.addChild(bmIcon);
-		}
+		} else {
+            if (! this.isRoot) {
+                var pholder: EmptyLayout = new EmptyLayout();
+                this.container.create(16, pholder);
+            }
+        }
 
 		if (this.label != MenuItem.SEPARATOR) {
 			this.textLabel.setFontRes(this.fontRes);
