@@ -14,11 +14,16 @@ import flash.geom.Point;
 import flash.display.Stage;
 import flash.display.DisplayObject;
 import flash.geom.Rectangle;
+import flash.display.Shape;
+import flash.display.Graphics;
+import flash.filters.BitmapFilter;
+import flash.filters.DropShadowFilter;
 
 import org.decatime.ui.layout.ILayoutElement;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
 import org.decatime.event.EventManager;
+import org.decatime.ui.primitive.RoundRectangle;
 
 
 class TextBox extends TextField implements ILayoutElement implements ITabStop implements IObservable {
@@ -34,17 +39,15 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 	private var asBorder:Bool;
 	private var isBold:Bool;
 	private var txtBorderColor:Int;
-	private var myStage:Stage;
 	private var evManager:EventManager;
 
 	#if !(flash || html5)
 	private var tabIndex:Int;
-	// private var tmCursorBlink:Timer;
-	// private var cursorOverlay:Sprite;
-	// private var cursorVisible:Bool;
 	#end
 
 	private var borderColorFocus:Int;
+	private var borderDecorator: RoundRectangle;
+	private var borderDecoratorShape: Shape;
 
 	public function new(name:String, ?text:String = ' ', ?color:Int=0x000000) {
 		super();
@@ -54,13 +57,12 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.selectable = true;
 		this.autoSize = TextFieldAutoSize.NONE;
 		this.margin = new Point(2, 2);
-		this.myStage = flash.Lib.current.stage;
 		evManager = new EventManager(this);
 		// if the text length is equal to zero the caret will not be visible in the TextBox
 		// for some platforms.
 		this.text = '';
 		this.fontSize = 12;
-		this.asBorder = true;
+		this.asBorder = false;
 		this.txtBorderColor = 0x000000;
 		this.borderColorFocus = 0x0000fa;
 
@@ -71,12 +73,8 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.addEventListener(FocusEvent.FOCUS_IN, onTxtFocusIn);
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 
-		#if !(flash || html5)
-		// tmCursorBlink = new Timer(300);
-		// tmCursorBlink.addEventListener(TimerEvent.TIMER, onTmCursorCycle);
-		#end
-
 		this.isBold = false;
+		
 	}
 
 	public function setMargin(p:Point): Void {
@@ -168,7 +166,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.width = r.width - (margin.x * 2);
 		this.height = r.height - (margin.y * 2);
 
-		this.draw();
+		this.draw(r);
 
 		this.initialized = true;
 	}
@@ -183,11 +181,32 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	// ILayoutElement implementation END
 
-	private function draw(): Void {
+	private function draw(r: Rectangle): Void {
 		createEmbeddedFontTextFormat();
 		this.border = asBorder;
 		this.borderColor = txtBorderColor;
+		if (this.asBorder == false) {
+			this.drawBorderDecorator(r);
+		}
+	}
 
+	private function drawBorderDecorator(r: Rectangle): Void {
+		if (this.borderDecoratorShape == null) {
+			this.borderDecoratorShape = new Shape();
+			this.borderDecorator = new RoundRectangle(this.borderDecoratorShape.graphics);
+			this.parent.addChild(this.borderDecoratorShape);
+			var f:Array<BitmapFilter> = new Array<BitmapFilter>();
+	    
+		    var shadowFilter:DropShadowFilter = new DropShadowFilter(3, 45, 0x000000, 1, 2, 2, 2, 2, false, false, false);
+		    f.push(shadowFilter);
+		    this.borderDecoratorShape.filters = f;
+		}
+		var rCopy: Rectangle = r.clone();
+		rCopy.x --;
+		rCopy.y --;
+		rCopy.width += 2;
+		rCopy.height += 2;
+		this.borderDecorator.draw(rCopy);
 	}
 
 	private function updateDisplay(): Void {
@@ -215,15 +234,6 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			e.keyCode = 0; // prevent an infinite loop...
 			processTabIndex();
 		}
-		#if !(flash || html5)
-		// if (this.text.length > 0) {
-		// 	if (this.cursorOverlay != null) {
-		// 		stopCursorBlinking();
-		// 	}
-		// } else {
-		// 	startCursorBlinking();
-		// }
-		#end
 
 		this.notify(EVT_KEYUP, e);
 	}
@@ -262,61 +272,15 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 	}
 
 	private function onTxtFocusIn(e:FocusEvent): Void {
-		// Since we have the focus, we wan't to listen to keydown event
-		// TODO: Check this on android...
-		
-		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
-		
+		this.stage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.borderColor = this.borderColorFocus;
-		if (this.text.length == 0) {
-			// #if !(flash || html5)
-			// this.startCursorBlinking();
-			// #end
-		}
 	}
-
-	#if !(flash || html5)
-	// private function startCursorBlinking(): Void {
-	// 	var r:Rectangle = this.getRect(this).clone();
-	// 	if (this.cursorOverlay != null) {
-	// 		this.parent.removeChild(this.cursorOverlay);
-	// 	}
-	// 	this.cursorOverlay = new Sprite();
-	// 	this.cursorOverlay.x = this.x;
-	// 	this.cursorOverlay.y = this.y;
-	// 	this.parent.addChild(this.cursorOverlay);
-	// 	tmCursorBlink.start();
-	// }
-
-	// private function onTmCursorCycle(e:TimerEvent): Void {
-	// 	cursorVisible = ! cursorVisible;
-	// 	var g:Graphics = this.cursorOverlay.graphics;
-	// 	g.clear();
-	// 	if (cursorVisible) {
-	// 		g.lineStyle(0.5, 0x000000);
-	// 		g.moveTo(3, 2);
-	// 		g.lineTo(2, 16);
-	// 	}	
-	// }
-
-	// private function stopCursorBlinking(): Void {
-	// 	this.tmCursorBlink.stop();
-	// 	if (this.parent != null) {
-	// 		this.parent.removeChild(this.cursorOverlay);
-	// 	}
-	// 	this.cursorOverlay = null;
-	// 	this.cursorVisible = false;
-	// 	trace ("cursor overlay has been removed");
-	// }
-	#end
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
 		#if !flash
-		this.myStage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
-		// stopCursorBlinking();
+		this.stage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		#end
 
 		this.borderColor = this.txtBorderColor;
-		trace ("onTxtFocusOut event ended...");
 	}
 }

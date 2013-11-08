@@ -11,6 +11,9 @@ import flash.events.FocusEvent;
 import flash.events.MouseEvent;
 import flash.events.KeyboardEvent;
 
+import flash.filters.BitmapFilter;
+import flash.filters.DropShadowFilter;
+
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
 
@@ -25,6 +28,7 @@ import org.decatime.ui.component.VerticalScrollBar;
 import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.VBox;
+import org.decatime.ui.primitive.RoundRectangle;
 
 import org.decatime.event.IObserver;
 import org.decatime.event.IObservable;
@@ -32,7 +36,9 @@ import org.decatime.event.IObservable;
 class ListBox extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.List :";
 	public static var EVT_ITEM_SELECTED:String = NAMESPACE + "EVT_ITEM_SELECTED";
+	
 	public var showScrollBar(default, default): Bool;
+	public var drawBorder(default, default): Bool;
 
 	private var renderer:BaseBitmapElement;
 	private var dataRenderer:BitmapData;
@@ -49,6 +55,9 @@ class ListBox extends BaseContainer implements IObserver {
 	private var firstVisibleIndex:Int;
 	private var visibleItemsCount:Int;
 	private var shpBackground:Shape;
+
+	private var borderDecorator: RoundRectangle;
+	private var borderDecoratorShape: Shape;
 
 	public function new(name:String, fontRes:String) {
 		super(name);
@@ -75,6 +84,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.shpBackground = new Shape();
 		this.showScrollBar = true;
 		this.elBackColorVisibility = 1.0;
+		this.drawBorder = true;
 	}
 
 	public function add(value:IPrintable): Void {
@@ -109,8 +119,26 @@ class ListBox extends BaseContainer implements IObserver {
 		
 		this.visibleItemsCount = Std.int(r.height / this.itemsHeight);
 
-		draw();
+		draw(r);
 		updateScrollBar();
+
+
+		if (this.borderDecoratorShape == null) {
+			this.borderDecoratorShape = new Shape();
+			this.borderDecorator = new RoundRectangle(this.borderDecoratorShape.graphics);
+			this.parent.addChild(this.borderDecoratorShape);
+			var f:Array<BitmapFilter> = new Array<BitmapFilter>();
+	    
+		    var shadowFilter:DropShadowFilter = new DropShadowFilter(3, 45, 0x000000, 1, 2, 2, 2, 2, false, false, false);
+		    f.push(shadowFilter);
+		    this.borderDecoratorShape.filters = f;
+		}
+		var rCopy: Rectangle = r.clone();
+		rCopy.x = rCopy.x - 2;
+		rCopy.y = rCopy.y - 2;
+		rCopy.width += 4;
+		rCopy.height += 4;
+		this.borderDecorator.draw(rCopy);
 	}
 
 	// IObserver implementation BEGIN
@@ -124,7 +152,7 @@ class ListBox extends BaseContainer implements IObserver {
 					this.firstVisibleIndex = this.itemsCount - this.visibleItemsCount;
 				}
 				if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
-				draw();
+				draw(this.sizeInfo);
 		}
 	}
 
@@ -168,7 +196,7 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 
-	private function draw(): Void {	
+	private function draw(r:Rectangle): Void {	
 		if (! this.initialized) { return; }	
 		var r:Rectangle    = this.listContainer.getCurrSize();
 		var startIndex:Int = this.firstVisibleIndex;
@@ -215,21 +243,23 @@ class ListBox extends BaseContainer implements IObserver {
 			currItmIdx = currItmIdx + this.itemsHeight;
 		}
 		
-		r = this.listContainer.getCurrSize();
-		var shContour:Shape = new Shape();
-		g = shContour.graphics;
-		g.clear();
-		g.lineStyle(1, 0x000000);
-		g.drawRect(0,  0, r.width - 1, r.height - 1);
-		g.endFill();
-		this.dataRenderer.draw(
-			shContour,
-			null,
-			null,
-			BlendMode.ADD,
-			null,
-			false
-		);
+		if (this.drawBorder) {
+			r = this.listContainer.getCurrSize();
+			var shContour:Shape = new Shape();
+			g = shContour.graphics;
+			g.clear();
+			g.lineStyle(1, 0x000000);
+			g.drawRect(0,  0, r.width - 1, r.height - 1);
+			g.endFill();
+			this.dataRenderer.draw(
+				shContour,
+				null,
+				null,
+				BlendMode.ADD,
+				null,
+				false
+			);
+		}
 	}
 
 	
@@ -238,7 +268,7 @@ class ListBox extends BaseContainer implements IObserver {
 		if (this.firstVisibleIndex > (this.itemsCount - this.visibleItemsCount)) { 
 			this.firstVisibleIndex = this.itemsCount - this.visibleItemsCount;
 		}
-		this.draw();
+		this.draw(this.sizeInfo);
 		this.updateScrollBar();
 	}
 
@@ -246,7 +276,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.firstVisibleIndex--;
 		if (this.firstVisibleIndex < 0) { this.firstVisibleIndex = 0; }
 
-		this.draw();
+		this.draw(this.sizeInfo);
 		this.updateScrollBar();
 	}
 
@@ -299,7 +329,7 @@ class ListBox extends BaseContainer implements IObserver {
 		trace ("ListBox::onListMouseDown: START");
 		if (e.ctrlKey) {
 			this.selectedItemIndex = -1;
-			draw();
+			draw(this.sizeInfo);
 			return;
 		}
 		var xpos:Int = Std.int(e.localX - this.listContainer.getCurrSize().x);
@@ -309,7 +339,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.stage.focus = this;
 		this.addEventListener(MouseEvent.MOUSE_OUT, onListMouseOut);
 		this.selectItem(e);
-		draw();
+		draw(this.sizeInfo);
 		trace ("ListBox::onListMouseDown: END");
 	}
 
@@ -319,7 +349,7 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 	private function onFocusInEvt(e:FocusEvent): Void {
-		this.myStage.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		this.addEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
 		this.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheelEvt);
 	}
 

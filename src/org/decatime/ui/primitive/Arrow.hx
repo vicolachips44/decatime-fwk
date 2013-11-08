@@ -13,7 +13,7 @@ import flash.display.JointStyle;
 * The consumer can set the orientation of the arrow and the size is
 * setted when the draw method is called via a Rectangle constraint.
 */
-class Arrow {
+class Arrow extends BaseDecorator {
 	/** left orientation for this button */
 	public static inline var ORIENTATION_LEFT:String = "left";
 
@@ -26,7 +26,6 @@ class Arrow {
 	/** bottom orientation for this button */
 	public static inline var ORIENTATION_BOTTOM:String = "bottom";
 
-	private var gfx: Graphics;
 	private var orientation: String;
 
 	/**
@@ -36,7 +35,7 @@ class Arrow {
 	* @param in_orientation: String a value (use static values from this class)
 	*/
 	public function new (in_gfx: Graphics, in_orientation: String) {
-		this.gfx = in_gfx;
+		super(in_gfx);
 		this.orientation = in_orientation;
 	}
 
@@ -47,7 +46,7 @@ class Arrow {
 	*
 	* @return Void
 	*/
-	public function draw(r:Rectangle): Void {
+	public override function draw(r:Rectangle): Void {
 		var box:Matrix = new Matrix();
 		gfx.clear();
 

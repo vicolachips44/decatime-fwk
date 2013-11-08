@@ -82,7 +82,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var mnuFile : MenuItem = new MenuItem('File');
         mnuFile.setFontRes('assets/Vera.ttf');
-        mnuFile.setFontSize(32);
+        mnuFile.setFontSize(14);
 		this.mnuBar.addMenu(mnuFile);
 		
 		mnuFile.setSubItems([
@@ -97,7 +97,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var mnuEdit : MenuItem = new MenuItem('Edit');
         mnuEdit.setFontRes('assets/Vera.ttf');
-        mnuEdit.setFontSize(32);
+        mnuEdit.setFontSize(14);
 		this.mnuBar.addMenu(mnuEdit);
 		
 		mnuEdit.setSubItems ([
@@ -111,7 +111,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var mnuProj : MenuItem = new MenuItem('Project');
         mnuProj.setFontRes('assets/Vera.ttf');
-        mnuProj.setFontSize(32);
+        mnuProj.setFontSize(14);
 		this.mnuBar.addMenu(mnuProj);
 
 		var mnuNewProj: MenuItem = new MenuItem('New...');
@@ -126,7 +126,7 @@ class Application extends BaseContainer implements IObserver {
 			[new MenuItem('Sub item new proj 1'), new MenuItem('Sub item new Proj 2')]
 		);
 		
-		this.container.create(40, this.mnuBar);
+		this.container.create(20, this.mnuBar);
 		this.addChild(this.mnuBar);
 
 		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');
@@ -137,12 +137,13 @@ class Application extends BaseContainer implements IObserver {
 		var wxTextArea: WxTextAreaDemo = new WxTextAreaDemo('wxTextArea', new Point(600, 480), 'assets/Vera.ttf');
 		
 		var hbox1: HBox = new HBox(this.container);
-		hbox1.setVerticalGap(2);
-		hbox1.setHorizontalGap(2);
+		hbox1.setVerticalGap(4);
+		hbox1.setHorizontalGap(4);
 
 		this.container.create(1.0, hbox1);
 
 		var demoList: ListBox = new ListBox('demoList', 'assets/BepaOblique.ttf');
+		demoList.drawBorder = false;
 		demoList.showScrollBar = false;
 		demoList.add(wxSimple);
 		demoList.add(wxList);

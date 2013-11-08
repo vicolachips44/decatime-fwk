@@ -30,11 +30,12 @@ class ComboBox extends BaseContainer implements IObserver {
 
 		this.tbox = new TextBox('textBoxValue', '');
 		this.tbox.setFontRes(this.fontRes);
-		this.tbox.setAsBorder(false);
+		this.tbox.setAsBorder(true);
 		this.tbox.mouseEnabled = false;
 		this.tbox.selectable = false;
 
 		this.dropDownList = new ListBox('dropDownList', this.fontRes);
+		this.dropDownList.drawBorder = true;
 		this.dropDownList.visible = false;
 		this.dropDownList.showScrollBar = false;
 		this.dropDownList.addListener(this);
