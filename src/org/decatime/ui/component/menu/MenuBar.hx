@@ -33,6 +33,10 @@ class MenuBar extends BaseContainer {
 		mnuItem.setParentBar(this);
 	}
 
+	public function getIsSubmenuActive(): Bool {
+		return this.subMenuActive;
+	}
+
 	public function toggleVisibility(mnuItem: MenuItem): Void {
 		this.subMenuActive = !this.subMenuActive;
 		if (this.subMenuActive) {
@@ -87,7 +91,7 @@ class MenuBar extends BaseContainer {
 
 	private function getBoundsFromMenu(mnuItem: MenuItem):  Rectangle {
 		var absBound: Rectangle = mnuItem.getBounds(this.stage);
-			
+		
 		absBound.y = absBound.y + mnuItem.getCurrSize().height;
 		absBound.height = calculateHeight(absBound.height, mnuItem);
 		absBound.width = getBigestMenuWidth(mnuItem);

@@ -115,11 +115,18 @@ class Application extends BaseContainer implements IObserver {
         mnuProj.setFontSize(14);
 		this.mnuBar.addMenu(mnuProj);
 
+		var mnuNewProj: MenuItem = new MenuItem('New...');
+
+
 		mnuProj.setSubItems ([
-			new MenuItem('New project'),
+			mnuNewProj,
 			new MenuItem('Very long menu doing nothing')
 		]);
 
+		mnuNewProj.setSubItems(
+			[new MenuItem('Sub item new proj 1'), new MenuItem('Sub item new Proj 2')]
+		);
+		
 		this.container.create(20, this.mnuBar);
 		this.addChild(this.mnuBar);
 

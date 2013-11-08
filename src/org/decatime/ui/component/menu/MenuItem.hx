@@ -1,6 +1,8 @@
 package org.decatime.ui.component.menu;
 
+import flash.display.Shape;
 import org.decatime.ui.layout.EmptyLayout;
+import org.decatime.ui.layout.VBox;
 import openfl.Assets;
 
 import flash.events.MouseEvent;
@@ -9,6 +11,7 @@ import flash.geom.Rectangle;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.ui.BaseBitmapElement;
 import org.decatime.ui.component.TextLabel;
+import org.decatime.ui.primitive.Arrow;
 
 class MenuItem extends BaseContainer {
 	
@@ -30,6 +33,8 @@ class MenuItem extends BaseContainer {
 	private var itemState: Bool;
 
 	private var isRoot: Bool;
+	private var arrow: Arrow;
+	private var arrowShape: Shape;
 
 	public function new(in_label: String, ?in_iconRes: String = '') {
 		super(in_label);
@@ -38,6 +43,7 @@ class MenuItem extends BaseContainer {
 		this.textLabel = new TextLabel(label, 0x000000, 'left');
 		this.itemState = false;
         this.fontSize = 12;
+        this.isRoot = false;
 	}
 
 	public override function refresh(r:Rectangle): Void {
@@ -45,6 +51,18 @@ class MenuItem extends BaseContainer {
 		if (this.getIsSeparator()) {
 			this.graphics.lineStyle(1, 0x000000);
 			this.graphics.drawRect(r.x + 1, r.y + 1, r.width - 2, 0.5);
+		}
+		if (this.arrow == null && this.arrowShape != null) {
+			this.arrow = new Arrow(this.arrowShape.graphics, Arrow.ORIENTATION_RIGHT);
+			var lrect: Rectangle = new Rectangle(0, 0, 16, 16);
+			this.arrow.draw(lrect);
+		}
+
+		if (this.arrowShape != null) {
+			var lx: Float = this.sizeInfo.x + this.sizeInfo.width - 16;
+			var ly: Float = this.sizeInfo.y + (this.sizeInfo.height / 2) - 8;
+			this.arrowShape.x = lx;
+			this.arrowShape.y = ly;
 		}
 	}
 
@@ -139,12 +157,18 @@ class MenuItem extends BaseContainer {
 			var bmIcon: BaseBitmapElement = new BaseBitmapElement();
 			bmIcon.setResizable(false);
 			bmIcon.bitmapData = Assets.getBitmapData(this.iconRes);
-			this.container.create(16, bmIcon);
+			var vbox:VBox = new VBox(this.container);
+			vbox.setHorizontalGap(2);
+			vbox.setVerticalGap(0);
+			vbox.create(0.5, new EmptyLayout());
+			vbox.create(16, bmIcon);
+			vbox.create(0.5, new EmptyLayout());
+			this.container.create(this.textLabel.getTextHeight(), vbox);
 			this.addChild(bmIcon);
 		} else {
             if (! this.isRoot) {
                 var pholder: EmptyLayout = new EmptyLayout();
-                this.container.create(16, pholder);
+                this.container.create(this.textLabel.getTextHeight(), pholder);
             }
         }
 
@@ -163,6 +187,12 @@ class MenuItem extends BaseContainer {
 			for (item in this.subItems) {
 				this.subItemsContainer.addMenuItem(item);
 			}
+
+			if (! this.isRoot) {
+				this.arrowShape = new Shape();
+				
+				this.addChild(this.arrowShape);
+			}
 		}
 	}
 
@@ -171,8 +201,15 @@ class MenuItem extends BaseContainer {
 		this.graphics.beginFill(0xe0e0e0);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
+
 		if (this.asSubItems()) {
-			this.parentMenuBar.updateVisiblity(this);
+			if (this.isRoot) {
+				if (this.parentMenuBar.getIsSubmenuActive()) {
+					this.parentMenuBar.updateVisiblity(this);	
+				}	
+			} else {
+				//this.subItemsContainer.show(this.getRectForSubItems());
+			}
 		}
 	}
 
@@ -181,16 +218,42 @@ class MenuItem extends BaseContainer {
 		this.graphics.beginFill(0xbbbbbb);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
-		if (this.asSubItems()) {
-		}
+	}
+
+	private function mouseOnSameLevel(e:MouseEvent): Bool {
+		var r:Rectangle = this.getBounds(this.stage);
+		return e.stageY >= r.y &&  e.stageY <= (r.y + r.height);
 	}
 
 	private function onMnuItemClick(e:MouseEvent): Void {
 		if (! this.asSubItems()) {
 			this.parentMenuBar.relayClick(this);
 			this.parentMenuBar.resetVisibility();
-		} else {
+		} else if (this.isRoot) {
 			this.parentMenuBar.toggleVisibility(this);
 		}
+	}
+
+	private function getRectForSubItems(): Rectangle {
+		var r: Rectangle = new Rectangle();
+		r.x = this.sizeInfo.x + this.sizeInfo.width;
+		r.y = this.sizeInfo.y - 2;
+		r.width = this.getBigestMenuWidth(this);
+		r.height = 100; // TODO calculate this....
+		return r;
+	}
+
+	// TODO dulicate code here... (see MenuBar)
+	private function getBigestMenuWidth(mnuItem: MenuItem): Float {
+		var item: MenuItem = null;
+		var retWidth: Float = 0;
+
+		for (item in mnuItem.getSubItems()) {
+			var lwidth: Float = item.textLabel.getTextWidth() + 44; // 20 = icon needed place // 20 = subItems arrow needed place
+			if (lwidth > retWidth) {
+				retWidth = lwidth;
+			}
+		}
+		return retWidth;
 	}
 }

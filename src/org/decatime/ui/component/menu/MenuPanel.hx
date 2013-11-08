@@ -23,7 +23,7 @@ class MenuPanel extends BaseContainer {
 
 		var f:Array<BitmapFilter> = new Array<BitmapFilter>();
 	    
-	    var shadowFilter:DropShadowFilter = new DropShadowFilter(2, 45, 0x000000, 1, 4, 4, 1, 1, false, false, false);
+	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 0.6, 4, 4, 1, 1, false, false, false);
 	    f.push(shadowFilter);
 	    this.filters = f;
 	}
@@ -70,6 +70,7 @@ class MenuPanel extends BaseContainer {
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
         close();
+        this.parentMenuBar.resetVisibility();
 	}
 
 	public function getIsVisible(): Bool {
