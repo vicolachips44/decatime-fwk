@@ -4,6 +4,9 @@ import flash.display.Graphics;
 import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import flash.display.GradientType;
+import flash.display.LineScaleMode;
+import flash.display.CapsStyle;
+import flash.display.JointStyle;
 
 /**
 * This object will draw an arrow on the specified graphics instance.
@@ -58,9 +61,9 @@ class Arrow {
 		var lh: Float = r.height - 6;
 
 		gfx.lineStyle(0.4, 0x000000, 1, true, 
-			flash.display.LineScaleMode.VERTICAL,
-			flash.display.CapsStyle.NONE, 
-			flash.display.JointStyle.ROUND);
+			LineScaleMode.VERTICAL,
+			CapsStyle.NONE,
+			JointStyle.ROUND);
 		
 		box.createGradientBox(r.width, r.height, 45, r.x, r.y);
 		

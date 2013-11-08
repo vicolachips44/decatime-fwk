@@ -146,7 +146,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		if (this.fontRes != null) {
 			createEmbeddedFontTextFormat();
 		} else {
-			throw new Error("this component labeled " + this.text + " needs a Font resource: use setFontRes('assets/$fontName.ttf' for example");
+			throw new Error("this component labeled " + this.text + " needs a Font resource: use setFontRes('assets/fontName.ttf' for example");
 		}
 
 		this.sizeInfo = r;

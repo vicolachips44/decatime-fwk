@@ -129,6 +129,10 @@ class MenuItem extends BaseContainer {
 		this.parentMenuItem = item;
 	}
 
+    public function getParent(): MenuItem {
+        return this.parentMenuItem;
+    }
+
 	private override function initializeComponent(): Void {
 		super.initializeComponent();
 		if (this.iconRes.length > 0) {

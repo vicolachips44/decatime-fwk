@@ -69,7 +69,7 @@ class MenuPanel extends BaseContainer {
 		if (this.stage != null) {
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
-		close();
+        close();
 	}
 
 	public function getIsVisible(): Bool {
