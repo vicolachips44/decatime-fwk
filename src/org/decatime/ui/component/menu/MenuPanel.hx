@@ -14,16 +14,16 @@ class MenuPanel extends BaseContainer {
 	private var menuItems: Array<MenuItem>;
 	private var parentMenuBar: MenuBar;
 
-	public function new(name:String) {
+	public function new(name:String, backColor: Int) {
 		super(name);
 		this.menuItems = new Array<MenuItem>();
 		this.elBackColorVisibility = 1.0;
-		this.elBackColor = 0xbbbbbb;
+		this.elBackColor = backColor;
 		this.setVisible(false);
 
 		var f:Array<BitmapFilter> = new Array<BitmapFilter>();
 	    
-	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 0.6, 4, 4, 1, 1, false, false, false);
+	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 1, 4, 4, 2, 2, false, false, false);
 	    f.push(shadowFilter);
 	    this.filters = f;
 	}

@@ -46,6 +46,10 @@ class MenuItem extends BaseContainer {
         this.isRoot = false;
 	}
 
+	public function setFontColor(value: Int): Void {
+		this.textLabel.setFontColor(value);
+	}
+
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 		if (this.getIsSeparator()) {
@@ -82,13 +86,13 @@ class MenuItem extends BaseContainer {
 			this.addEventListener(MouseEvent.CLICK, onMnuItemClick);
 			this.addEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
 			this.addEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
-			this.textLabel.setColor(0x000000);
+			this.textLabel.setFontColor(this.parentMenuBar.getFontColor());
 			this.itemState = true;
 		} else if (! value && value != this.itemState) {
 			this.removeEventListener(MouseEvent.CLICK, onMnuItemClick);
 			this.removeEventListener(MouseEvent.MOUSE_OVER, onMnuItemMouseOver);
 			this.removeEventListener(MouseEvent.MOUSE_OUT, onMnuItemMouseOut);
-			this.textLabel.setColor(0x808080);
+			this.textLabel.setFontColor(0x808080);
 			this.itemState = false;
 		}
 	}
@@ -180,7 +184,7 @@ class MenuItem extends BaseContainer {
 		}
 
 		if (this.asSubItems())  {
-			this.subItemsContainer = new MenuPanel('mnu' + this.label + 'SubItemsContainer');
+			this.subItemsContainer = new MenuPanel('mnu' + this.label + 'SubItemsContainer', this.parentMenuBar.getMenuColor());
 			this.subItemsContainer.setMenuBar(this.parentMenuBar);
 			var item:MenuItem = null;
 
@@ -189,19 +193,21 @@ class MenuItem extends BaseContainer {
 			}
 
 			if (! this.isRoot) {
-				this.arrowShape = new Shape();
+				// this.arrowShape = new Shape();
 				
-				this.addChild(this.arrowShape);
+				// this.addChild(this.arrowShape);
 			}
 		}
 	}
 
 	private function onMnuItemMouseOver(e:MouseEvent): Void {
 		this.graphics.clear();
-		this.graphics.beginFill(0xe0e0e0);
+
+		this.graphics.beginFill(this.parentMenuBar.getMenuOverColor());
+		this.graphics.lineStyle(0.5, 0xaaaaaa);
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
-
+		this.textLabel.setFontColor(this.parentMenuBar.getFontOverColor());
 		if (this.asSubItems()) {
 			if (this.isRoot) {
 				if (this.parentMenuBar.getIsSubmenuActive()) {
@@ -215,9 +221,10 @@ class MenuItem extends BaseContainer {
 
 	private function onMnuItemMouseOut(e:MouseEvent): Void {
 		this.graphics.clear();
-		this.graphics.beginFill(0xbbbbbb);
+		this.graphics.beginFill(this.parentMenuBar.getMenuColor());
 		this.graphics.drawRect(this.sizeInfo.x, this.sizeInfo.y, this.sizeInfo.width, this.sizeInfo.height);
 		this.graphics.endFill();
+		this.textLabel.setFontColor(this.parentMenuBar.getFontColor());
 	}
 
 	private function mouseOnSameLevel(e:MouseEvent): Bool {

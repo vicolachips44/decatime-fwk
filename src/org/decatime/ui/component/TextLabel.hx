@@ -25,12 +25,12 @@ class TextLabel extends TextField implements ILayoutElement {
 	private var fontResPath: String;
 	private var sizeInfo: Rectangle;
 	private var fontSize: Int;
-	private var color: Int;
+	private var fontColor: Int;
 	private var align: String;
 	private var isBold:Bool;
 	private var tagRef: Dynamic;
 
-	public function new(text:String, ?color:Int = 0x000000, ?align: String = 'center') {
+	public function new(text:String, ?in_color:Int = 0x000000, ?align: String = 'center') {
 		super();
 
 		this.selectable = false;
@@ -40,7 +40,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.text = text;
 		this.align = align;
 		this.fontSize = 12;
-		this.color = color;
+		this.fontColor = in_color;
 		this.isBold = false;
 
 		this.antiAliasType = AntiAliasType.NORMAL;
@@ -131,14 +131,12 @@ class TextLabel extends TextField implements ILayoutElement {
 	}
 
 	public function getColor(): Int {
-		return this.color;
+		return this.fontColor;
 	}
 
-	public function setColor(value:Int): Void {
-		this.color = value;
-		if (this.defaultTextFormat != null) {
-			this.defaultTextFormat.color = this.color;
-		}
+	public function setFontColor(value:Int): Void {
+		this.fontColor = value;
+		createEmbeddedFontTextFormat();
 	}
 	
 	public function refresh(r:Rectangle): Void {
@@ -166,11 +164,10 @@ class TextLabel extends TextField implements ILayoutElement {
 	}
 
 	private function createEmbeddedFontTextFormat(): Void {
-        if (this.fontRes == null) { return; } // FIXME: should be removed
 		var format:TextFormat = new TextFormat(
 			this.fontRes.fontName, 
 			this.fontSize, 
-			this.color,
+			this.fontColor,
 			this.isBold
 		);
 		if (this.align == 'center') {

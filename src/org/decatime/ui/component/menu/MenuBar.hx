@@ -12,14 +12,52 @@ class MenuBar extends BaseContainer {
 	private var mnuItems: Array<MenuItem>;
 	private var subMenuActive: Bool;
 	private var activeMenuItem: MenuItem;
+	private var overColor: Int;
+	private var fontColor: Int;
+	private var fontOverColor: Int;
 
 	public function new(name:String, in_fontRes: String) {
 		super(name);
 		this.elBackColorVisibility = 1.0;
+		this.overColor = 0xe0e0e0;
 		this.elBackColor = 0xbbbbbb;
 		this.fontRes = in_fontRes;
 		this.mnuItems = new Array<MenuItem>();
 		this.subMenuActive = false;
+		this.fontColor = 0x000000;
+		this.fontOverColor = 0x000000;
+	}
+
+	public function getFontOverColor(): Int {
+		return this.fontOverColor;
+	}
+
+	public function setFontOverColor(value: Int): Void {
+		this.fontOverColor = value;
+	}
+
+	public function setFontColor(value: Int): Void {
+		this.fontColor = value;
+	}
+
+	public function getFontColor(): Int {
+		return this.fontColor;
+	}
+
+	public function setMenuColor(value: Int): Void {
+		this.elBackColor = value;
+	}
+
+	public function getMenuColor(): Int {
+		return this.elBackColor;
+	}
+
+	public function setMenuOverColor(value: Int): Void {
+		this.overColor = value;
+	}
+
+	public function getMenuOverColor(): Int {
+		return this.overColor;
 	}
 
 	public function relayClick(mnuItem: MenuItem): Void {
@@ -31,6 +69,7 @@ class MenuBar extends BaseContainer {
 		mnuItem.setFontRes(this.fontRes);
 		mnuItem.setIsRoot(true);
 		mnuItem.setParentBar(this);
+		mnuItem.setFontColor(0xffffff);
 	}
 
 	public function getIsSubmenuActive(): Bool {
