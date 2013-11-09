@@ -13,6 +13,7 @@ import org.decatime.event.IObserver;
 import org.decatime.ui.layout.VBox;
 import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.Content;
+import org.decatime.ui.layout.EmptyLayout;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.Manager;
@@ -116,10 +117,10 @@ class Application extends BaseContainer implements IObserver {
 
 		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
 		this.mnuBar.addListener(this);
-		this.mnuBar.setMenuColor(0x000000);
-		this.mnuBar.setMenuOverColor(0xffffff);
-		this.mnuBar.setFontColor(0xffffff);
-		this.mnuBar.setFontOverColor(0x000000);
+		// this.mnuBar.setMenuColor(0x000000);
+		// this.mnuBar.setMenuOverColor(0xffffff);
+		// this.mnuBar.setFontColor(0xffffff);
+		// this.mnuBar.setFontOverColor(0x000000);
 
 		var mnuFile : MenuItem = new MenuItem('File');
         mnuFile.setFontRes('assets/Vera.ttf');
@@ -200,5 +201,7 @@ class Application extends BaseContainer implements IObserver {
 		windowManager = new Manager('applicationContainer');
 		hbox1.create(1.0, windowManager);
 		this.addChild(windowManager);
+
+		this.container.create(4, new EmptyLayout());
 	}
 }
