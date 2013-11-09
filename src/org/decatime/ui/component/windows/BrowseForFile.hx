@@ -3,7 +3,11 @@ import org.decatime.ui.layout.HBox;
 import org.decatime.ui.layout.EmptyLayout;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+
 import flash.filesystem.File;
+import flash.filesystem.StorageVolume;
+import flash.filesystem.StorageVolumeInfo;
+
 import flash.display.Bitmap;
 import flash.events.MouseEvent;
 import org.decatime.Facade;
@@ -12,6 +16,7 @@ import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.component.Button;
 import org.decatime.ui.primitive.Arrow;
 import org.decatime.ui.BaseSpriteElement;
+import org.decatime.event.IObservable;
 
 class BrowseForFile extends Window {
 	private var pathSeparator: String;
@@ -57,22 +62,43 @@ class BrowseForFile extends Window {
     	this.bmpDirectory = bmp;
     }
 
-    private function updatePath(direction: String): Void {
-        if (direction == 'up') {
-
-        } else {
-            // down
+    private function loadWinDrives(): Void {
+        
+        var volumes:Array<StorageVolume> = StorageVolumeInfo.getInstance().getStorageVolumes();
+        var volume:StorageVolume = null;
+        
+        for (volume in volumes) {
+            this.bfileItems.push(new BrowseForFileItem(volume.drive, this.bmpDirectory));
         }
+
+        for (item in this.bfileItems) {
+            this.itemList.add(item);
+        }
+
+        this.itemList.draw(this.itemList.getCurrSize());
     }
 
     private function onArrowClick(e:MouseEvent): Void {
-        updatePath('up');
-        drawList();
+        var lpath:String = this.rootPath.substr(0, this.rootPath.lastIndexOf(pathSeparator));
+        if (lpath == "" && pathSeparator == "/") { lpath = pathSeparator; }
+        if (lpath.length == 1 && pathSeparator == "\\") { 
+            lpath += ":"; 
+            this.loadWinDrives();
+            this.rootPath = lpath;
+        } else {
+            this.rootPath = lpath;
+            drawList();
+        }
+        this.lblPath.setText(this.rootPath);
     }
 
     private function clearList(): Void {
         this.itemList.clear();
+        if (this.itemList.getCurrSize() != null) {
+            this.itemList.refresh(this.itemList.getCurrSize());
+        }
         this.bfileItems = new Array<BrowseForFileItem>();
+
     }
 
     private function drawList(): Void {
@@ -118,6 +144,7 @@ class BrowseForFile extends Window {
         this.addChild(this.arrowContainer);
 
         this.itemList = new ListBox('lstItems', this.fontResPath);
+        this.itemList.addListener(this);
         this.clientArea.create(1.0, this.itemList);
         this.addChild(this.itemList);
 
@@ -133,5 +160,28 @@ class BrowseForFile extends Window {
         hbox2.create(80, this.btnOk);
         this.addChild(this.btnOk);
         this.drawList();
+    }
+
+    public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
+        super.handleEvent(name, sender, data);
+        switch (name) {
+            case ListBox.EVT_ITEM_DBLCLICK:
+                var bfileItem: BrowseForFileItem = cast (data, BrowseForFileItem);
+                var lpath: String = this.rootPath + this.pathSeparator + bfileItem;
+                if (bfileItem.getBitmap() == this.bmpFile) {
+                    trace ("file path is " + lpath);
+                } else {
+                    trace ("directory path is " + lpath);
+                    this.rootPath = lpath;
+                    this.lblPath.setText(lpath);
+                    this.drawList();
+                }
+        }
+    }
+
+    public override function getEventCollection(): Array<String> {
+        var parentAy:Array<String> = super.getEventCollection();
+        parentAy.push(ListBox.EVT_ITEM_DBLCLICK);
+        return parentAy;
     }
 }

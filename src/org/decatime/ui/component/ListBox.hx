@@ -36,7 +36,8 @@ import org.decatime.event.IObservable;
 class ListBox extends BaseContainer implements IObserver {
 	private static var NAMESPACE:String = "org.decatime.ui.component.List :";
 	public static var EVT_ITEM_SELECTED:String = NAMESPACE + "EVT_ITEM_SELECTED";
-	
+	public static var EVT_ITEM_DBLCLICK: String = NAMESPACE + "EVT_ITEM_DBLCLICK";
+
 	public var showScrollBar(default, default): Bool;
 	public var drawBorder(default, default): Bool;
 
@@ -62,6 +63,7 @@ class ListBox extends BaseContainer implements IObserver {
 	public function new(name:String, fontRes:String) {
 		super(name);
 		this.buttonMode = true;
+		this.doubleClickEnabled = true;
 		this.renderer = new BaseBitmapElement();
 		this.renderer.cacheAsBitmap = true;
 		this.renderer.setResizable(false);
@@ -207,6 +209,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.addEventListener(FocusEvent.FOCUS_IN, onFocusInEvt);
 		this.addEventListener(FocusEvent.FOCUS_OUT, onFocusOutEvt);
 		this.addEventListener(MouseEvent.MOUSE_DOWN, onListMouseDown);
+		this.addEventListener(MouseEvent.DOUBLE_CLICK, onListDblClick);
 	}
 
 
@@ -346,6 +349,11 @@ class ListBox extends BaseContainer implements IObserver {
 			this.selectedItem = this.listItems[this.selectedItemIndex];
 			this.notify(EVT_ITEM_SELECTED, this.selectedItem);
 		}
+	}
+
+	private function onListDblClick(e:MouseEvent): Void {
+		trace ("item dbl clicked detected");
+		this.notify(EVT_ITEM_DBLCLICK, this.selectedItem);
 	}
 
 	private function onListMouseDown(e:MouseEvent): Void {
