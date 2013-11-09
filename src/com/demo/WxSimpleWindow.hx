@@ -73,6 +73,8 @@ class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 		this.addChild(btnCancel);
 
 		this.clientArea.create(48, hbox1);
+		btnSave.addListener(this);
+		btnCancel.addListener(this);
 	}
 
 	private function createComboField(box: VBox): Void {
@@ -100,15 +102,24 @@ class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 		super.handleEvent(name, sender, data);
 		switch (name) {
 			case LinkTextLabel.EVT_CLICK:
-			var lbl: LinkTextLabel = cast(data, LinkTextLabel);
-			var url: String = lbl.getTagRef();
-			Lib.getURL(new URLRequest(url));
+				var lbl: LinkTextLabel = cast(data, LinkTextLabel);
+				var url: String = lbl.getTagRef();
+				Lib.getURL(new URLRequest(url));
+			case Button.EVT_CLICK:
+				var btn: Button = cast(data, Button);
+				if (btn.name == 'Save') {
+					trace ("save form requested");
+				}
+				if (btn.name == 'Cancel') {
+					this.remove();
+				}
 		}
 	}
 
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
 		parentAy.push(LinkTextLabel.EVT_CLICK);
+		parentAy.push(Button.EVT_CLICK);
 		return parentAy;
 	}
 
