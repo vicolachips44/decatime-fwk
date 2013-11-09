@@ -69,7 +69,7 @@ class MenuBar extends BaseContainer {
 		mnuItem.setFontRes(this.fontRes);
 		mnuItem.setIsRoot(true);
 		mnuItem.setParentBar(this);
-		mnuItem.setFontColor(0xffffff);
+		mnuItem.setFontColor(this.fontColor);
 	}
 
 	public function getIsSubmenuActive(): Bool {
@@ -80,7 +80,6 @@ class MenuBar extends BaseContainer {
 		this.subMenuActive = !this.subMenuActive;
 		if (this.subMenuActive) {
 			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
-			trace ("sub items container is now visible");
 		} else {
 			mnuItem.getSubItemsContainer().close();
 		}
@@ -111,7 +110,6 @@ class MenuBar extends BaseContainer {
 	}
 
 	public function resetVisibility(): Void {
-		trace ("reset visibility has been call");
 		this.subMenuActive = false;
 		this.activeMenuItem = null;
 	}

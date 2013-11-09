@@ -10,6 +10,8 @@ import flash.text.Font;
 import flash.geom.Rectangle;
 import flash.errors.Error;
 import flash.text.AntiAliasType;
+import flash.display.Graphics;
+import flash.display.Shape;
 
 import org.decatime.ui.layout.ILayoutElement;
 
@@ -29,6 +31,8 @@ class TextLabel extends TextField implements ILayoutElement {
 	private var align: String;
 	private var isBold:Bool;
 	private var tagRef: Dynamic;
+	private var underline: Bool;
+	private var underlineDecorator: Shape;
 
 	public function new(text:String, ?in_color:Int = 0x000000, ?align: String = 'center') {
 		super();
@@ -42,7 +46,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.fontSize = 12;
 		this.fontColor = in_color;
 		this.isBold = false;
-
+		this.underline = false;
 		this.antiAliasType = AntiAliasType.NORMAL;
 	}
 
@@ -92,6 +96,11 @@ class TextLabel extends TextField implements ILayoutElement {
 
 	public function getFontResPath(): String {
 		return this.fontResPath;
+	}
+
+	public function setUnderLine(value: Bool): Void {
+		this.underline = value;
+		createEmbeddedFontTextFormat();
 	}
 
 	public function setFontRes(fontRes:String): Void {
@@ -153,6 +162,26 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.width = r.width;
 		this.height = r.height;
 
+		if (this.underlineDecorator == null) {
+			this.underlineDecorator = new Shape();
+			this.parent.addChild(this.underlineDecorator);
+		}
+
+		if (this.underlineDecorator != null) {
+			this.underlineDecorator.x = r.x;
+			this.underlineDecorator.y = r.y - 4;
+			this.underlineDecorator.graphics.clear();
+		}
+
+		if (this.underline && this.parent != null) {
+
+			var gfx: Graphics = this.underlineDecorator.graphics;
+			gfx.clear();
+			gfx.lineStyle(1, this.fontColor);
+			gfx.moveTo(0, this.getTextHeight());
+			gfx.lineTo(this.getTextWidth(), this.getTextHeight());
+		}
+
 	}
 
 	public function getCurrSize():Rectangle {
@@ -177,6 +206,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		} else if (this.align == 'right') {
 			format.align = flash.text.TextFormatAlign.RIGHT;
 		}
+
 		
 		this.embedFonts = true;
 		this.defaultTextFormat = format;

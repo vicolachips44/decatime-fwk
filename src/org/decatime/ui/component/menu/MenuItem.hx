@@ -53,7 +53,7 @@ class MenuItem extends BaseContainer {
 	public override function refresh(r:Rectangle): Void {
 		super.refresh(r);
 		if (this.getIsSeparator()) {
-			this.graphics.lineStyle(1, 0x000000);
+			this.graphics.lineStyle(1, this.parentMenuBar.getFontColor());
 			this.graphics.drawRect(r.x + 1, r.y + 1, r.width - 2, 0.5);
 		}
 		if (this.arrow == null && this.arrowShape != null) {

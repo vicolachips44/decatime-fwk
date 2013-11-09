@@ -1,5 +1,7 @@
 package com.demo;
 import flash.geom.Point;
+import flash.net.URLRequest;
+import flash.Lib;
 
 import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.WindowState;
@@ -16,6 +18,7 @@ import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.Button;
 import org.decatime.ui.component.ComboBox;
+import org.decatime.ui.component.LinkTextLabel;
 
 class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 
@@ -28,6 +31,14 @@ class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 		createField('Address 2: ', vbox1, 3);
 		createField('Email: ', vbox1, 4);
 		createComboField(vbox1);
+
+		var link: LinkTextLabel = new LinkTextLabel('decatime wonderpad online application');
+		link.setFontRes('assets/BepaOblique.ttf');
+		link.setTagRef('http://www.decatime.org/wp1/wonderpad.html');
+
+		link.addListener(this);
+		vbox1.create(20, link);
+		this.addChild(link);
 
 		this.clientArea.create(1.0, vbox1);
 
@@ -87,11 +98,17 @@ class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 
 	public override function handleEvent(name:String, sender:IObservable, data:Dynamic): Void {
 		super.handleEvent(name, sender, data);
-		
+		switch (name) {
+			case LinkTextLabel.EVT_CLICK:
+			var lbl: LinkTextLabel = cast(data, LinkTextLabel);
+			var url: String = lbl.getTagRef();
+			Lib.getURL(new URLRequest(url));
+		}
 	}
 
 	public override function getEventCollection(): Array<String> {
 		var parentAy:Array<String> = super.getEventCollection();
+		parentAy.push(LinkTextLabel.EVT_CLICK);
 		return parentAy;
 	}
 
