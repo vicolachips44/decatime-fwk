@@ -123,7 +123,7 @@ class ListBox extends BaseContainer implements IObserver {
 		updateScrollBar();
 
 
-		if (this.borderDecoratorShape == null) {
+		if (this.borderDecoratorShape == null && this.parent != null) {
 			this.borderDecoratorShape = new Shape();
 			this.borderDecorator = new RoundRectangle(this.borderDecoratorShape.graphics);
 			this.parent.addChild(this.borderDecoratorShape);
@@ -133,12 +133,15 @@ class ListBox extends BaseContainer implements IObserver {
 		    f.push(shadowFilter);
 		    this.borderDecoratorShape.filters = f;
 		}
-		var rCopy: Rectangle = r.clone();
-		rCopy.x = rCopy.x - 2;
-		rCopy.y = rCopy.y - 2;
-		rCopy.width += 4;
-		rCopy.height += 4;
-		this.borderDecorator.draw(rCopy);
+
+		if (this.borderDecorator != null) {
+			var rCopy: Rectangle = r.clone();
+			rCopy.x = rCopy.x - 2;
+			rCopy.y = rCopy.y - 2;
+			rCopy.width += 4;
+			rCopy.height += 4;
+			this.borderDecorator.draw(rCopy);
+		}
 	}
 
 	// IObserver implementation BEGIN
