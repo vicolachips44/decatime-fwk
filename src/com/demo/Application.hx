@@ -1,6 +1,9 @@
 package com.demo;
+import openfl.Assets;
 
 import flash.geom.Point;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.system.System;
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.IObservable;
@@ -13,6 +16,7 @@ import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.Manager;
 import org.decatime.ui.component.menu.MenuBar;
 import org.decatime.ui.component.menu.MenuItem;
+import org.decatime.ui.component.windows.BrowseForFile;
 
 class Application extends BaseContainer implements IObserver {
 
@@ -37,13 +41,23 @@ class Application extends BaseContainer implements IObserver {
 				w.show(windowManager);
 
 			case MenuBar.MENUITEM_CLICK:
-				trace (data + " clicked!");
 				var mnuFileQuit: String = "File" + MenuItem.PATH_SEPARATOR + "Quit";
+				var mnuFileOpen: String = "File" + MenuItem.PATH_SEPARATOR + "Open...";
 				var mnuEditUndo: String = "Edit" + MenuItem.PATH_SEPARATOR + "Undo";
 				var mnuEditRedo: String = "Edit" + MenuItem.PATH_SEPARATOR + "Redo";
 
 				if (data == mnuFileQuit) {
 					flash.system.System.exit(0);
+				}
+
+				if (data == mnuFileOpen) {
+                    trace ("menu file open detected...");
+					var bfile:BrowseForFile = new BrowseForFile('select file...', new Point(600, 480), 'assets/Vera.ttf');
+					bfile.setBitmapFile(new Bitmap(Assets.getBitmapData('assets/file.png')));
+					bfile.setBitmapDirectory(new Bitmap(Assets.getBitmapData('assets/directory.png')));
+					
+					bfile.show(this.windowManager);
+                    trace ("the window should be visible");
 				}
 
 				if (wxCanvas.getIsActiveAndVisible()) {

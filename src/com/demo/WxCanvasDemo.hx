@@ -84,4 +84,8 @@ class WxCanvasDemo extends Window implements IPrintable implements IObserver {
 	public override function toString(): String {
 		return "5 - Canvas Demo";
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

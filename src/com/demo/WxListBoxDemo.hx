@@ -88,4 +88,8 @@ class WxListBoxDemo extends Window implements IObserver implements IPrintable {
 	public override function toString() : String {
 		return "2 - Listbox DEMO";
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

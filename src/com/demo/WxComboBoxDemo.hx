@@ -76,5 +76,9 @@ class WxComboBoxDemo extends Window implements IPrintable implements IObserver {
 		return "4 - ComboBox Demo";
 	}
 
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
+
 	// IPrintable implementation END
 }

@@ -21,4 +21,8 @@ class WxTextAreaDemo extends Window implements IPrintable {
 	public override function toString() : String {
 		return "6 - TextArea DEMO";
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

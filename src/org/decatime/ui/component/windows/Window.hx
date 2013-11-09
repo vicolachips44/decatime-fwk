@@ -72,7 +72,7 @@ class Window extends BaseContainer implements IObserver {
 				if (this.visible) { 
 					var spEl: BaseSpriteElement = cast(this.parent, BaseSpriteElement);
 					this.maxGeom = spEl.getCurrSize();
-					trace ("maxgeom property has been defined...");
+
 					this.refresh(this.position);
 					layoutComponent();
 					checkBounds(); 
@@ -114,7 +114,7 @@ class Window extends BaseContainer implements IObserver {
 	// IObserver implementation END
 
 	public function show(in_manager: Manager): Void {
-		if (in_manager == null || in_manager.contains(this) == false) {
+		if (in_manager != null && in_manager.contains(this) == false) {
 			in_manager.addChild(this);
 			this.manager = in_manager;
 			this.maxGeom = in_manager.getCurrSize();
@@ -170,11 +170,13 @@ class Window extends BaseContainer implements IObserver {
 			this.x = this.maxGeom.x;
 			this.y = this.maxGeom.y;
 		} else {
+
 			if (this.oldX != -1 && this.oldY != -1) {
 				this.x = this.oldX;
 				this.y = this.oldY;
 			}
 		}
+
 		super.refresh(r);
 
 		draw();
@@ -262,6 +264,7 @@ class Window extends BaseContainer implements IObserver {
 
 		borders = new Shape();
 	    borders.name = "borders";
+
 
 		buildClientArea();
 		

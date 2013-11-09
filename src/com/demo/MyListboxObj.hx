@@ -14,4 +14,8 @@ class MyListboxObj implements IPrintable {
 	public function toString(): String {
 		return value1 + Std.string(value2);
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

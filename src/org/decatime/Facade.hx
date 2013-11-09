@@ -73,6 +73,13 @@ class Facade extends EventManager {
 		return root;
 	}
 
+	/**
+	* return the path separator to use
+	*/
+	public function getPathSeparator(): String {
+        return Sys.systemName() == "Windows" ? "\\" : "/";
+    }
+
 
 	/**
 	* The application is started by calling this method.</br>

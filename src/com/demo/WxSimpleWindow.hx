@@ -126,4 +126,8 @@ class WxSimpleWindow extends Window implements IPrintable implements IObserver {
 	public override function toString(): String {
 		return "1 - Basic controls";
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

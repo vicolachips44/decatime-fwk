@@ -12,4 +12,8 @@ class UserGender implements IPrintable {
 	public function toString(): String {
 		return value1;
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

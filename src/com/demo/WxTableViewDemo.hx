@@ -86,4 +86,8 @@ class WxTableViewDemo extends Window implements IObserver implements IPrintable 
 	public override function toString() : String {
 		return "3 - TableView DEMO";
 	}
+
+	public function getBitmap(): flash.display.Bitmap {
+		return null;
+	}
 }

@@ -65,12 +65,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.renderer = new BaseBitmapElement();
 		this.renderer.cacheAsBitmap = true;
 		this.renderer.setResizable(false);
-		this.listItems = new Array<IPrintable>();
 		this.itemsHeight = 16;
-		this.firstVisibleIndex = 0;
-		this.selectedItemIndex = -1;
-		this.selectedItem = null;
-		this.visibleItemsCount = 0;
 
 		this.tfield = new TextField();
 		this.tfield.selectable = false;
@@ -80,16 +75,32 @@ class ListBox extends BaseContainer implements IObserver {
 		this.createEmbeddedFontTextFormat();
 		this.tfield.antiAliasType = AntiAliasType.ADVANCED;
 		this.tfield.text = '';
-		this.itemsCount = 0;
+		
 		this.shpBackground = new Shape();
 		this.showScrollBar = true;
 		this.elBackColorVisibility = 1.0;
 		this.drawBorder = true;
+
+		clear();
 	}
 
 	public function add(value:IPrintable): Void {
 		this.listItems.push(value);
 		this.itemsCount = this.listItems.length;
+	}
+
+	public function clear(?doDraw: Bool = false) {
+		this.listItems = new Array<IPrintable>();
+		this.firstVisibleIndex = 0;
+		this.selectedItemIndex = -1;
+		this.selectedItem = null;
+		this.visibleItemsCount = 0;
+		this.itemsCount = 0;
+		
+		if (doDraw && this.sizeInfo != null) {
+			draw(this.sizeInfo);
+		}
+		updateScrollBar();
 	}
 
 	public function getListCount(): Int {
@@ -199,8 +210,10 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 
-	private function draw(r:Rectangle): Void {	
+	public function draw(r:Rectangle): Void {	
 		if (! this.initialized) { return; }	
+		if (this.sizeInfo == null) {return; }
+		
 		var r:Rectangle    = this.listContainer.getCurrSize();
 		var startIndex:Int = this.firstVisibleIndex;
 		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
@@ -236,6 +249,13 @@ class ListBox extends BaseContainer implements IObserver {
 					null,
 					false
 				);
+			}
+			if (this.listItems[i].getBitmap() != null) {
+				this.dataRenderer.draw(
+					this.listItems[i].getBitmap(),
+					m
+				);	
+				m.tx = m.tx + 20; // room to draw the label
 			}
 
 			this.dataRenderer.draw(
