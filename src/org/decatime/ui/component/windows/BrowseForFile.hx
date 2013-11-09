@@ -19,10 +19,13 @@ import org.decatime.ui.BaseSpriteElement;
 import org.decatime.event.IObservable;
 
 class BrowseForFile extends Window {
+    inline private static var NAMESPACE:String = "org.decatime.ui.component.windows.BrowseForFile";
+    public static inline var EVT_FILE_SELECTED: String = NAMESPACE + "EVT_FILE_SELECTED";
+    
 	private var pathSeparator: String;
 	private var rootPath: String;
     private var lblPath: TextLabel;
-
+    private var lblSelectedItem: TextLabel;
 	private var bmpFile: Bitmap;
 	private var bmpDirectory: Bitmap;
 	private var itemList: ListBox;
@@ -152,12 +155,19 @@ class BrowseForFile extends Window {
         var hbox2: HBox = new HBox(this.container);
         this.container.create(40, hbox2);
 
-        hbox2.create(1.0, new EmptyLayout());
+        this.lblSelectedItem = new TextLabel('');
+        this.lblSelectedItem.setFontRes(this.fontResPath);
+
+        hbox2.create(1.0, this.lblSelectedItem);
+        this.addChild(this.lblSelectedItem);
+
         this.btnCancel = new Button('Cancel', this.fontResPath);
+        this.btnCancel.addListener(this);
         hbox2.create(80, this.btnCancel);
         this.addChild(this.btnCancel);
 
         this.btnOk = new Button('Ok', this.fontResPath);
+        this.btnOk.addListener(this);
         hbox2.create(80, this.btnOk);
         this.addChild(this.btnOk);
         this.drawList();
@@ -170,19 +180,29 @@ class BrowseForFile extends Window {
                 var bfileItem: BrowseForFileItem = cast (data, BrowseForFileItem);
                 var lpath: String = this.rootPath + this.pathSeparator + bfileItem;
                 if (bfileItem.getBitmap() == this.bmpFile) {
-                    trace ("file path is " + lpath);
+                    
                 } else {
                     trace ("directory path is " + lpath);
                     this.rootPath = lpath;
                     this.lblPath.setText(lpath);
                     this.drawList();
                 }
+            case ListBox.EVT_ITEM_SELECTED:
+                var bfileItem: BrowseForFileItem = cast (data, BrowseForFileItem);
+                this.lblSelectedItem.setText(bfileItem.toString());
+            case Button.EVT_CLICK:
+                var btn: Button = cast (data, Button);
+                if (btn == this.btnOk) {
+                    this.notify(EVT_FILE_SELECTED, this.rootPath + this.pathSeparator + this.lblSelectedItem.text);
+                }
+                this.remove();
         }
     }
 
     public override function getEventCollection(): Array<String> {
         var parentAy:Array<String> = super.getEventCollection();
         parentAy.push(ListBox.EVT_ITEM_DBLCLICK);
+        parentAy.push(ListBox.EVT_ITEM_SELECTED);
         return parentAy;
     }
 }

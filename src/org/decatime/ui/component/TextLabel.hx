@@ -162,7 +162,7 @@ class TextLabel extends TextField implements ILayoutElement {
 		this.width = r.width;
 		this.height = r.height;
 
-		if (this.underlineDecorator == null) {
+		if (this.underlineDecorator == null && this.parent != null) {
 			this.underlineDecorator = new Shape();
 			this.parent.addChild(this.underlineDecorator);
 		}

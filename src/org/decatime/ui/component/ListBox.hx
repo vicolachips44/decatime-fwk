@@ -105,6 +105,10 @@ class ListBox extends BaseContainer implements IObserver {
 		updateScrollBar();
 	}
 
+	public function getSelectedItem(): IPrintable {
+		return this.selectedItem;
+	}
+
 	public function getListCount(): Int {
 		return this.listItems.length;
 	}

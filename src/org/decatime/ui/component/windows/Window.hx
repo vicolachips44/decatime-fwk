@@ -22,7 +22,7 @@ import org.decatime.Facade;
 import org.decatime.ui.component.IDisposable;
 
 class Window extends BaseContainer implements IObserver {
-	inline private static var NAMESPACE:String = "org.decatime.ui.component.windows.BaseContainer";
+	inline private static var NAMESPACE:String = "org.decatime.ui.component.windows.Window";
 	inline public static var EVT_MOVING: String = NAMESPACE + "EVT_MOVING";
 	inline public static var EVT_DEACTIVATE: String = NAMESPACE + "EVT_DEACTIVATE";
 	inline public static var EVT_ACTIVATE: String = NAMESPACE + "EVT_ACTIVATE";

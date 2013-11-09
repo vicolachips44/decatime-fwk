@@ -1,10 +1,12 @@
 package com.demo;
 import openfl.Assets;
-
 import flash.geom.Point;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+#if !(flash || html5)
 import flash.system.System;
+import org.decatime.ui.component.windows.BrowseForFile;
+#end
 import org.decatime.ui.component.BaseContainer;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
@@ -16,15 +18,19 @@ import org.decatime.ui.component.windows.Window;
 import org.decatime.ui.component.windows.Manager;
 import org.decatime.ui.component.menu.MenuBar;
 import org.decatime.ui.component.menu.MenuItem;
-import org.decatime.ui.component.windows.BrowseForFile;
 
 class Application extends BaseContainer implements IObserver {
+
+	#if !(flash || html5)
+	private var bfile:BrowseForFile;
+	#end
 
 	private var mnuBar: MenuBar;
 
 	private var activeWindow: Window;
 	private var windowManager: Manager;
 	private var wxCanvas:WxCanvasDemo;
+	private var wxTextArea: WxTextAreaDemo;
 
 	public function new() {
 		super('DemoApplication');
@@ -50,15 +56,19 @@ class Application extends BaseContainer implements IObserver {
 					flash.system.System.exit(0);
 				}
 
+				#if ! (flash || html5)
 				if (data == mnuFileOpen) {
-                    
-					var bfile:BrowseForFile = new BrowseForFile('select file...', new Point(600, 480), 'assets/Vera.ttf');
-					bfile.setBitmapFile(new Bitmap(Assets.getBitmapData('assets/file.png')));
-					bfile.setBitmapDirectory(new Bitmap(Assets.getBitmapData('assets/directory.png')));
+                    if (bfile == null) {
+						bfile = new BrowseForFile('select file...', new Point(600, 480), 'assets/Vera.ttf');
+						bfile.setBitmapFile(new Bitmap(Assets.getBitmapData('assets/file.png')));
+						bfile.setBitmapDirectory(new Bitmap(Assets.getBitmapData('assets/directory.png')));
+						bfile.addListener(this);
+                    }
 					
 					bfile.show(this.windowManager);
                     
 				}
+				#end
 
 				if (wxCanvas.getIsActiveAndVisible()) {
 					if (data == mnuEditUndo) {
@@ -70,14 +80,31 @@ class Application extends BaseContainer implements IObserver {
 					this.mnuBar.setMenuItemState(mnuEditUndo, wxCanvas.canUndo());
 					this.mnuBar.setMenuItemState(mnuEditRedo, wxCanvas.canRedo());
 				}
+
+			#if !(flash || html5)
+			case BrowseForFile.EVT_FILE_SELECTED:
+				trace ("file selected is " + data);
+				if (this.wxTextArea.visible) {
+					var content: String = sys.io.File.getContent(data);
+					this.wxTextArea.setText(content);
+				}
+			#end
 		}
 	}
 
 	public function getEventCollection(): Array<String> {
+		#if !(flash || html5)
+		return [
+			ListBox.EVT_ITEM_SELECTED,
+			MenuBar.MENUITEM_CLICK,
+			BrowseForFile.EVT_FILE_SELECTED
+		];
+		#else
 		return [
 			ListBox.EVT_ITEM_SELECTED,
 			MenuBar.MENUITEM_CLICK
 		];
+		#end
 	}
 
 	// IObserver implementation END
@@ -148,7 +175,7 @@ class Application extends BaseContainer implements IObserver {
 		var wxTable:WxTableViewDemo = new WxTableViewDemo('WxTableViewDemo', new Point(720, 480), 'assets/VeraMono.ttf');
 		var wxCombo:WxComboBoxDemo = new WxComboBoxDemo('WxComboBoxDemo', new Point(400, 480), 'assets/Vera.ttf');
 		wxCanvas = new WxCanvasDemo('wxCanvas', new Point(400, 400), 'assets/Vera.ttf');
-		var wxTextArea: WxTextAreaDemo = new WxTextAreaDemo('wxTextArea', new Point(600, 480), 'assets/Vera.ttf');
+		wxTextArea = new WxTextAreaDemo('wxTextArea', new Point(600, 480), 'assets/Vera.ttf');
 		
 		var hbox1: HBox = new HBox(this.container);
 		hbox1.setVerticalGap(4);
