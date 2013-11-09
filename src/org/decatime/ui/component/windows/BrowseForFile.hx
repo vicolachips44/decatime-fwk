@@ -1,6 +1,5 @@
 package org.decatime.ui.component.windows;
 import org.decatime.ui.layout.HBox;
-import org.decatime.ui.layout.EmptyLayout;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 

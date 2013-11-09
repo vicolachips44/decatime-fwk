@@ -2,11 +2,6 @@ package org.decatime.ui.primitive;
 
 import flash.display.Graphics;
 import flash.geom.Rectangle;
-import flash.geom.Matrix;
-import flash.display.GradientType;
-import flash.display.LineScaleMode;
-import flash.display.CapsStyle;
-import flash.display.JointStyle;
 
 class RoundRectangle extends BaseDecorator {
 

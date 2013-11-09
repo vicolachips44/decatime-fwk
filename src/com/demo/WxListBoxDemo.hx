@@ -2,7 +2,6 @@ package com.demo;
 
 
 import org.decatime.ui.component.windows.Window;
-import org.decatime.ui.component.Label;
 import org.decatime.ui.component.TextBox;
 import org.decatime.ui.component.ListBox;
 import org.decatime.ui.component.RadioButtonGroup;

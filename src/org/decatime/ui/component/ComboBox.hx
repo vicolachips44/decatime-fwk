@@ -1,6 +1,5 @@
 package org.decatime.ui.component;
 
-import openfl.Assets;
 import flash.display.Graphics;
 import flash.display.DisplayObject;
 

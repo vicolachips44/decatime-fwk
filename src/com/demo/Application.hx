@@ -2,7 +2,6 @@ package com.demo;
 import openfl.Assets;
 import flash.geom.Point;
 import flash.display.Bitmap;
-import flash.display.BitmapData;
 #if !(flash || html5)
 import flash.system.System;
 import org.decatime.ui.component.windows.BrowseForFile;

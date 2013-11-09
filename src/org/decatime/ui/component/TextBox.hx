@@ -15,7 +15,6 @@ import flash.display.Stage;
 import flash.display.DisplayObject;
 import flash.geom.Rectangle;
 import flash.display.Shape;
-import flash.display.Graphics;
 import flash.filters.BitmapFilter;
 import flash.filters.DropShadowFilter;
 

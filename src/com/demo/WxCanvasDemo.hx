@@ -2,7 +2,6 @@ package com.demo;
 import flash.geom.Point;
 
 import org.decatime.ui.component.windows.Window;
-import org.decatime.ui.component.windows.WindowState;
 import org.decatime.ui.component.IPrintable;
 import org.decatime.event.IObservable;
 import org.decatime.event.IObserver;
