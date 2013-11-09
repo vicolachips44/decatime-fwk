@@ -225,6 +225,9 @@ class ListBox extends BaseContainer implements IObserver {
 		var startIndex:Int = this.firstVisibleIndex;
 		var endIndex:Int   = this.visibleItemsCount + this.firstVisibleIndex;
 		var currItmIdx:Int = 0;
+
+		// that should not appen...
+		if (startIndex < 0) { return; }
 		var g:Graphics     = this.shpBackground.graphics;
 		
 		g.clear();
@@ -234,9 +237,11 @@ class ListBox extends BaseContainer implements IObserver {
 
 		this.dataRenderer.draw(this.shpBackground, null, null, BlendMode.ERASE);
 		for (i in startIndex...endIndex) {
-			if (this.listItems == null || this.listItems.length == i) { break; }
+			if (this.listItems == null) { break; }
+			if (this.listItems.length == i) { break; }
+
 			this.tfield.text = this.listItems[i].toString();
-			
+
 			var m:Matrix = new Matrix(
 				1, 0, 0 , 1 , 2,
 				(this.itemsHeight / 2) - (this.tfield.textHeight / 2)
@@ -356,12 +361,10 @@ class ListBox extends BaseContainer implements IObserver {
 	}
 
 	private function onListDblClick(e:MouseEvent): Void {
-		trace ("item dbl clicked detected");
 		this.notify(EVT_ITEM_DBLCLICK, this.selectedItem);
 	}
 
 	private function onListMouseDown(e:MouseEvent): Void {
-		trace ("ListBox::onListMouseDown: START");
 		if (e.ctrlKey) {
 			this.selectedItemIndex = -1;
 			draw(this.sizeInfo);
@@ -375,7 +378,6 @@ class ListBox extends BaseContainer implements IObserver {
 		this.addEventListener(MouseEvent.MOUSE_OUT, onListMouseOut);
 		this.selectItem(e);
 		draw(this.sizeInfo);
-		trace ("ListBox::onListMouseDown: END");
 	}
 
 	private function onListMouseOut(e:MouseEvent): Void {
@@ -395,7 +397,7 @@ class ListBox extends BaseContainer implements IObserver {
 
 	private function onMouseWheelEvt(e:MouseEvent): Void {
 		if (e.delta == 0) { return; }
-		if (e.delta > 0) {
+		if (e.delta > 0 && this.firstVisibleIndex > 0) {
 			this.movePrevious();
 		} else {
 			this.moveNext();

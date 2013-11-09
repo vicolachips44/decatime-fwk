@@ -189,7 +189,9 @@ class BrowseForFile extends Window {
                 }
             case ListBox.EVT_ITEM_SELECTED:
                 var bfileItem: BrowseForFileItem = cast (data, BrowseForFileItem);
-                this.lblSelectedItem.setText(bfileItem.toString());
+                if (bfileItem != null) {
+                    this.lblSelectedItem.setText(bfileItem.toString());
+                }
             case Button.EVT_CLICK:
                 var btn: Button = cast (data, Button);
                 if (btn == this.btnOk) {
