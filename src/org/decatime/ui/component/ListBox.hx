@@ -306,7 +306,7 @@ class ListBox extends BaseContainer implements IObserver {
 		this.updateScrollBar();
 	}
 
-	private function updateScrollBar(): Void {
+	public function updateScrollBar(): Void {
 		if (this.vsBar1 == null) { return; }
 		// the thumb is being dragged
 		if (this.vsBar1.isScrolling()) { return; }

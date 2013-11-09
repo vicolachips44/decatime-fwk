@@ -43,7 +43,7 @@ class BrowseForFile extends Window {
 
     public override function refresh(r:Rectangle): Void {
         super.refresh(r);
-        this.arrowUp.draw(new Rectangle(0, 0, 32, 32));
+        this.arrowUp.draw(new Rectangle(0, 0, 24, 24));
     }
 
     public function setRootPath(value: String): Void {
@@ -122,6 +122,7 @@ class BrowseForFile extends Window {
         }
 
         this.itemList.draw(this.itemList.getCurrSize());
+        this.itemList.updateScrollBar();
     }
 
     private override function buildClientArea(): Void {
@@ -140,7 +141,7 @@ class BrowseForFile extends Window {
         this.arrowContainer.addEventListener(MouseEvent.CLICK, onArrowClick);
         this.arrowUp = new Arrow(this.arrowContainer.graphics, Arrow.ORIENTATION_TOP);
 
-        hbox1.create(32, this.arrowContainer);
+        hbox1.create(24, this.arrowContainer);
         this.addChild(this.arrowContainer);
 
         this.itemList = new ListBox('lstItems', this.fontResPath);

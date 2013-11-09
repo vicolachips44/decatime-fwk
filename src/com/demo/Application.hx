@@ -51,13 +51,13 @@ class Application extends BaseContainer implements IObserver {
 				}
 
 				if (data == mnuFileOpen) {
-                    trace ("menu file open detected...");
+                    
 					var bfile:BrowseForFile = new BrowseForFile('select file...', new Point(600, 480), 'assets/Vera.ttf');
 					bfile.setBitmapFile(new Bitmap(Assets.getBitmapData('assets/file.png')));
 					bfile.setBitmapDirectory(new Bitmap(Assets.getBitmapData('assets/directory.png')));
 					
 					bfile.show(this.windowManager);
-                    trace ("the window should be visible");
+                    
 				}
 
 				if (wxCanvas.getIsActiveAndVisible()) {
