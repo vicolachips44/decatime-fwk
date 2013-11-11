@@ -21,7 +21,7 @@ class TextLabel extends TextField implements ILayoutElement {
 	public static inline var CENTER:String = 'center';
 	public static inline var RIGHT:String = 'right';
     private static inline var HSPACE: Int = 4;
-    private static inline var VSPACE: Int = 180; // tricky !!
+    private static inline var VSPACE: Int = 130; // tricky !!
 
 	private var fontRes:Font;
 	private var fontResPath: String;

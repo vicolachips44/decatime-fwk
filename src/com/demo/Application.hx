@@ -116,12 +116,8 @@ class Application extends BaseContainer implements IObserver {
 
 		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
 		this.mnuBar.addListener(this);
-		this.mnuBar.setMenuColor(0x000000);
-		this.mnuBar.setMenuOverColor(0xffffff);
-		this.mnuBar.setFontColor(0xffffff);
-		this.mnuBar.setFontOverColor(0x000000);
-
-		var mnuSize: Int = 48;
+		
+		var mnuSize: Int = 16;
 		var mnuFile : MenuItem = new MenuItem('File');
         mnuFile.setFontRes('assets/Vera.ttf');
         mnuFile.setFontSize(mnuSize);
