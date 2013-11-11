@@ -80,8 +80,8 @@ class MenuPanel extends BaseContainer {
 
 	private override function initializeComponent(): Void {
 		this.container = new VBox(this);
-		this.container.setVerticalGap(2);
-		this.container.setHorizontalGap(2);
+		this.container.setVerticalGap(0);
+		this.container.setHorizontalGap(0);
 		var item:MenuItem = null;
 
 		for (item in this.menuItems) {

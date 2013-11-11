@@ -3,8 +3,8 @@
 	
 	<meta title="decatime-fwk" package="org.decatime.fwk" version="1.0.0" company="decatime" />
 	<app main="Main" path="bin" file="fwk-test" />
-	
-	<window width="1024" height="768" background="#FFFFFF" fps="60" unless="android" />
+	<window width="800" height="600" unless="android" />
+	<window background="#FFFFFF" fps="61" />
 	<window hardware="true" allow-shaders="false" depth-buffer="true" stencil-buffer="false" vsync="false" />
 	
 	<source path="src" />
@@ -20,6 +20,13 @@
 	<haxeflag name="-xml" value="output.xml" />
 
 	<assets path="Assets" rename="assets" exclude="nme.svg" />
+
+	<template
+  		path="templates/android/AndroidManifest.xml"
+  		rename="AndroidManifest.xml"
+  		if="android"
+	/>
+
 	<icon path="Assets/nme.svg" />
 
 </project>

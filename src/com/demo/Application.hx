@@ -116,14 +116,15 @@ class Application extends BaseContainer implements IObserver {
 
 		this.mnuBar = new MenuBar('MainMenu', 'assets/Vera.ttf');
 		this.mnuBar.addListener(this);
-		// this.mnuBar.setMenuColor(0x000000);
-		// this.mnuBar.setMenuOverColor(0xffffff);
-		// this.mnuBar.setFontColor(0xffffff);
-		// this.mnuBar.setFontOverColor(0x000000);
+		this.mnuBar.setMenuColor(0x000000);
+		this.mnuBar.setMenuOverColor(0xffffff);
+		this.mnuBar.setFontColor(0xffffff);
+		this.mnuBar.setFontOverColor(0x000000);
 
+		var mnuSize: Int = 48;
 		var mnuFile : MenuItem = new MenuItem('File');
         mnuFile.setFontRes('assets/Vera.ttf');
-        mnuFile.setFontSize(14);
+        mnuFile.setFontSize(mnuSize);
 		this.mnuBar.addMenu(mnuFile);
 		
 		mnuFile.setSubItems([
@@ -138,7 +139,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var mnuEdit : MenuItem = new MenuItem('Edit');
         mnuEdit.setFontRes('assets/Vera.ttf');
-        mnuEdit.setFontSize(14);
+        mnuEdit.setFontSize(mnuSize);
 		this.mnuBar.addMenu(mnuEdit);
 		
 		mnuEdit.setSubItems ([
@@ -152,7 +153,7 @@ class Application extends BaseContainer implements IObserver {
 
 		var mnuProj : MenuItem = new MenuItem('Project');
         mnuProj.setFontRes('assets/Vera.ttf');
-        mnuProj.setFontSize(14);
+        mnuProj.setFontSize(mnuSize);
 		this.mnuBar.addMenu(mnuProj);
 
 		var mnuNewProj: MenuItem = new MenuItem('New...');
@@ -167,7 +168,7 @@ class Application extends BaseContainer implements IObserver {
 			[new MenuItem('Sub item new proj 1'), new MenuItem('Sub item new Proj 2')]
 		);
 		
-		this.container.create(20, this.mnuBar);
+		this.container.create(mnuSize + 8, this.mnuBar);
 		this.addChild(this.mnuBar);
 
 		var wxSimple: WxSimpleWindow = new WxSimpleWindow('wxSimple', new Point(600, 400), 'assets/Vera.ttf');

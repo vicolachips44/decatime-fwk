@@ -21,7 +21,7 @@ class TextLabel extends TextField implements ILayoutElement {
 	public static inline var CENTER:String = 'center';
 	public static inline var RIGHT:String = 'right';
     private static inline var HSPACE: Int = 4;
-    private static inline var VSPACE: Int = 4;
+    private static inline var VSPACE: Int = 180; // tricky !!
 
 	private var fontRes:Font;
 	private var fontResPath: String;
@@ -60,12 +60,6 @@ class TextLabel extends TextField implements ILayoutElement {
 
     public function getTextWidth(): Float {
         checkFontRes();
-        // refresh the font properties
-        createEmbeddedFontTextFormat();
-        // refreshing the text content
-        var ltext: String = this.text;
-        this.text = '';
-        this.text = ltext;
         return this.textWidth + HSPACE;
     }
 
@@ -77,13 +71,7 @@ class TextLabel extends TextField implements ILayoutElement {
 
     public function getTextHeight(): Float {
         checkFontRes();
-        // refresh the font properties
-        createEmbeddedFontTextFormat();
-        // refreshing the text content
-        var ltext: String = this.text;
-        this.text = '';
-        this.text = ltext;
-        return this.textHeight + VSPACE;
+        return this.textHeight + (VSPACE / this.textHeight) ; // don't hask me why :)
     }
 
 	public function setTagRef(value: Dynamic) : Void {
