@@ -14,7 +14,7 @@ import org.decatime.ui.component.TextLabel;
 import org.decatime.ui.primitive.Arrow;
 
 class MenuItem extends BaseContainer {
-	
+
 	public static inline var SEPARATOR: String = "[separator]";
 	public static inline var PATH_SEPARATOR: String = "|";
 
@@ -194,7 +194,7 @@ class MenuItem extends BaseContainer {
 
 			if (! this.isRoot) {
 				// this.arrowShape = new Shape();
-				
+
 				// this.addChild(this.arrowShape);
 			}
 		}
@@ -211,8 +211,8 @@ class MenuItem extends BaseContainer {
 		if (this.asSubItems()) {
 			if (this.isRoot) {
 				if (this.parentMenuBar.getIsSubmenuActive()) {
-					this.parentMenuBar.updateVisiblity(this);	
-				}	
+					this.parentMenuBar.updateVisiblity(this);
+				}
 			} else {
 				//this.subItemsContainer.show(this.getRectForSubItems());
 			}
@@ -238,6 +238,8 @@ class MenuItem extends BaseContainer {
 			this.parentMenuBar.resetVisibility();
 		} else if (this.isRoot) {
 			this.parentMenuBar.toggleVisibility(this);
+		} else {
+			this.parentMenuBar.resetVisibility();
 		}
 	}
 

@@ -77,7 +77,7 @@ class MenuBar extends BaseContainer {
 	}
 
 	public function toggleVisibility(mnuItem: MenuItem): Void {
-		this.subMenuActive = !this.subMenuActive;
+		this.subMenuActive = this.subMenuActive == true ? false : true;
 		if (this.subMenuActive) {
 			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
 		} else {
@@ -97,14 +97,14 @@ class MenuBar extends BaseContainer {
 	}
 
 	public function updateVisiblity(mnuItem: MenuItem): Void {
-		if (! this.subMenuActive) { 
+		if (! this.subMenuActive) {
 			// the toggleVisilibty method has not been called
-			return; 
+			return;
 		}
 
 		if (mnuItem.name != this.activeMenuItem.name) {
 			this.activeMenuItem.getSubItemsContainer().close();
-			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));	
+			mnuItem.getSubItemsContainer().show(getBoundsFromMenu(mnuItem));
 		}
 		this.activeMenuItem = mnuItem;
 	}
@@ -128,7 +128,7 @@ class MenuBar extends BaseContainer {
 
 	private function getBoundsFromMenu(mnuItem: MenuItem):  Rectangle {
 		var absBound: Rectangle = mnuItem.getBounds(this.stage);
-		
+
 		absBound.y = absBound.y + mnuItem.getCurrSize().height;
 		absBound.height = calculateHeight(absBound.height, mnuItem);
 		absBound.width = getBigestMenuWidth(mnuItem);

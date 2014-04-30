@@ -22,7 +22,7 @@ class MenuPanel extends BaseContainer {
 		this.setVisible(false);
 
 		var f:Array<BitmapFilter> = new Array<BitmapFilter>();
-	    
+
 	    var shadowFilter:DropShadowFilter = new DropShadowFilter(4, 45, 0x000000, 1, 4, 4, 2, 2, false, false, false);
 	    f.push(shadowFilter);
 	    this.filters = f;
@@ -45,7 +45,7 @@ class MenuPanel extends BaseContainer {
 	public function setMenuBar(value: MenuBar): Void {
 		this.parentMenuBar = value;
 	}
-	
+
 	public function show(r: Rectangle) : Void {
 		this.refresh(r);
 		this.addEventListener(flash.events.Event.ADDED_TO_STAGE, onPanelAddedToStage);
@@ -57,7 +57,7 @@ class MenuPanel extends BaseContainer {
 		this.removeEventListener(Event.ADDED_TO_STAGE, onPanelAddedToStage);
 		this.stage.addEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 	}
-	
+
 	public function close(): Void {
 		if (this.stage != null) {
 			this.stage.removeChild(this);
@@ -69,8 +69,8 @@ class MenuPanel extends BaseContainer {
 		if (this.stage != null) {
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStageMouseUp);
 		}
-        close();
-        this.parentMenuBar.resetVisibility();
+    close();
+    //this.parentMenuBar.resetVisibility();
 	}
 
 	public function getIsVisible(): Bool {
