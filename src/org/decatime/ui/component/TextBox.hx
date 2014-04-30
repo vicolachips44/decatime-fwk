@@ -73,7 +73,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 		this.addEventListener(FocusEvent.FOCUS_OUT, onTxtFocusOut);
 
 		this.isBold = false;
-		
+
 	}
 
 	public function setMargin(p:Point): Void {
@@ -159,7 +159,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	public function refresh(r:Rectangle): Void {
 		this.sizeInfo = r;
-		
+
 		this.x = r.x + margin.x;
 		this.y = r.y + margin.y;
 		this.width = r.width - (margin.x * 2);
@@ -195,7 +195,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 			this.borderDecorator = new RoundRectangle(this.borderDecoratorShape.graphics);
 			this.parent.addChild(this.borderDecoratorShape);
 			var f:Array<BitmapFilter> = new Array<BitmapFilter>();
-	    
+
 		    var shadowFilter:DropShadowFilter = new DropShadowFilter(3, 45, 0x000000, 1, 2, 2, 2, 2, false, false, false);
 		    f.push(shadowFilter);
 		    this.borderDecoratorShape.filters = f;
@@ -217,8 +217,8 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	private function createEmbeddedFontTextFormat(): Void {
 		var format:TextFormat = new TextFormat(
-			this.fontRes.fontName, 
-			this.fontSize, 
+			this.fontRes.fontName,
+			this.fontSize,
 			this.color,
 			this.isBold
 		);
@@ -245,10 +245,10 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 		for (i in 0...nbChilds) {
 			var child:DisplayObject = this.parent.getChildAt(i);
-			
+
 			if (Std.is(child, ITabStop)) {
 				var tbHandler:ITabStop = cast(child, ITabStop);
-				
+
 				if (tbHandler.getTabIndex() == -1) {
 					trace ("warning: the tab index has not been setted on child " + child.name);
 					continue;
@@ -256,7 +256,7 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 				if (tbHandler.getTabIndex() == this.getTabIndex() + 1) {
 					tbHandler.setFocus();
-					return;	
+					return;
 				}
 				if (tbHandler.getTabIndex() < smallestTbIndex) {
 					nextTabElement = tbHandler;
@@ -277,7 +277,9 @@ class TextBox extends TextField implements ILayoutElement implements ITabStop im
 
 	private function onTxtFocusOut(e:FocusEvent): Void {
 		#if !flash
-		this.stage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		if (this.stage != null) {
+			this.stage.removeEventListener(KeyboardEvent.KEY_UP, onStageKeyUp);
+		}
 		#end
 
 		this.borderColor = this.txtBorderColor;
